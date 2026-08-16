@@ -7,6 +7,8 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
+import { L } from '@/i18n/label'
+
 export const Archive: Block = {
   slug: 'archive',
   interfaceName: 'ArchiveBlock',
@@ -24,19 +26,20 @@ export const Archive: Block = {
           ]
         },
       }),
-      label: 'Intro Content',
+      label: L('Intro Content', 'محتوای مقدمه'),
     },
     {
       name: 'populateBy',
       type: 'select',
       defaultValue: 'collection',
+      label: L('Populate By', 'پر کردن بر اساس'),
       options: [
         {
-          label: 'Collection',
+          label: L('Collection', 'مجموعه'),
           value: 'collection',
         },
         {
-          label: 'Individual Selection',
+          label: L('Individual Selection', 'انتخاب تکی'),
           value: 'selection',
         },
       ],
@@ -48,10 +51,10 @@ export const Archive: Block = {
         condition: (_, siblingData) => siblingData.populateBy === 'collection',
       },
       defaultValue: 'posts',
-      label: 'Collections To Show',
+      label: L('Collections To Show', 'مجموعه‌های نمایشی'),
       options: [
         {
-          label: 'Posts',
+          label: L('Posts', 'پست‌ها'),
           value: 'posts',
         },
       ],
@@ -63,7 +66,7 @@ export const Archive: Block = {
         condition: (_, siblingData) => siblingData.populateBy === 'collection',
       },
       hasMany: true,
-      label: 'Categories To Show',
+      label: L('Categories To Show', 'دسته‌بندی‌های نمایشی'),
       relationTo: 'categories',
     },
     {
@@ -74,7 +77,7 @@ export const Archive: Block = {
         step: 1,
       },
       defaultValue: 10,
-      label: 'Limit',
+      label: L('Limit', 'محدودیت'),
     },
     {
       name: 'selectedDocs',
@@ -83,12 +86,12 @@ export const Archive: Block = {
         condition: (_, siblingData) => siblingData.populateBy === 'selection',
       },
       hasMany: true,
-      label: 'Selection',
+      label: L('Selection', 'انتخاب'),
       relationTo: ['posts'],
     },
   ],
   labels: {
-    plural: 'Archives',
-    singular: 'Archive',
+    plural: L('Archives', 'آرشیوها'),
+    singular: L('Archive', 'آرشیو'),
   },
 }

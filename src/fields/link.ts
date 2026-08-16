@@ -1,16 +1,20 @@
 import type { Field, GroupField } from 'payload'
 
 import deepMerge from '@/utilities/deepMerge'
+import { L } from '@/i18n/label'
 
 export type LinkAppearances = 'default' | 'outline'
 
-export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
+export const appearanceOptions: Record<
+  LinkAppearances,
+  { label: { en: string; fa: string }; value: string }
+> = {
   default: {
-    label: 'Default',
+    label: L('Default', 'پیش‌فرض'),
     value: 'default',
   },
   outline: {
-    label: 'Outline',
+    label: L('Outline', 'حاشیه‌دار'),
     value: 'outline',
   },
 }
@@ -25,6 +29,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
   const linkResult: GroupField = {
     name: 'link',
     type: 'group',
+    label: L('Link', 'لینک'),
     admin: {
       hideGutter: true,
     },
@@ -35,6 +40,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           {
             name: 'type',
             type: 'radio',
+            label: L('Type', 'نوع'),
             admin: {
               layout: 'horizontal',
               width: '50%',
@@ -42,11 +48,11 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
             defaultValue: 'reference',
             options: [
               {
-                label: 'Internal link',
+                label: L('Internal link', 'لینک داخلی'),
                 value: 'reference',
               },
               {
-                label: 'Custom URL',
+                label: L('Custom URL', 'آدرس سفارشی'),
                 value: 'custom',
               },
             ],
@@ -60,7 +66,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
               },
               width: '50%',
             },
-            label: 'Open in new tab',
+            label: L('Open in new tab', 'باز شدن در تب جدید'),
           },
         ],
       },
@@ -74,7 +80,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
-      label: 'Document to link to',
+      label: L('Document to link to', 'سند مقصد'),
       relationTo: ['pages', 'posts'],
       required: true,
     },
@@ -84,7 +90,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'custom',
       },
-      label: 'Custom URL',
+      label: L('Custom URL', 'آدرس سفارشی'),
       required: true,
     },
   ]
@@ -108,7 +114,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           admin: {
             width: '50%',
           },
-          label: 'Label',
+          label: L('Label', 'برچسب'),
           required: true,
         },
       ],
@@ -127,8 +133,12 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
     linkResult.fields.push({
       name: 'appearance',
       type: 'select',
+      label: L('Appearance', 'ظاهر'),
       admin: {
-        description: 'Choose how the link should be rendered.',
+        description: L(
+          'Choose how the link should be rendered.',
+          'نحوه نمایش لینک را انتخاب کنید.',
+        ),
       },
       defaultValue: 'default',
       options: appearanceOptionsToUse,

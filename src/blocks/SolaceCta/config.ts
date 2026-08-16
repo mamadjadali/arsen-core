@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { L } from '@/i18n/label'
+
 export const SolaceCta: Block = {
   slug: 'solaceCta',
   interfaceName: 'SolaceCtaBlock',
@@ -8,23 +10,24 @@ export const SolaceCta: Block = {
       name: 'heading',
       type: 'text',
       required: true,
+      label: L('Heading', 'عنوان'),
       defaultValue: 'The #1 AI Music App',
     },
     {
       name: 'appleUrl',
       type: 'text',
-      label: 'Apple App Store URL',
+      label: L('Apple App Store URL', 'آدرس اپ‌استور اپل'),
       defaultValue: '#',
     },
     {
       name: 'googleUrl',
       type: 'text',
-      label: 'Google Play Store URL',
+      label: L('Google Play Store URL', 'آدرس گوگل‌پلی'),
       defaultValue: '#',
     },
   ],
   labels: {
-    plural: 'Solace CTAs',
-    singular: 'Solace CTA',
+    plural: L('Solace CTAs', 'فراخوان‌های اقدام سولس'),
+    singular: L('Solace CTA', 'فراخوان اقدام سولس'),
   },
 }

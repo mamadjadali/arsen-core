@@ -3,7 +3,10 @@ import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
+import { en } from '@payloadcms/translations/languages/en'
+import { fa } from '@payloadcms/translations/languages/fa'
 
+import { AnalyticsEvents } from './collections/AnalyticsEvents'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -15,6 +18,7 @@ import { Scripts } from './Scripts/config'
 import { Settings } from './Settings/config'
 import { Theme } from './Theme/config'
 import { aiPresetsEndpoint, aiStatusEndpoint, aiTransformEndpoint } from './ai/endpoints/transform'
+import { analyticsCollectEndpoint } from './endpoints/analytics/collect'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -28,9 +32,7 @@ export default buildConfig({
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeDashboard: ['@/components/BeforeDashboard'],
+      beforeDashboard: ['@/components/Analytics/AnalyticsWidgets'],
       graphics: {
         Logo: '@/components/Logo/Logo#Logo',
         Icon: '@/components/Logo/Icon#Icon',
@@ -43,19 +45,19 @@ export default buildConfig({
     livePreview: {
       breakpoints: [
         {
-          label: 'Mobile',
+          label: 'موبایل',
           name: 'mobile',
           width: 375,
           height: 667,
         },
         {
-          label: 'Tablet',
+          label: 'تبلت',
           name: 'tablet',
           width: 768,
           height: 1024,
         },
         {
-          label: 'Desktop',
+          label: 'دسکتاپ',
           name: 'desktop',
           width: 1440,
           height: 900,
@@ -68,10 +70,14 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Media, Categories, Users, AnalyticsEvents],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [aiStatusEndpoint, aiPresetsEndpoint, aiTransformEndpoint],
+  endpoints: [aiStatusEndpoint, aiPresetsEndpoint, aiTransformEndpoint, analyticsCollectEndpoint],
   globals: [Header, Footer, Theme, Scripts, Settings],
+  i18n: {
+    fallbackLanguage: 'fa',
+    supportedLanguages: { fa, en },
+  },
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

@@ -14,6 +14,7 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { L } from '@/i18n/label'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
@@ -29,6 +30,10 @@ import { slugField } from 'payload'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
+  labels: {
+    singular: L('Post', 'نوشته'),
+    plural: L('Posts', 'نوشته‌ها'),
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -48,6 +53,7 @@ export const Posts: CollectionConfig<'posts'> = {
     },
   },
   admin: {
+    group: L('Content', 'محتوا'),
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>
@@ -69,6 +75,7 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'title',
       type: 'text',
+      label: L('Title', 'عنوان'),
       required: true,
     },
     {
@@ -79,11 +86,13 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'heroImage',
               type: 'upload',
+              label: L('Hero Image', 'تصویر هیرو'),
               relationTo: 'media',
             },
             {
               name: 'aiAssistContent',
               type: 'ui',
+              label: L('AI Content Assist', 'دستیار محتوای هوش مصنوعی'),
               admin: {
                 components: {
                   Field: '@/components/AI/AIAssistContentField#AIAssistContentField',
@@ -109,13 +118,14 @@ export const Posts: CollectionConfig<'posts'> = {
               required: true,
             },
           ],
-          label: 'Content',
+          label: L('Content', 'محتوا'),
         },
         {
           fields: [
             {
               name: 'relatedPosts',
               type: 'relationship',
+              label: L('Related Posts', 'نوشته‌های مرتبط'),
               admin: {
                 position: 'sidebar',
               },
@@ -132,6 +142,7 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'categories',
               type: 'relationship',
+              label: L('Categories', 'دسته‌بندی‌ها'),
               admin: {
                 position: 'sidebar',
               },
@@ -139,14 +150,15 @@ export const Posts: CollectionConfig<'posts'> = {
               relationTo: 'categories',
             },
           ],
-          label: 'Meta',
+          label: L('Meta', 'متا'),
         },
         {
-          label: 'SEO',
+          label: L('SEO', 'سئو'),
           fields: [
             {
               name: 'aiAssistSeo',
               type: 'ui',
+              label: L('AI SEO Assist', 'دستیار سئو هوش مصنوعی'),
               admin: {
                 components: {
                   Field: '@/components/AI/AIAssistSeoField#AIAssistSeoField',
@@ -184,6 +196,7 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      label: L('Published At', 'تاریخ انتشار'),
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',
@@ -204,6 +217,7 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'authors',
       type: 'relationship',
+      label: L('Authors', 'نویسندگان'),
       admin: {
         position: 'sidebar',
       },
@@ -216,6 +230,7 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'populatedAuthors',
       type: 'array',
+      label: L('Populated Authors', 'نویسندگان پرشده'),
       access: {
         update: () => false,
       },
@@ -223,18 +238,38 @@ export const Posts: CollectionConfig<'posts'> = {
         disabled: true,
         readOnly: true,
       },
+      labels: {
+        singular: L('Author', 'نویسنده'),
+        plural: L('Authors', 'نویسندگان'),
+      },
       fields: [
         {
           name: 'id',
           type: 'text',
+          label: L('ID', 'شناسه'),
         },
         {
           name: 'name',
           type: 'text',
+          label: L('Name', 'نام'),
         },
       ],
     },
-    slugField(),
+    slugField({
+      overrides: (field) => {
+        const [checkbox, slug] = field.fields
+        if (checkbox?.type === 'checkbox' && checkbox.admin) {
+          checkbox.admin.description = L(
+            'When enabled, the slug will auto-generate from the title field on save and autosave.',
+            'در صورت فعال بودن، نامک هنگام ذخیره و ذخیرهٔ خودکار از عنوان ساخته می‌شود.',
+          )
+        }
+        if (slug?.type === 'text') {
+          slug.label = L('Slug', 'نامک')
+        }
+        return field
+      },
+    }),
   ],
   hooks: {
     afterChange: [revalidatePost],

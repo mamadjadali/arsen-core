@@ -8,27 +8,29 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { L } from '@/i18n/label'
 
 const columnFields: Field[] = [
   {
     name: 'size',
     type: 'select',
     defaultValue: 'oneThird',
+    label: L('Size', 'اندازه'),
     options: [
       {
-        label: 'One Third',
+        label: L('One Third', 'یک‌سوم'),
         value: 'oneThird',
       },
       {
-        label: 'Half',
+        label: L('Half', 'نیمه'),
         value: 'half',
       },
       {
-        label: 'Two Thirds',
+        label: L('Two Thirds', 'دو‌سوم'),
         value: 'twoThirds',
       },
       {
-        label: 'Full',
+        label: L('Full', 'کامل'),
         value: 'full',
       },
     ],
@@ -51,6 +53,7 @@ const columnFields: Field[] = [
   {
     name: 'enableLink',
     type: 'checkbox',
+    label: L('Enable Link', 'فعال‌سازی لینک'),
   },
   link({
     overrides: {
@@ -70,10 +73,19 @@ export const Content: Block = {
     {
       name: 'columns',
       type: 'array',
+      label: L('Columns', 'ستون‌ها'),
+      labels: {
+        singular: L('Column', 'ستون'),
+        plural: L('Columns', 'ستون‌ها'),
+      },
       admin: {
         initCollapsed: true,
       },
       fields: columnFields,
     },
   ],
+  labels: {
+    plural: L('Content Blocks', 'بلوک‌های محتوا'),
+    singular: L('Content', 'محتوا'),
+  },
 }

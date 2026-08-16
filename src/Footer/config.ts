@@ -1,10 +1,12 @@
 import type { GlobalConfig } from 'payload'
 
 import { link } from '@/fields/link'
+import { L } from '@/i18n/label'
 import { revalidateFooter } from './hooks/revalidateFooter'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
+  label: L('Footer', 'فوتر'),
   access: {
     read: () => true,
   },
@@ -12,49 +14,58 @@ export const Footer: GlobalConfig = {
     {
       name: 'layout',
       type: 'select',
-      label: 'Footer design',
+      label: L('Footer design', 'طراحی فوتر'),
       defaultValue: 'newsletter',
       required: true,
       options: [
         {
-          label: 'Newsletter (Solace)',
+          label: L('Newsletter (Solace)', 'خبرنامه (سولس)'),
           value: 'newsletter',
         },
         {
-          label: 'Columns (brand + link grid)',
+          label: L('Columns (brand + link grid)', 'ستون‌ها (برند + شبکه لینک)'),
           value: 'columns',
         },
       ],
       admin: {
-        description:
+        description: L(
           'Newsletter: Solace-style signup + large links. Columns: logo, tagline, multi-column links, legal row.',
+          'خبرنامه: ثبت‌نام به سبک سولس + لینک‌های بزرگ. ستون‌ها: لوگو، شعار، لینک‌های چندستونه، ردیف حقوقی.',
+        ),
       },
     },
     {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
+      label: L('Logo', 'لوگو'),
       admin: {
-        description: 'Footer logo (independent from Header)',
+        description: L('Footer logo (independent from Header)', 'لوگوی فوتر (مستقل از هدر)'),
       },
     },
     {
       name: 'brandName',
       type: 'text',
+      label: L('Brand name', 'نام برند'),
       admin: {
-        description: 'Brand name next to the logo',
+        description: L('Brand name next to the logo', 'نام برند کنار لوگو'),
       },
     },
     {
       name: 'tagline',
       type: 'text',
+      label: L('Tagline', 'شعار'),
       admin: {
-        description: 'Short slogan under the brand (Columns layout)',
+        description: L(
+          'Short slogan under the brand (Columns layout)',
+          'شعار کوتاه زیر برند (چیدمان ستون‌ها)',
+        ),
       },
     },
     {
       name: 'newsletterHeading',
       type: 'text',
+      label: L('Newsletter heading', 'عنوان خبرنامه'),
       defaultValue: 'Newsletter',
       admin: {
         condition: (_, siblingData) => siblingData?.layout === 'newsletter',
@@ -63,6 +74,7 @@ export const Footer: GlobalConfig = {
     {
       name: 'newsletterPlaceholder',
       type: 'text',
+      label: L('Newsletter placeholder', 'متن راهنمای خبرنامه'),
       defaultValue: 'Enter Your Email',
       admin: {
         condition: (_, siblingData) => siblingData?.layout === 'newsletter',
@@ -72,23 +84,38 @@ export const Footer: GlobalConfig = {
       name: 'newsletterForm',
       type: 'relationship',
       relationTo: 'forms',
+      label: L('Newsletter form', 'فرم خبرنامه'),
       admin: {
-        description: 'Optional form used for newsletter submissions',
+        description: L(
+          'Optional form used for newsletter submissions',
+          'فرم اختیاری برای ارسال‌های خبرنامه',
+        ),
         condition: (_, siblingData) => siblingData?.layout === 'newsletter',
       },
     },
     {
       name: 'linkGroups',
       type: 'array',
+      label: L('Link groups', 'گروه‌های لینک'),
+      labels: {
+        singular: L('Link group', 'گروه لینک'),
+        plural: L('Link groups', 'گروه‌های لینک'),
+      },
       fields: [
         {
           name: 'title',
           type: 'text',
+          label: L('Title', 'عنوان'),
           required: true,
         },
         {
           name: 'links',
           type: 'array',
+          label: L('Links', 'لینک‌ها'),
+          labels: {
+            singular: L('Link', 'لینک'),
+            plural: L('Links', 'لینک‌ها'),
+          },
           fields: [
             link({
               appearances: false,
@@ -103,24 +130,31 @@ export const Footer: GlobalConfig = {
     {
       name: 'socialLinks',
       type: 'array',
+      label: L('Social links', 'لینک‌های شبکه‌های اجتماعی'),
+      labels: {
+        singular: L('Social link', 'لینک اجتماعی'),
+        plural: L('Social links', 'لینک‌های شبکه‌های اجتماعی'),
+      },
       fields: [
         {
           name: 'platform',
           type: 'select',
+          label: L('Platform', 'پلتفرم'),
           required: true,
           options: [
-            { label: 'X', value: 'x' },
-            { label: 'LinkedIn', value: 'linkedin' },
-            { label: 'Facebook', value: 'facebook' },
-            { label: 'Threads', value: 'threads' },
-            { label: 'Instagram', value: 'instagram' },
-            { label: 'TikTok', value: 'tiktok' },
-            { label: 'YouTube', value: 'youtube' },
+            { label: L('X', 'ایکس'), value: 'x' },
+            { label: L('LinkedIn', 'لینکدین'), value: 'linkedin' },
+            { label: L('Facebook', 'فیسبوک'), value: 'facebook' },
+            { label: L('Threads', 'تردز'), value: 'threads' },
+            { label: L('Instagram', 'اینستاگرام'), value: 'instagram' },
+            { label: L('TikTok', 'تیک‌تاک'), value: 'tiktok' },
+            { label: L('YouTube', 'یوتیوب'), value: 'youtube' },
           ],
         },
         {
           name: 'url',
           type: 'text',
+          label: L('URL', 'آدرس'),
           required: true,
         },
       ],
@@ -128,12 +162,17 @@ export const Footer: GlobalConfig = {
     {
       name: 'copyright',
       type: 'text',
+      label: L('Copyright', 'کپی‌رایت'),
       defaultValue: '© 2026 Suno AI, All rights reserved',
     },
     {
       name: 'legalLinks',
       type: 'array',
-      label: 'Legal links',
+      label: L('Legal links', 'لینک‌های حقوقی'),
+      labels: {
+        singular: L('Legal link', 'لینک حقوقی'),
+        plural: L('Legal links', 'لینک‌های حقوقی'),
+      },
       fields: [
         link({
           appearances: false,
@@ -141,7 +180,10 @@ export const Footer: GlobalConfig = {
       ],
       maxRows: 6,
       admin: {
-        description: 'Terms, privacy, etc. (shown in the bottom bar)',
+        description: L(
+          'Terms, privacy, etc. (shown in the bottom bar)',
+          'شرایط، حریم خصوصی و غیره (نمایش در نوار پایین)',
+        ),
         initCollapsed: true,
         components: {
           RowLabel: '@/Footer/RowLabel#RowLabel',
@@ -151,6 +193,11 @@ export const Footer: GlobalConfig = {
     {
       name: 'navItems',
       type: 'array',
+      label: L('Navigation items', 'آیتم‌های ناوبری'),
+      labels: {
+        singular: L('Nav item', 'آیتم ناوبری'),
+        plural: L('Nav items', 'آیتم‌های ناوبری'),
+      },
       fields: [
         link({
           appearances: false,
@@ -158,7 +205,10 @@ export const Footer: GlobalConfig = {
       ],
       maxRows: 6,
       admin: {
-        description: 'Legacy simple nav links (optional)',
+        description: L(
+          'Legacy simple nav links (optional)',
+          'لینک‌های ناوبری ساده قدیمی (اختیاری)',
+        ),
         initCollapsed: true,
         components: {
           RowLabel: '@/Footer/RowLabel#RowLabel',

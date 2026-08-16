@@ -50,7 +50,7 @@ export const AIAssistContentField: UIFieldClientComponent = () => {
   return (
     <div className="ai-assist-bar">
       <Button buttonStyle="secondary" size="small" onClick={() => setOpen(true)} type="button">
-        AI
+        هوش مصنوعی
       </Button>
       <AIAssistDialog
         open={open}
@@ -59,7 +59,7 @@ export const AIAssistContentField: UIFieldClientComponent = () => {
         getInputText={getInputText}
         title={title}
         onApply={onApply}
-        modalTitle="AI assist — content"
+        modalTitle="دستیار هوش مصنوعی — محتوا"
       />
     </div>
   )

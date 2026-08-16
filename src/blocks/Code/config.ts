@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { L } from '@/i18n/label'
+
 export const Code: Block = {
   slug: 'code',
   interfaceName: 'CodeBlock',
@@ -8,17 +10,18 @@ export const Code: Block = {
       name: 'language',
       type: 'select',
       defaultValue: 'typescript',
+      label: L('Language', 'زبان'),
       options: [
         {
-          label: 'Typescript',
+          label: L('Typescript', 'تایپ‌اسکریپت'),
           value: 'typescript',
         },
         {
-          label: 'Javascript',
+          label: L('Javascript', 'جاوااسکریپت'),
           value: 'javascript',
         },
         {
-          label: 'CSS',
+          label: L('CSS', 'سی‌اس‌اس'),
           value: 'css',
         },
       ],
@@ -30,4 +33,8 @@ export const Code: Block = {
       required: true,
     },
   ],
+  labels: {
+    plural: L('Code Blocks', 'بلوک‌های کد'),
+    singular: L('Code', 'کد'),
+  },
 }

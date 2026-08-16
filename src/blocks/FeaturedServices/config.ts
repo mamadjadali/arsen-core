@@ -8,20 +8,21 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { L } from '@/i18n/label'
 
 export const FeaturedServices: Block = {
   slug: 'featuredServices',
   interfaceName: 'FeaturedServicesBlock',
   labels: {
-    singular: 'Featured Services',
-    plural: 'Featured Services',
+    singular: L('Featured Services', 'خدمات ویژه'),
+    plural: L('Featured Services', 'خدمات ویژه'),
   },
   fields: [
     {
       name: 'heading',
       type: 'richText',
       required: true,
-      label: 'Heading',
+      label: L('Heading', 'عنوان'),
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           return [
@@ -36,7 +37,7 @@ export const FeaturedServices: Block = {
     {
       name: 'description',
       type: 'richText',
-      label: 'Description',
+      label: L('Description', 'توضیحات'),
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
@@ -47,7 +48,7 @@ export const FeaturedServices: Block = {
       appearances: false,
       overrides: {
         name: 'cta',
-        label: 'CTA button',
+        label: L('CTA button', 'دکمه فراخوان اقدام'),
       },
     }),
     {
@@ -55,21 +56,24 @@ export const FeaturedServices: Block = {
       type: 'array',
       minRows: 2,
       maxRows: 8,
+      label: L('Services', 'خدمات'),
       labels: {
-        singular: 'Service',
-        plural: 'Services',
+        singular: L('Service', 'خدمت'),
+        plural: L('Services', 'خدمات'),
       },
       fields: [
         {
           name: 'title',
           type: 'text',
           required: true,
+          label: L('Title', 'عنوان'),
         },
         {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
           required: true,
+          label: L('Image', 'تصویر'),
         },
         link({
           appearances: false,

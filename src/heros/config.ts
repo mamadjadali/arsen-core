@@ -8,35 +8,37 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { linkGroup } from '@/fields/linkGroup'
+import { L } from '@/i18n/label'
 
 export const hero: Field = {
   name: 'hero',
   type: 'group',
+  label: L('Hero', 'هیرو'),
   fields: [
     {
       name: 'type',
       type: 'select',
       defaultValue: 'solace',
-      label: 'Type',
+      label: L('Type', 'نوع'),
       options: [
         {
-          label: 'None',
+          label: L('None', 'بدون هیرو'),
           value: 'none',
         },
         {
-          label: 'Solace',
+          label: L('Solace', 'سولس'),
           value: 'solace',
         },
         {
-          label: 'High Impact',
+          label: L('High Impact', 'تأثیر بالا'),
           value: 'highImpact',
         },
         {
-          label: 'Medium Impact',
+          label: L('Medium Impact', 'تأثیر متوسط'),
           value: 'mediumImpact',
         },
         {
-          label: 'Low Impact',
+          label: L('Low Impact', 'تأثیر کم'),
           value: 'lowImpact',
         },
       ],
@@ -45,6 +47,7 @@ export const hero: Field = {
     {
       name: 'announcementBadge',
       type: 'text',
+      label: L('Announcement badge', 'برچسب اعلان'),
       admin: {
         condition: (_, { type } = {}) => type === 'solace',
       },
@@ -52,6 +55,7 @@ export const hero: Field = {
     {
       name: 'announcementText',
       type: 'text',
+      label: L('Announcement text', 'متن اعلان'),
       admin: {
         condition: (_, { type } = {}) => type === 'solace',
       },
@@ -59,14 +63,16 @@ export const hero: Field = {
     {
       name: 'heading',
       type: 'textarea',
+      label: L('Heading', 'عنوان'),
       admin: {
         condition: (_, { type } = {}) => type === 'solace',
-        description: 'Use a new line for a line break',
+        description: L('Use a new line for a line break', 'برای شکستن خط، خط جدید بزنید'),
       },
     },
     {
       name: 'subheading',
       type: 'textarea',
+      label: L('Subheading', 'زیرعنوان'),
       admin: {
         condition: (_, { type } = {}) => type === 'solace',
       },
@@ -98,6 +104,7 @@ export const hero: Field = {
     {
       name: 'media',
       type: 'upload',
+      label: L('Media', 'رسانه'),
       admin: {
         condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
       },
@@ -116,14 +123,14 @@ export const hero: Field = {
       name: 'mediaLayout',
       type: 'select',
       defaultValue: 'phones',
-      label: 'Media Layout',
+      label: L('Media Layout', 'چیدمان رسانه'),
       options: [
         {
-          label: 'Triple Phones',
+          label: L('Triple Phones', 'سه گوشی'),
           value: 'phones',
         },
         {
-          label: 'Single Image',
+          label: L('Single Image', 'تصویر تکی'),
           value: 'image',
         },
       ],
@@ -135,7 +142,7 @@ export const hero: Field = {
       name: 'heroImage',
       type: 'upload',
       relationTo: 'media',
-      label: 'Hero Image',
+      label: L('Hero Image', 'تصویر هیرو'),
       admin: {
         condition: (_, { type, mediaLayout } = {}) =>
           type === 'solace' && mediaLayout === 'image',
@@ -151,13 +158,16 @@ export const hero: Field = {
         {
           name: 'heroImageWidthDesktop',
           type: 'number',
-          label: 'Desktop Width (%)',
+          label: L('Desktop Width (%)', 'عرض دسکتاپ (٪)'),
           defaultValue: 100,
           min: 10,
           max: 100,
           admin: {
             width: '50%',
-            description: 'Image width on desktop (md and up)',
+            description: L(
+              'Image width on desktop (md and up)',
+              'عرض تصویر در دسکتاپ (از md به بالا)',
+            ),
             condition: (_, { type, mediaLayout } = {}) =>
               type === 'solace' && mediaLayout === 'image',
           },
@@ -165,13 +175,13 @@ export const hero: Field = {
         {
           name: 'heroImageWidthMobile',
           type: 'number',
-          label: 'Mobile Width (%)',
+          label: L('Mobile Width (%)', 'عرض موبایل (٪)'),
           defaultValue: 100,
           min: 10,
           max: 100,
           admin: {
             width: '50%',
-            description: 'Image width on mobile',
+            description: L('Image width on mobile', 'عرض تصویر در موبایل'),
             condition: (_, { type, mediaLayout } = {}) =>
               type === 'solace' && mediaLayout === 'image',
           },
@@ -182,6 +192,7 @@ export const hero: Field = {
       name: 'phoneLeft',
       type: 'upload',
       relationTo: 'media',
+      label: L('Phone left', 'گوشی چپ'),
       admin: {
         condition: (_, { type, mediaLayout } = {}) =>
           type === 'solace' && mediaLayout !== 'image',
@@ -191,6 +202,7 @@ export const hero: Field = {
       name: 'phoneCenter',
       type: 'upload',
       relationTo: 'media',
+      label: L('Phone center', 'گوشی وسط'),
       admin: {
         condition: (_, { type, mediaLayout } = {}) =>
           type === 'solace' && mediaLayout !== 'image',
@@ -200,11 +212,11 @@ export const hero: Field = {
       name: 'phoneRight',
       type: 'upload',
       relationTo: 'media',
+      label: L('Phone right', 'گوشی راست'),
       admin: {
         condition: (_, { type, mediaLayout } = {}) =>
           type === 'solace' && mediaLayout !== 'image',
       },
     },
   ],
-  label: false,
 }

@@ -10,12 +10,17 @@ import { fileURLToPath } from 'url'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { L } from '@/i18n/label'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: {
+    singular: L('Media', 'رسانه'),
+    plural: L('Media', 'رسانه'),
+  },
   folders: true,
   access: {
     create: authenticated,
@@ -23,15 +28,20 @@ export const Media: CollectionConfig = {
     read: anyone,
     update: authenticated,
   },
+  admin: {
+    group: L('Content', 'محتوا'),
+  },
   fields: [
     {
       name: 'alt',
       type: 'text',
+      label: L('Alt Text', 'متن جایگزین'),
       //required: true,
     },
     {
       name: 'caption',
       type: 'richText',
+      label: L('Caption', 'توضیح'),
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]

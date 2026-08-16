@@ -11,6 +11,7 @@ import { cn } from '@/utilities/ui'
 
 import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
+import { trackAnalytics } from '@/components/Analytics/AnalyticsTracker'
 
 export type FormBlockType = {
   blockName?: string
@@ -96,6 +97,12 @@ export const FormBlock: React.FC<
 
           setIsLoading(false)
           setHasSubmitted(true)
+
+          trackAnalytics({
+            type: 'event',
+            name: 'form_submit',
+            meta: { formId: formID },
+          })
 
           if (confirmationType === 'redirect' && redirect) {
             const { url } = redirect

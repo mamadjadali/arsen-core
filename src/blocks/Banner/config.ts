@@ -6,6 +6,8 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
+import { L } from '@/i18n/label'
+
 export const Banner: Block = {
   slug: 'banner',
   fields: [
@@ -13,11 +15,12 @@ export const Banner: Block = {
       name: 'style',
       type: 'select',
       defaultValue: 'info',
+      label: L('Style', 'سبک'),
       options: [
-        { label: 'Info', value: 'info' },
-        { label: 'Warning', value: 'warning' },
-        { label: 'Error', value: 'error' },
-        { label: 'Success', value: 'success' },
+        { label: L('Info', 'اطلاعات'), value: 'info' },
+        { label: L('Warning', 'هشدار'), value: 'warning' },
+        { label: L('Error', 'خطا'), value: 'error' },
+        { label: L('Success', 'موفقیت'), value: 'success' },
       ],
       required: true,
     },
@@ -34,4 +37,8 @@ export const Banner: Block = {
     },
   ],
   interfaceName: 'BannerBlock',
+  labels: {
+    plural: L('Banners', 'بنرها'),
+    singular: L('Banner', 'بنر'),
+  },
 }

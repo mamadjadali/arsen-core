@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { L } from '@/i18n/label'
 import { revalidateTheme } from './hooks/revalidateTheme'
 
 const hexColorValidate = (value: unknown) => {
@@ -12,7 +13,7 @@ const hexColorValidate = (value: unknown) => {
 
 export const Theme: GlobalConfig = {
   slug: 'theme',
-  label: 'Theme',
+  label: L('Theme', 'پوسته'),
   access: {
     read: () => true,
   },
@@ -20,85 +21,105 @@ export const Theme: GlobalConfig = {
     {
       name: 'preset',
       type: 'select',
-      label: 'Design preset',
+      label: L('Design preset', 'پیش‌تنظیم طراحی'),
       defaultValue: 'solace',
       required: true,
       options: [
-        { label: 'Solace (square / white)', value: 'solace' },
-        { label: 'Zapier (12px / cream)', value: 'zapier' },
+        { label: L('Solace (square / white)', 'سولس (مربعی / سفید)'), value: 'solace' },
+        { label: L('Zapier (12px / cream)', 'زاپیر (۱۲ پیکسل / کرم)'), value: 'zapier' },
       ],
       admin: {
-        description: 'Base brand system. Color / radius / font fields below override the preset when set.',
+        description: L(
+          'Base brand system. Color / radius / font fields below override the preset when set.',
+          'سیستم پایه برند. فیلدهای رنگ / شعاع / فونت زیر در صورت تنظیم، پیش‌تنظیم را نادیده می‌گیرند.',
+        ),
       },
     },
     {
       name: 'colorScheme',
       type: 'select',
-      label: 'Light / dark',
+      label: L('Light / dark', 'روشن / تیره'),
       options: [
-        { label: 'Light', value: 'light' },
-        { label: 'Dark', value: 'dark' },
+        { label: L('Light', 'روشن'), value: 'light' },
+        { label: L('Dark', 'تیره'), value: 'dark' },
       ],
       admin: {
-        description:
+        description: L(
           'Leave empty to use the preset. Controls site light/dark (not the operating system).',
+          'برای استفاده از پیش‌تنظیم خالی بگذارید. حالت روشن/تیره سایت را کنترل می‌کند (نه سیستم‌عامل).',
+        ),
       },
     },
     {
       name: 'orange',
       type: 'text',
-      label: 'Primary',
+      label: L('Primary', 'اصلی'),
       admin: {
-        description: 'Optional primary override (hex). Leave empty to use the preset primary.',
+        description: L(
+          'Optional primary override (hex). Leave empty to use the preset primary.',
+          'جایگزینی اختیاری رنگ اصلی (هگز). برای استفاده از پیش‌تنظیم خالی بگذارید.',
+        ),
       },
       validate: hexColorValidate,
     },
     {
       name: 'black',
       type: 'text',
-      label: 'Ink',
+      label: L('Ink', 'جوهر'),
       admin: {
-        description: 'Optional ink / dark-text override (hex). Leave empty to use the preset ink.',
+        description: L(
+          'Optional ink / dark-text override (hex). Leave empty to use the preset ink.',
+          'جایگزینی اختیاری جوهر / متن تیره (هگز). برای استفاده از پیش‌تنظیم خالی بگذارید.',
+        ),
       },
       validate: hexColorValidate,
     },
     {
       name: 'canvas',
       type: 'text',
-      label: 'Canvas',
+      label: L('Canvas', 'بوم'),
       admin: {
-        description: 'Optional page background override (hex). Leave empty to use the preset canvas.',
+        description: L(
+          'Optional page background override (hex). Leave empty to use the preset canvas.',
+          'جایگزینی اختیاری پس‌زمینه صفحه (هگز). برای استفاده از پیش‌تنظیم خالی بگذارید.',
+        ),
       },
       validate: hexColorValidate,
     },
     {
       name: 'radiusMd',
       type: 'number',
-      label: 'Corner radius (px)',
+      label: L('Corner radius (px)', 'شعاع گوشه (پیکسل)'),
       min: 0,
       max: 24,
       admin: {
-        description: 'Button/card corner radius in px (0 = Solace square, 12 = Zapier). Leave empty for preset.',
+        description: L(
+          'Button/card corner radius in px (0 = Solace square, 12 = Zapier). Leave empty for preset.',
+          'شعاع گوشه دکمه/کارت به پیکسل (۰ = سولس مربعی، ۱۲ = زاپیر). برای پیش‌تنظیم خالی بگذارید.',
+        ),
         step: 1,
       },
     },
     {
       name: 'font',
       type: 'select',
-      label: 'Font',
+      label: L('Font', 'فونت'),
       defaultValue: 'yekanBakh',
       required: true,
       options: [
-        { label: 'Yekan Bakh', value: 'yekanBakh' },
-        { label: 'Parnian', value: 'parnian' },
-        { label: 'IRANSharp', value: 'iranSharp' },
-        { label: 'Ahang', value: 'ahang' },
-        { label: 'Anjoman Max', value: 'anjoman' },
-        { label: 'Dana', value: 'dana' },
-        { label: 'Farhang 2', value: 'farhang' },
+        { label: L('Yekan Bakh', 'یکان بخ'), value: 'yekanBakh' },
+        { label: L('Parnian', 'پرنیان'), value: 'parnian' },
+        { label: L('IRANSharp', 'ایران‌شارپ'), value: 'iranSharp' },
+        { label: L('Ahang', 'آهنگ'), value: 'ahang' },
+        { label: L('Anjoman Max', 'انجمن مکس'), value: 'anjoman' },
+        { label: L('Dana', 'دانا'), value: 'dana' },
+        { label: L('Farhang 2', 'فرهنگ ۲'), value: 'farhang' },
       ],
       admin: {
-        description: 'Primary site typeface (Persian). Overrides preset font when set.',
+        description: L(
+          'Primary site typeface (Persian). Overrides preset font when set.',
+          'فونت اصلی سایت (فارسی). در صورت تنظیم، فونت پیش‌تنظیم را نادیده می‌گیرد.',
+        ),
       },
     },
   ],

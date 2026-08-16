@@ -15,6 +15,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Pricing } from '../../blocks/Pricing/config'
 import { SolaceCta } from '../../blocks/SolaceCta/config'
 import { hero } from '@/heros/config'
+import { L } from '@/i18n/label'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -30,6 +31,10 @@ import {
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
+  labels: {
+    singular: L('Page', 'صفحه'),
+    plural: L('Pages', 'صفحات'),
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -44,6 +49,7 @@ export const Pages: CollectionConfig<'pages'> = {
     slug: true,
   },
   admin: {
+    group: L('Content', 'محتوا'),
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>
@@ -65,6 +71,7 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'title',
       type: 'text',
+      label: L('Title', 'عنوان'),
       required: true,
     },
     {
@@ -72,13 +79,14 @@ export const Pages: CollectionConfig<'pages'> = {
       tabs: [
         {
           fields: [hero],
-          label: 'Hero',
+          label: L('Hero', 'هیرو'),
         },
         {
           fields: [
             {
               name: 'layout',
               type: 'blocks',
+              label: L('Layout', 'چیدمان'),
               blocks: [
                 CallToAction,
                 Content,
@@ -99,14 +107,15 @@ export const Pages: CollectionConfig<'pages'> = {
               },
             },
           ],
-          label: 'Content',
+          label: L('Content', 'محتوا'),
         },
         {
-          label: 'SEO',
+          label: L('SEO', 'سئو'),
           fields: [
             {
               name: 'aiAssistSeo',
               type: 'ui',
+              label: L('AI SEO Assist', 'دستیار سئو هوش مصنوعی'),
               admin: {
                 components: {
                   Field: '@/components/AI/AIAssistSeoField#AIAssistSeoField',
@@ -144,11 +153,26 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      label: L('Published At', 'تاریخ انتشار'),
       admin: {
         position: 'sidebar',
       },
     },
-    slugField(),
+    slugField({
+      overrides: (field) => {
+        const [checkbox, slug] = field.fields
+        if (checkbox?.type === 'checkbox' && checkbox.admin) {
+          checkbox.admin.description = L(
+            'When enabled, the slug will auto-generate from the title field on save and autosave.',
+            'در صورت فعال بودن، نامک هنگام ذخیره و ذخیرهٔ خودکار از عنوان ساخته می‌شود.',
+          )
+        }
+        if (slug?.type === 'text') {
+          slug.label = L('Slug', 'نامک')
+        }
+        return field
+      },
+    }),
   ],
   hooks: {
     afterChange: [revalidatePage],

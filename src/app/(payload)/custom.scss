@@ -1,0 +1,122 @@
+/* Admin panel: Yekan Bakh + API/JSON LTR under RTL */
+
+@font-face {
+  font-family: 'Yekan Bakh';
+  src: url('/fonts/YekanBakhFaNum-VF.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 100 900;
+}
+
+html,
+body,
+.template-default,
+.nav,
+.app-header,
+.toast,
+.payload__modal-item,
+.drawer,
+.popup,
+.list-controls,
+.doc-controls,
+.table,
+.field-type,
+.btn,
+.input,
+textarea,
+select {
+  --font-body: 'Yekan Bakh', Tahoma, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* Document API tab + code/JSON: keep LTR for URLs and payloads */
+.query-inspector,
+.query-inspector *,
+.code-editor,
+.json-view,
+.render-json,
+.render-json * {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+
+.nav__link-label {
+  font-size: 14px;
+}
+
+.nav__link {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/*
+ * RTL: put vertical scrollbars on the left.
+ * Payload sets dir="RTL" (uppercase). Chromium keeps root scrollbars on the right,
+ * so we scroll .template-default__wrap / .nav__scroll and mirror them.
+ */
+html[dir='rtl'],
+html[dir='RTL'] {
+  height: 100%;
+  overflow: hidden;
+}
+
+html[dir='rtl'] body,
+html[dir='RTL'] body {
+  height: 100%;
+  overflow: hidden;
+}
+
+html[dir='rtl'] .template-default,
+html[dir='RTL'] .template-default {
+  height: 100%;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+html[dir='rtl'] .template-default__wrap,
+html[dir='RTL'] .template-default__wrap {
+  height: 100%;
+  max-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform: scaleX(-1);
+}
+
+html[dir='rtl'] .template-default__wrap > *,
+html[dir='RTL'] .template-default__wrap > * {
+  transform: scaleX(-1);
+}
+
+/* Nav: clip x-overflow from the RTL scrollbar flip */
+html[dir='rtl'] .nav,
+html[dir='RTL'] .nav,
+html[dir='rtl'] .nav__wrap,
+html[dir='RTL'] .nav__wrap {
+  overflow-x: hidden;
+  max-width: 100%;
+  min-width: 0;
+}
+
+html[dir='rtl'] .nav__scroll,
+html[dir='RTL'] .nav__scroll {
+  overflow-x: hidden !important;
+  overflow-y: auto;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  transform: scaleX(-1);
+}
+
+html[dir='rtl'] .nav__scroll > *,
+html[dir='RTL'] .nav__scroll > * {
+  transform: scaleX(-1);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.card {
+  border-radius: 12px;
+}

@@ -8,6 +8,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { linkGroup } from '../../fields/linkGroup'
+import { L } from '@/i18n/label'
 
 export const CallToAction: Block = {
   slug: 'cta',
@@ -36,7 +37,7 @@ export const CallToAction: Block = {
     }),
   ],
   labels: {
-    plural: 'Calls to Action',
-    singular: 'Call to Action',
+    plural: L('Calls to Action', 'فراخوان‌های اقدام'),
+    singular: L('Call to Action', 'فراخوان اقدام'),
   },
 }

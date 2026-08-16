@@ -7,23 +7,79 @@ import {
   AI_SEO_TITLE_PRESET_IDS,
   getPreset,
 } from '@/ai/presets'
+import { L } from '@/i18n/label'
 
 type FieldAccessFn = NonNullable<TextareaField['access']>['read']
+
+const PRESET_FA: Record<string, { label: string; description: string }> = {
+  makeLonger: {
+    label: 'طولانی‌تر کردن',
+    description: 'با جزئیات مفید گسترش دهید و در موضوع بمانید.',
+  },
+  makeShorter: {
+    label: 'کوتاه‌تر کردن',
+    description: 'متن را فشرده کنید؛ تکرار را حذف کنید.',
+  },
+  improveClarity: {
+    label: 'بهبود وضوح',
+    description: 'جملات واضح‌تر و خواندن روان‌تر.',
+  },
+  fixGrammar: {
+    label: 'اصلاح دستور زبان',
+    description: 'اصلاح دستور زبان، املا و نشانه‌گذاری.',
+  },
+  moreProfessional: {
+    label: 'حرفه‌ای‌تر',
+    description: 'لحن بالینی و قابل اعتماد.',
+  },
+  moreCasual: {
+    label: 'صمیمی‌تر',
+    description: 'لحن دوستانه و نزدیک.',
+  },
+  reshapeStructure: {
+    label: 'بازآرایی ساختار',
+    description: 'بهبود عنوان‌ها و جریان بخش‌ها (مارک‌داون مجاز).',
+  },
+  seoTitleOptimize: {
+    label: 'بهینه‌سازی عنوان سئو',
+    description: 'عنوان متای قوی‌تر (حدود ۵۰–۶۰ کاراکتر).',
+  },
+  seoTitleFromContent: {
+    label: 'عنوان از محتوا',
+    description: 'تولید عنوان متا از بدنه / عنوان پست.',
+  },
+  seoDescOptimize: {
+    label: 'بهینه‌سازی توضیحات سئو',
+    description: 'توضیحات متای قوی‌تر (حدود ۱۴۰–۱۶۰ کاراکتر).',
+  },
+  seoDescFromContent: {
+    label: 'توضیحات از محتوا',
+    description: 'تولید توضیحات متا از بدنه پست.',
+  },
+  seoDescShorter: {
+    label: 'کوتاه کردن توضیحات سئو',
+    description: 'کوتاه کردن به یک توضیحات متای مختصر.',
+  },
+}
 
 function instructionFields(ids: string[], access: FieldAccessFn): Field[] {
   return ids.map((id) => {
     const preset = getPreset(id)!
+    const fa = PRESET_FA[id]
     const field: TextareaField = {
       name: id,
       type: 'textarea',
-      label: preset.label,
+      label: L(preset.label, fa?.label ?? preset.label),
       access: {
         read: access,
         update: access,
       },
       admin: {
         rows: 4,
-        description: `${preset.description} Leave empty to use the built-in default instruction.`,
+        description: L(
+          `${preset.description} Leave empty to use the built-in default instruction.`,
+          `${fa?.description ?? preset.description} برای استفاده از دستور پیش‌فرض داخلی خالی بگذارید.`,
+        ),
       },
     }
     return field
@@ -33,17 +89,21 @@ function instructionFields(ids: string[], access: FieldAccessFn): Field[] {
 function enabledFields(ids: string[], access: FieldAccessFn): Field[] {
   return ids.map((id) => {
     const preset = getPreset(id)!
+    const fa = PRESET_FA[id]
     const field: CheckboxField = {
       name: id,
       type: 'checkbox',
-      label: preset.label,
+      label: L(preset.label, fa?.label ?? preset.label),
       defaultValue: true,
       access: {
         read: access,
         update: access,
       },
       admin: {
-        description: 'Show this option in the AI assist dialog.',
+        description: L(
+          'Show this option in the AI assist dialog.',
+          'نمایش این گزینه در دیالوگ کمک هوش مصنوعی.',
+        ),
       },
     }
     return field
@@ -56,39 +116,43 @@ export function buildAiPromptSettingsFields(access: FieldAccessFn): Field[] {
     {
       name: 'aiBaseSystemPrompt',
       type: 'textarea',
-      label: 'Base system prompt',
+      label: L('Base system prompt', 'پرامپت پایه سیستم'),
       access: {
         read: access,
         update: access,
       },
       admin: {
         rows: 5,
-        description:
+        description: L(
           'Shared preface for every AI option. Leave empty to use the built-in Persian clinic assistant default.',
+          'پیش‌گفتار مشترک برای هر گزینه هوش مصنوعی. برای استفاده از پیش‌فرض دستیار کلینیک فارسی داخلی خالی بگذارید.',
+        ),
       },
     },
     {
       name: 'aiPromptInstructions',
       type: 'group',
-      label: 'Option instructions',
+      label: L('Option instructions', 'دستورات گزینه‌ها'),
       admin: {
-        description:
+        description: L(
           'Per-option task instructions appended to the base system prompt. Empty = code default.',
+          'دستورات وظیفه هر گزینه که به پرامپت پایه سیستم اضافه می‌شوند. خالی = پیش‌فرض کد.',
+        ),
       },
       fields: [
         {
           type: 'group',
-          label: 'Content',
+          label: L('Content', 'محتوا'),
           fields: instructionFields(AI_CONTENT_PRESET_IDS, access),
         },
         {
           type: 'group',
-          label: 'SEO title',
+          label: L('SEO title', 'عنوان سئو'),
           fields: instructionFields(AI_SEO_TITLE_PRESET_IDS, access),
         },
         {
           type: 'group',
-          label: 'SEO description',
+          label: L('SEO description', 'توضیحات سئو'),
           fields: instructionFields(AI_SEO_DESC_PRESET_IDS, access),
         },
       ],
@@ -96,24 +160,27 @@ export function buildAiPromptSettingsFields(access: FieldAccessFn): Field[] {
     {
       name: 'aiPresetEnabled',
       type: 'group',
-      label: 'Enabled options',
+      label: L('Enabled options', 'گزینه‌های فعال'),
       admin: {
-        description: 'Turn off an option to hide it from the AI assist dialog.',
+        description: L(
+          'Turn off an option to hide it from the AI assist dialog.',
+          'خاموش کردن یک گزینه آن را از دیالوگ کمک هوش مصنوعی پنهان می‌کند.',
+        ),
       },
       fields: [
         {
           type: 'group',
-          label: 'Content',
+          label: L('Content', 'محتوا'),
           fields: enabledFields(AI_CONTENT_PRESET_IDS, access),
         },
         {
           type: 'group',
-          label: 'SEO title',
+          label: L('SEO title', 'عنوان سئو'),
           fields: enabledFields(AI_SEO_TITLE_PRESET_IDS, access),
         },
         {
           type: 'group',
-          label: 'SEO description',
+          label: L('SEO description', 'توضیحات سئو'),
           fields: enabledFields(AI_SEO_DESC_PRESET_IDS, access),
         },
       ],

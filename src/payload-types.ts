@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    'analytics-events': AnalyticsEvent;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +95,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'analytics-events': AnalyticsEventsSelect<false> | AnalyticsEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1076,6 +1078,46 @@ export interface SolaceCtaBlock {
   blockType: 'solaceCta';
 }
 /**
+ * First-party pageviews and events. Ingested automatically — do not create manually.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-events".
+ */
+export interface AnalyticsEvent {
+  id: string;
+  type: 'pageview' | 'event';
+  /**
+   * Event name when type is event (e.g. form_submit)
+   */
+  name?: string | null;
+  path: string;
+  /**
+   * Document title at time of pageview (optional)
+   */
+  title?: string | null;
+  referrer?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  device?: ('mobile' | 'tablet' | 'desktop') | null;
+  visitorId?: string | null;
+  sessionId?: string | null;
+  /**
+   * Small JSON payload (e.g. formId)
+   */
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -1284,6 +1326,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'analytics-events';
+        value: string | AnalyticsEvent;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1823,6 +1869,26 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-events_select".
+ */
+export interface AnalyticsEventsSelect<T extends boolean = true> {
+  type?: T;
+  name?: T;
+  path?: T;
+  title?: T;
+  referrer?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  device?: T;
+  visitorId?: T;
+  sessionId?: T;
+  meta?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2515,6 +2581,10 @@ export interface Setting {
      */
     seoDescShorter?: boolean | null;
   };
+  /**
+   * When off, the tracker and collect endpoint ignore events. Existing data is kept.
+   */
+  analyticsEnabled?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2720,6 +2790,7 @@ export interface SettingsSelect<T extends boolean = true> {
         seoDescFromContent?: T;
         seoDescShorter?: T;
       };
+  analyticsEnabled?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

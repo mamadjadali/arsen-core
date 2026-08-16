@@ -6,6 +6,7 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
+import { AnalyticsTracker } from '@/components/Analytics/AnalyticsTracker'
 import { CustomScripts } from '@/components/CustomScripts'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
@@ -17,6 +18,7 @@ import { resolveThemeTokens, toCssVars } from '@/themes'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { getServerSideURL } from '@/utilities/getURL'
 import { draftMode } from 'next/headers'
+import { Suspense } from 'react'
 
 import './globals.css'
 
@@ -66,6 +68,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       >
         <Providers>
+          <Suspense fallback={null}>
+            <AnalyticsTracker />
+          </Suspense>
           <AdminBar
             adminBarProps={{
               preview: isEnabled,

@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { L } from '@/i18n/label'
+
 export const Logos: Block = {
   slug: 'logos',
   interfaceName: 'LogosBlock',
@@ -7,12 +9,13 @@ export const Logos: Block = {
     {
       name: 'heading',
       type: 'text',
+      label: L('Heading', 'عنوان'),
       defaultValue: "Trusted By The World's Best Companies",
       required: true,
     },
   ],
   labels: {
-    plural: 'Logo Sections',
-    singular: 'Logos',
+    plural: L('Logo Sections', 'بخش‌های لوگو'),
+    singular: L('Logos', 'لوگوها'),
   },
 }

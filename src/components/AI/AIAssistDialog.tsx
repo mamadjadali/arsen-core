@@ -27,7 +27,7 @@ export const AIAssistDialog: React.FC<AIAssistDialogProps> = ({
   getInputText,
   title,
   onApply,
-  modalTitle = 'AI assist',
+  modalTitle = 'دستیار هوش مصنوعی',
 }) => {
   const [presets, setPresets] = useState<AiPresetMeta[]>(() =>
     AI_PRESET_META.filter((p) => p.targets.includes(target)),
@@ -101,7 +101,7 @@ export const AIAssistDialog: React.FC<AIAssistDialogProps> = ({
 
       setPreview(data)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'AI request failed'
+      const message = err instanceof Error ? err.message : 'درخواست هوش مصنوعی ناموفق بود'
       setError(message)
       toast.error(message)
     } finally {
@@ -112,7 +112,7 @@ export const AIAssistDialog: React.FC<AIAssistDialogProps> = ({
   const apply = useCallback(() => {
     if (!preview) return
     onApply(preview)
-    toast.success('Applied AI result')
+    toast.success('نتیجه هوش مصنوعی اعمال شد')
     onClose()
   }, [onApply, onClose, preview])
 
@@ -124,16 +124,18 @@ export const AIAssistDialog: React.FC<AIAssistDialogProps> = ({
         <div className="ai-assist-dialog__header">
           <h3>{modalTitle}</h3>
           <Button buttonStyle="secondary" size="small" onClick={onClose} disabled={loading}>
-            Close
+            بستن
           </Button>
         </div>
 
-        <p className="ai-assist-dialog__hint">Choose a preset, preview the result, then apply.</p>
+        <p className="ai-assist-dialog__hint">
+          یک پیش‌تنظیم انتخاب کنید، نتیجه را ببینید، سپس اعمال کنید.
+        </p>
 
         {loadingPresets ? (
-          <p className="ai-assist-dialog__hint">Loading options…</p>
+          <p className="ai-assist-dialog__hint">در حال بارگذاری گزینه‌ها…</p>
         ) : presets.length === 0 ? (
-          <p className="ai-assist-error">No AI options enabled for this field.</p>
+          <p className="ai-assist-error">برای این فیلد گزینه‌ای فعال نیست.</p>
         ) : (
           <div className="ai-assist-presets">
             {presets.map((preset) => (
@@ -159,7 +161,7 @@ export const AIAssistDialog: React.FC<AIAssistDialogProps> = ({
 
         {preview ? (
           <div className="ai-assist-preview">
-            <label>Preview</label>
+            <label>پیش‌نمایش</label>
             <textarea readOnly value={preview.text} rows={12} />
           </div>
         ) : null}
@@ -170,10 +172,10 @@ export const AIAssistDialog: React.FC<AIAssistDialogProps> = ({
             onClick={run}
             disabled={loading || loadingPresets || !presetId}
           >
-            {loading ? 'Running…' : 'Run'}
+            {loading ? 'در حال اجرا…' : 'اجرا'}
           </Button>
           <Button buttonStyle="secondary" onClick={apply} disabled={loading || !preview}>
-            Apply
+            اعمال
           </Button>
         </div>
       </div>

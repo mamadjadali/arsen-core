@@ -84,7 +84,8 @@ export const AIAssistSeoField: UIFieldClientComponent = () => {
     return (
       <div className="ai-assist-seo">
         <p className="ai-assist-seo__label">
-          AI assist is off. Enable it under Globals → Settings → AI (API key + model required).
+          دستیار هوش مصنوعی خاموش است. از Globals ← تنظیمات ← هوش مصنوعی آن را فعال کنید (کلید API و
+          مدل لازم است).
         </p>
       </div>
     )
@@ -92,7 +93,7 @@ export const AIAssistSeoField: UIFieldClientComponent = () => {
 
   return (
     <div className="ai-assist-seo">
-      <p className="ai-assist-seo__label">AI assist for SEO meta fields</p>
+      <p className="ai-assist-seo__label">دستیار هوش مصنوعی برای فیلدهای متای سئو</p>
       <div className="ai-assist-seo__row">
         <Button
           buttonStyle="secondary"
@@ -100,7 +101,7 @@ export const AIAssistSeoField: UIFieldClientComponent = () => {
           type="button"
           onClick={() => setOpenTarget('seoTitle')}
         >
-          AI — Title
+          هوش مصنوعی — عنوان
         </Button>
         <Button
           buttonStyle="secondary"
@@ -108,7 +109,7 @@ export const AIAssistSeoField: UIFieldClientComponent = () => {
           type="button"
           onClick={() => setOpenTarget('seoDescription')}
         >
-          AI — Description
+          هوش مصنوعی — توضیحات
         </Button>
       </div>
 
@@ -121,7 +122,9 @@ export const AIAssistSeoField: UIFieldClientComponent = () => {
           title={title}
           onApply={onApply}
           modalTitle={
-            openTarget === 'seoTitle' ? 'AI assist — SEO title' : 'AI assist — SEO description'
+            openTarget === 'seoTitle'
+              ? 'دستیار هوش مصنوعی — عنوان سئو'
+              : 'دستیار هوش مصنوعی — توضیحات سئو'
           }
         />
       ) : null}
