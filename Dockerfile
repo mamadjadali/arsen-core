@@ -16,7 +16,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN corepack enable pnpm && pnpm i --frozen-lockfile
 
 COPY . .
-RUN pnpm run build
+RUN pnpm generate:importmap && pnpm run build
 
 FROM base AS runner
 WORKDIR /app
