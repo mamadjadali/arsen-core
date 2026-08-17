@@ -1,0 +1,7 @@
+# pnpm 11+ reads settings here, not from package.json#pnpm.
+allowBuilds:
+  sharp: true
+  esbuild: true
+  unrs-resolver: true
+legacyPeerDeps: true
+enablePrePostScripts: true

@@ -10,7 +10,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager (pnpm first — this repo)
-COPY package.json pnpm-lock.yaml* yarn.lock* package-lock.json* ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* .npmrc* yarn.lock* package-lock.json* ./
 RUN \
   if [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
   elif [ -f yarn.lock ]; then yarn --frozen-lockfile; \
