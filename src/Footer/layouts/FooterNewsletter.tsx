@@ -31,6 +31,8 @@ export function FooterNewsletter({ data, logoLight }: FooterNewsletterProps) {
                 logoLight={logoLight}
                 brandName={data.brandName}
                 tagline={data.tagline}
+                logoHeightMobile={data.logoHeightMobile}
+                logoHeightDesktop={data.logoHeightDesktop}
                 showTagline={Boolean(data.tagline?.trim())}
                 titleClassName="text-xl"
               />

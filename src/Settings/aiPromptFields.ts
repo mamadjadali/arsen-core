@@ -8,59 +8,9 @@ import {
   getPreset,
 } from '@/ai/presets'
 import { L } from '@/i18n/label'
+import { PRESET_FA } from '@/ai/presetI18n'
 
 type FieldAccessFn = NonNullable<TextareaField['access']>['read']
-
-const PRESET_FA: Record<string, { label: string; description: string }> = {
-  makeLonger: {
-    label: 'طولانی‌تر کردن',
-    description: 'با جزئیات مفید گسترش دهید و در موضوع بمانید.',
-  },
-  makeShorter: {
-    label: 'کوتاه‌تر کردن',
-    description: 'متن را فشرده کنید؛ تکرار را حذف کنید.',
-  },
-  improveClarity: {
-    label: 'بهبود وضوح',
-    description: 'جملات واضح‌تر و خواندن روان‌تر.',
-  },
-  fixGrammar: {
-    label: 'اصلاح دستور زبان',
-    description: 'اصلاح دستور زبان، املا و نشانه‌گذاری.',
-  },
-  moreProfessional: {
-    label: 'حرفه‌ای‌تر',
-    description: 'لحن بالینی و قابل اعتماد.',
-  },
-  moreCasual: {
-    label: 'صمیمی‌تر',
-    description: 'لحن دوستانه و نزدیک.',
-  },
-  reshapeStructure: {
-    label: 'بازآرایی ساختار',
-    description: 'بهبود عنوان‌ها و جریان بخش‌ها (مارک‌داون مجاز).',
-  },
-  seoTitleOptimize: {
-    label: 'بهینه‌سازی عنوان سئو',
-    description: 'عنوان متای قوی‌تر (حدود ۵۰–۶۰ کاراکتر).',
-  },
-  seoTitleFromContent: {
-    label: 'عنوان از محتوا',
-    description: 'تولید عنوان متا از بدنه / عنوان پست.',
-  },
-  seoDescOptimize: {
-    label: 'بهینه‌سازی توضیحات سئو',
-    description: 'توضیحات متای قوی‌تر (حدود ۱۴۰–۱۶۰ کاراکتر).',
-  },
-  seoDescFromContent: {
-    label: 'توضیحات از محتوا',
-    description: 'تولید توضیحات متا از بدنه پست.',
-  },
-  seoDescShorter: {
-    label: 'کوتاه کردن توضیحات سئو',
-    description: 'کوتاه کردن به یک توضیحات متای مختصر.',
-  },
-}
 
 function instructionFields(ids: string[], access: FieldAccessFn): Field[] {
   return ids.map((id) => {

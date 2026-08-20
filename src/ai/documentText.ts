@@ -100,13 +100,14 @@ type FormFieldsLike = Record<string, FormFieldLike>
  * - Pages: flattened `hero` + `layout` blocks
  */
 export function getSeoSourceText(fields: FormFieldsLike): string {
+  const parts: string[] = []
   const content = fields.content?.value
   if (content) {
-    const fromContent = lexicalToPlainText(content)
-    if (fromContent) return fromContent.slice(0, AI_MAX_INPUT_CHARS)
+    const fromLexical = lexicalToPlainText(content)
+    const fromAny = fromLexical || extractAnyPlainText(content)
+    if (fromAny) parts.push(fromAny)
   }
 
-  const parts: string[] = []
   const heroText = extractAnyPlainText(fields.hero?.value)
   const layoutText = extractAnyPlainText(fields.layout?.value)
   if (heroText) parts.push(heroText)

@@ -61,6 +61,22 @@ export const adminUi = {
   loading: L('Loading…', 'در حال بارگذاری…'),
   preview: L('Preview', 'پیش‌نمایش'),
   preset: L('Preset', 'پیش‌تنظیم'),
+  aiHint: L(
+    'Choose an option, preview the result, then apply.',
+    'یک پیش‌تنظیم انتخاب کنید، نتیجه را ببینید، سپس اعمال کنید.',
+  ),
+  aiLoadingPresets: L('Loading options…', 'در حال بارگذاری گزینه‌ها…'),
+  aiNoPresets: L('No options are enabled for this field.', 'برای این فیلد گزینه‌ای فعال نیست.'),
+  aiRunning: L('Running…', 'در حال اجرا…'),
+  aiApplied: L('AI result applied', 'نتیجه هوش مصنوعی اعمال شد'),
+  aiFailed: L('AI request failed', 'درخواست هوش مصنوعی ناموفق بود'),
+  aiNeedText: L(
+    'Add some content or a title first.',
+    'ابتدا کمی محتوا یا عنوان وارد کنید.',
+  ),
+  aiContentTitle: L('AI assist — content', 'دستیار هوش مصنوعی — محتوا'),
+  aiSeoTitleModal: L('AI assist — SEO title', 'دستیار هوش مصنوعی — عنوان سئو'),
+  aiSeoDescModal: L('AI assist — SEO description', 'دستیار هوش مصنوعی — توضیحات سئو'),
 } as const
 
 /** KPI delta pill text, localized (Persian digits + phrasing). */

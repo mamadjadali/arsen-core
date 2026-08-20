@@ -2172,6 +2172,14 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Header {
   id: string;
   logo?: (string | null) | Media;
+  /**
+   * Height in pixels. Width follows the image aspect ratio.
+   */
+  logoHeightMobile?: number | null;
+  /**
+   * From the md breakpoint. Height in pixels; width follows aspect ratio.
+   */
+  logoHeightDesktop?: number | null;
   brandName?: string | null;
   navItems?:
     | {
@@ -2240,6 +2248,14 @@ export interface Footer {
    * Footer logo (independent from Header)
    */
   logo?: (string | null) | Media;
+  /**
+   * Height in pixels. Width follows the image aspect ratio.
+   */
+  logoHeightMobile?: number | null;
+  /**
+   * From the md breakpoint. Height in pixels; width follows aspect ratio.
+   */
+  logoHeightDesktop?: number | null;
   /**
    * Brand name next to the logo
    */
@@ -2424,6 +2440,10 @@ export interface Script {
 export interface Setting {
   id: string;
   /**
+   * Default document title, Open Graph site name, and suffix after "|" on page/post titles.
+   */
+  siteName?: string | null;
+  /**
    * Site wordmark for light backgrounds. Used when Header/Footer logo is empty.
    */
   logoLight?: (string | null) | Media;
@@ -2594,6 +2614,8 @@ export interface Setting {
  */
 export interface HeaderSelect<T extends boolean = true> {
   logo?: T;
+  logoHeightMobile?: T;
+  logoHeightDesktop?: T;
   brandName?: T;
   navItems?:
     | T
@@ -2638,6 +2660,8 @@ export interface HeaderSelect<T extends boolean = true> {
 export interface FooterSelect<T extends boolean = true> {
   layout?: T;
   logo?: T;
+  logoHeightMobile?: T;
+  logoHeightDesktop?: T;
   brandName?: T;
   tagline?: T;
   newsletterHeading?: T;
@@ -2745,6 +2769,7 @@ export interface ScriptsSelect<T extends boolean = true> {
  * via the `definition` "settings_select".
  */
 export interface SettingsSelect<T extends boolean = true> {
+  siteName?: T;
   logoLight?: T;
   faviconIco?: T;
   faviconSvg?: T;

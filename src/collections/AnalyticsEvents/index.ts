@@ -33,7 +33,6 @@ export const AnalyticsEvents: CollectionConfig = {
     update: () => false,
   },
   indexes: [
-    { fields: ['createdAt'] },
     { fields: ['type', 'createdAt'] },
     { fields: ['path', 'createdAt'] },
   ],

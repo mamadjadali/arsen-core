@@ -94,8 +94,11 @@ export const aiTransformEndpoint: Endpoint = {
 
     if (!text.trim()) {
       const allowsEmpty =
-        (presetId === 'seoTitleOptimize' && Boolean(title?.trim())) ||
-        (presetId === 'seoDescOptimize' && Boolean(title?.trim()))
+        (presetId === 'seoTitleOptimize' ||
+          presetId === 'seoDescOptimize' ||
+          presetId === 'seoTitleFromContent' ||
+          presetId === 'seoDescFromContent') &&
+        Boolean(title?.trim())
       if (!allowsEmpty) {
         return Response.json({ error: 'Text is required for this preset' }, { status: 400 })
       }

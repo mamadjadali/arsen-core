@@ -7,6 +7,7 @@ import React from 'react'
 import type { Header, Media } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
+import { logoIntrinsicSize, logoSizeClassName, logoSizeStyle } from '@/utilities/logoSize'
 import { resolveFirstMedia, resolveMediaUrl } from '@/utilities/resolveMedia'
 
 interface HeaderClientProps {
@@ -21,14 +22,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, logoLight }) =
   const brandName = data?.brandName || 'SunoAI'
 
   return (
-    <header className="relative z-30 flex w-full items-center justify-between border-b border-black/10 px-4 py-6 md:px-8">
+    <header className="relative z-30 flex w-full items-center justify-between border-b border-black/10 bg-[var(--color-canvas)] px-4 py-6 md:px-8">
       <Link href="/" className="flex items-center gap-2">
         <Image
           src={logoUrl}
           alt={logo?.alt || brandName}
-          width={28}
-          height={28}
-          className="h-7 w-7"
+          {...logoIntrinsicSize(data?.logoHeightDesktop)}
+          className={logoSizeClassName}
+          style={logoSizeStyle(data?.logoHeightMobile, data?.logoHeightDesktop)}
           unoptimized={logoUrl.startsWith('/suno-logo')}
         />
         <span className="text-xl font-bold tracking-tight text-black">{brandName}</span>

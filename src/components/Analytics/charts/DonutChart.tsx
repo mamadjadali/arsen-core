@@ -31,7 +31,13 @@ export function DonutChart({
   return (
     <div className={className}>
       <div className="analytics-donut">
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
+        <svg
+          className="analytics-donut__svg"
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          aria-hidden
+        >
           <circle
             cx={size / 2}
             cy={size / 2}

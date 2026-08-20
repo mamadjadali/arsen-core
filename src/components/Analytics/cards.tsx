@@ -2,10 +2,10 @@ import React from 'react'
 
 import { formatDeltaPill, isFa } from '@/i18n/adminUi'
 
-import { AreaChart } from './charts/AreaChart'
 import { percentDelta } from './charts/chartMath'
 import { DonutChart } from './charts/DonutChart'
 import { Sparkline } from './charts/Sparkline'
+import { TrafficAreaChart, type TrafficPoint } from './charts/TrafficAreaChart'
 import './analytics.scss'
 
 export type KpiAccent = 'views' | 'uniques' | 'forms' | 'neutral'
@@ -168,21 +168,19 @@ export function DeviceBreakdownCard(props: SegmentCardProps) {
 type TrafficCardProps = {
   title?: string
   rangeLabel?: string
-  values: number[]
-  secondaryValues?: number[]
-  labels?: string[]
+  data: TrafficPoint[]
   pageviewsLabel?: string
   uniquesLabel?: string
+  lang?: string
 }
 
 export function TrafficCard({
   title = 'Traffic over time',
   rangeLabel,
-  values,
-  secondaryValues,
-  labels,
+  data,
   pageviewsLabel = 'Pageviews',
   uniquesLabel = 'Uniques',
+  lang,
 }: TrafficCardProps) {
   return (
     <div className="analytics-card analytics-traffic">
@@ -190,24 +188,12 @@ export function TrafficCard({
         <h3 className="analytics-card__title">{title}</h3>
         {rangeLabel ? <span className="analytics-traffic__range">{rangeLabel}</span> : null}
       </div>
-      <AreaChart
-        values={values}
-        secondaryValues={secondaryValues}
-        labels={labels}
-        className="analytics-traffic__chart"
+      <TrafficAreaChart
+        data={data}
+        pageviewsLabel={pageviewsLabel}
+        uniquesLabel={uniquesLabel}
+        lang={lang}
       />
-      <div className="analytics-traffic__legend">
-        <span className="analytics-traffic__legend-item">
-          <span className="analytics-traffic__swatch" />
-          {pageviewsLabel}
-        </span>
-        {secondaryValues ? (
-          <span className="analytics-traffic__legend-item">
-            <span className="analytics-traffic__swatch analytics-traffic__swatch--dashed" />
-            {uniquesLabel}
-          </span>
-        ) : null}
-      </div>
     </div>
   )
 }

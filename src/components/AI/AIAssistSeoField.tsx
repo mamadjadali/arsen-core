@@ -121,11 +121,6 @@ export const AIAssistSeoField: UIFieldClientComponent = () => {
           getInputText={getInputText}
           title={title}
           onApply={onApply}
-          modalTitle={
-            openTarget === 'seoTitle'
-              ? 'دستیار هوش مصنوعی — عنوان سئو'
-              : 'دستیار هوش مصنوعی — توضیحات سئو'
-          }
         />
       ) : null}
     </div>

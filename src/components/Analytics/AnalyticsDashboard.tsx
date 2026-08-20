@@ -15,11 +15,6 @@ function parseRange(value: string | string[] | undefined): AnalyticsRange {
   return '7d'
 }
 
-function shortDate(iso: string): string {
-  const [, m, d] = iso.split('-')
-  return m && d ? `${m}/${d}` : iso
-}
-
 function deviceLabel(key: string, lang: string | undefined): string {
   const k = key.toLowerCase()
   if (k === 'mobile') return tLabel(lang, adminUi.mobile)
@@ -56,7 +51,6 @@ export async function AnalyticsDashboard(props: ListViewServerProps) {
 
   const spark = summary.timeseries.map((p) => p.pageviews)
   const uniqueSpark = summary.timeseries.map((p) => p.uniques)
-  const labels = summary.timeseries.map((p) => shortDate(p.date))
   const devices = summary.devices.map((d) => ({
     key: deviceLabel(d.key, lang),
     count: d.count,
@@ -125,12 +119,11 @@ export async function AnalyticsDashboard(props: ListViewServerProps) {
       <div className="analytics-grid--charts">
         <TrafficCard
           title={tLabel(lang, adminUi.trafficOverTime)}
-          values={spark}
-          secondaryValues={uniqueSpark}
-          labels={labels}
+          data={summary.timeseries}
           rangeLabel={rangeLabel}
           pageviewsLabel={tLabel(lang, adminUi.pageviewsLegend)}
           uniquesLabel={tLabel(lang, adminUi.uniquesLegend)}
+          lang={lang}
         />
         <SegmentCard
           title={tLabel(lang, adminUi.devices)}

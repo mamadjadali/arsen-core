@@ -13,10 +13,13 @@ import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { L } from '@/i18n/label'
 
 import { Page, Post } from '@/payload-types'
+import { formatDocumentTitle } from '@/utilities/siteName'
 import { getServerSideURL } from '@/utilities/getURL'
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+const generateTitle: GenerateTitle<Post | Page> = async ({ doc, req }) => {
+  const settings = await req.payload.findGlobal({ slug: 'settings' })
+  const siteName = settings?.siteName?.trim() || undefined
+  return formatDocumentTitle(doc?.title, siteName) || doc?.title || ''
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {

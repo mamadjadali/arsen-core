@@ -23,8 +23,6 @@ export function Sparkline({ values, width = 100, height = 40, className }: Props
   return (
     <svg
       className={className}
-      width={width}
-      height={height}
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
       aria-hidden

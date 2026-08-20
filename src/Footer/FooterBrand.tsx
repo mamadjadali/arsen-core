@@ -3,6 +3,7 @@ import React from 'react'
 
 import type { Footer, Media } from '@/payload-types'
 
+import { logoIntrinsicSize, logoSizeClassName, logoSizeStyle } from '@/utilities/logoSize'
 import { resolveFirstMedia, resolveMediaUrl } from '@/utilities/resolveMedia'
 import { cn } from '@/utilities/ui'
 
@@ -11,6 +12,8 @@ type FooterBrandProps = {
   logoLight?: Media | string | number | null
   brandName?: Footer['brandName']
   tagline?: Footer['tagline']
+  logoHeightMobile?: Footer['logoHeightMobile']
+  logoHeightDesktop?: Footer['logoHeightDesktop']
   className?: string
   titleClassName?: string
   taglineClassName?: string
@@ -22,6 +25,8 @@ export function FooterBrand({
   logoLight,
   brandName,
   tagline,
+  logoHeightMobile,
+  logoHeightDesktop,
   className,
   titleClassName,
   taglineClassName,
@@ -41,9 +46,9 @@ export function FooterBrand({
             <Image
               src={logoUrl}
               alt={logo?.alt || name || 'Logo'}
-              width={28}
-              height={28}
-              className="h-7 w-7"
+              {...logoIntrinsicSize(logoHeightDesktop)}
+              className={logoSizeClassName}
+              style={logoSizeStyle(logoHeightMobile, logoHeightDesktop)}
               unoptimized={logoUrl.startsWith('/suno-logo')}
             />
           )}

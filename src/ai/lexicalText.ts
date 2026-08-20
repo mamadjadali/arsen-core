@@ -24,6 +24,10 @@ function walkText(node: LexicalNode | undefined, parts: string[]): void {
     return
   }
 
+  if (node.fields && typeof node.fields === 'object') {
+    walkUnknown(node.fields, parts)
+  }
+
   if (Array.isArray(node.children)) {
     const blockTypes = new Set([
       'paragraph',
@@ -39,6 +43,28 @@ function walkText(node: LexicalNode | undefined, parts: string[]): void {
     if (node.type && blockTypes.has(node.type)) {
       parts.push('\n\n')
     }
+  }
+}
+
+function walkUnknown(value: unknown, parts: string[]): void {
+  if (value == null) return
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    if (trimmed) parts.push(trimmed)
+    return
+  }
+  if (typeof value !== 'object') return
+  const maybeRoot = (value as LexicalState).root
+  if (maybeRoot && typeof maybeRoot === 'object' && Array.isArray(maybeRoot.children)) {
+    walkText(maybeRoot, parts)
+    return
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) walkUnknown(item, parts)
+    return
+  }
+  for (const child of Object.values(value as Record<string, unknown>)) {
+    walkUnknown(child, parts)
   }
 }
 

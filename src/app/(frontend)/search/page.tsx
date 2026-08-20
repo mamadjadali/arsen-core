@@ -7,6 +7,7 @@ import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
+import { formatDocumentTitle, getSiteName } from '@/utilities/siteName'
 
 type Args = {
   searchParams: Promise<{
@@ -81,8 +82,9 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   )
 }
 
-export function generateMetadata(): Metadata {
-  return {
-    title: `Payload Website Template Search`,
-  }
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName()
+  const title = formatDocumentTitle('Search', siteName)
+
+  return { title }
 }

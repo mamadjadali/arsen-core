@@ -8,6 +8,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
+import { formatDocumentTitle, getSiteName } from '@/utilities/siteName'
 
 export const revalidate = 600
 
@@ -64,9 +65,10 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
-  return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
-  }
+  const siteName = await getSiteName()
+  const title = formatDocumentTitle(`Posts Page ${pageNumber || ''}`.trim(), siteName)
+
+  return { title }
 }
 
 export async function generateStaticParams() {

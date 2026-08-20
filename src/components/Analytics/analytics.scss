@@ -15,6 +15,11 @@
   flex-direction: column;
   gap: 1.1rem;
   margin-bottom: 1.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .analytics-dashboard__header {
@@ -69,40 +74,47 @@
 
 .analytics-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 0.85rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .analytics-grid--charts {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 0.85rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .analytics-grid--lists {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.85rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
-@media (max-width: 1100px) {
-  .analytics-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .analytics-grid--charts {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .analytics-grid,
+@media (max-width: 900px) {
+  .analytics-grid--charts,
   .analytics-grid--lists {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .analytics-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
   padding: 1.1rem 1.2rem;
   border: 1px solid var(--theme-elevation-150);
   border-radius: 14px;
@@ -121,6 +133,7 @@
 .analytics-kpi {
   --analytics-accent: var(--analytics-views);
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.75rem;
@@ -161,10 +174,14 @@
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .analytics-kpi__pill {
   display: inline-flex;
+  max-width: 100%;
   align-items: center;
   margin-top: 0.55rem;
   padding: 0.2rem 0.55rem;
@@ -174,6 +191,8 @@
   background: var(--theme-elevation-100);
   color: var(--theme-elevation-700);
   unicode-bidi: isolate;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -197,8 +216,9 @@
 }
 
 .analytics-kpi__spark {
-  flex-shrink: 0;
-  width: 100px;
+  flex-shrink: 1;
+  width: min(100px, 100%);
+  max-width: 100px;
   height: 40px;
   color: var(--analytics-accent);
 }
@@ -246,12 +266,18 @@
 }
 
 /* Traffic */
+.analytics-traffic {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .analytics-traffic__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.35rem;
 }
 
 .analytics-traffic__head .analytics-card__title {
@@ -263,65 +289,88 @@
   color: var(--theme-elevation-600);
 }
 
-.analytics-area-svg {
-  display: block;
+.analytics-traffic__chart,
+.analytics-chart {
+  box-sizing: border-box;
   width: 100%;
-  height: 200px;
+  min-width: 0;
+  height: 220px;
 }
 
-.analytics-area__primary {
-  stroke: var(--analytics-views);
+.analytics-chart .recharts-responsive-container {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-.analytics-area__secondary {
-  stroke: var(--analytics-uniques);
+.analytics-chart-tooltip {
+  min-width: 8rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 8px;
+  background: var(--theme-elevation-0);
+  color: var(--theme-elevation-1000);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-elevation-1000) 12%, transparent);
+  font-size: 0.75rem;
 }
 
-.analytics-area__dot {
-  fill: var(--analytics-views);
-  stroke: var(--theme-elevation-0);
-  stroke-width: 2;
+.analytics-chart-tooltip__label {
+  margin-bottom: 0.35rem;
+  color: var(--theme-elevation-600);
 }
 
-.analytics-area-axis {
+.analytics-chart-tooltip__rows {
   display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-top: 0.45rem;
-  font-size: 0.7rem;
-  color: var(--theme-elevation-500);
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.analytics-traffic__legend {
+.analytics-chart-tooltip__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.analytics-chart-tooltip__swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.analytics-chart-tooltip__name {
+  flex: 1;
+}
+
+.analytics-chart-tooltip__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.analytics-chart-legend {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.85rem;
-  margin-top: 0.65rem;
+  padding-top: 0.35rem;
   font-size: 0.78rem;
   color: var(--theme-elevation-700);
 }
 
-.analytics-traffic__legend-item {
+.analytics-chart-legend.is-top {
+  padding-top: 0;
+  padding-bottom: 0.35rem;
+}
+
+.analytics-chart-legend__item {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
 }
 
-.analytics-traffic__swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  background: var(--analytics-views);
-}
-
-.analytics-traffic__swatch--uniques {
-  background: var(--analytics-uniques);
-}
-
-.analytics-traffic__swatch--dashed {
-  height: 3px;
+.analytics-chart-legend__item:nth-child(2) .analytics-chart-legend__swatch {
   width: 14px;
+  height: 3px;
   border-radius: 1px;
   background: repeating-linear-gradient(
     90deg,
@@ -336,6 +385,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem 1.25rem;
+  min-width: 0;
+}
+
+.analytics-donut__svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .analytics-donut__legend {
@@ -346,7 +402,7 @@
   flex-direction: column;
   gap: 0.55rem;
   flex: 1;
-  min-width: 120px;
+  min-width: 0;
 }
 
 .analytics-donut__legend li {
@@ -395,6 +451,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.analytics-toplist__row {
+  min-width: 0;
 }
 
 .analytics-toplist__meta {
@@ -481,7 +541,6 @@
 [dir='rtl'] .analytics-kpi,
 [dir='rtl'] .analytics-donut,
 [dir='rtl'] .analytics-toplist__meta,
-[dir='rtl'] .analytics-traffic__head,
-[dir='rtl'] .analytics-area-axis {
+[dir='rtl'] .analytics-traffic__head {
   direction: rtl;
 }

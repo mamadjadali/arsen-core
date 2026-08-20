@@ -18,6 +18,41 @@ export const Header: GlobalConfig = {
       label: L('Logo', 'لوگو'),
     },
     {
+      type: 'row',
+      fields: [
+        {
+          name: 'logoHeightMobile',
+          type: 'number',
+          min: 16,
+          max: 160,
+          defaultValue: 40,
+          label: L('Logo height (mobile)', 'ارتفاع لوگو (موبایل)'),
+          admin: {
+            description: L(
+              'Height in pixels. Width follows the image aspect ratio.',
+              'ارتفاع به پیکسل. عرض متناسب با نسبت تصویر تنظیم می‌شود.',
+            ),
+            width: '50%',
+          },
+        },
+        {
+          name: 'logoHeightDesktop',
+          type: 'number',
+          min: 16,
+          max: 160,
+          defaultValue: 56,
+          label: L('Logo height (desktop)', 'ارتفاع لوگو (دسکتاپ)'),
+          admin: {
+            description: L(
+              'From the md breakpoint. Height in pixels; width follows aspect ratio.',
+              'از نقطه شکست md. ارتفاع به پیکسل؛ عرض متناسب با نسبت تصویر.',
+            ),
+            width: '50%',
+          },
+        },
+      ],
+    },
+    {
       name: 'brandName',
       type: 'text',
       label: L('Brand name', 'نام برند'),

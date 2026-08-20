@@ -57,9 +57,8 @@ export const AIAssistContentField: UIFieldClientComponent = () => {
         onClose={() => setOpen(false)}
         target="content"
         getInputText={getInputText}
-        title={title}
-        onApply={onApply}
-        modalTitle="دستیار هوش مصنوعی — محتوا"
+          title={title}
+          onApply={onApply}
       />
     </div>
   )

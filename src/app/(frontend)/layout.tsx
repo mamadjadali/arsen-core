@@ -14,6 +14,7 @@ import { defaultAppFont, fontOptions, isAppFont } from '@/fonts'
 import { Providers } from '@/providers'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { resolveMediaUrl } from '@/utilities/resolveMedia'
+import { getSiteName } from '@/utilities/siteName'
 import { resolveThemeTokens, toCssVars } from '@/themes'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -91,11 +92,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   )
 }
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
-  twitter: {
-    card: 'summary_large_image',
-    creator: '@payloadcms',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName()
+
+  return {
+    metadataBase: new URL(getServerSideURL()),
+    title: siteName,
+    openGraph: mergeOpenGraph(undefined, siteName),
+    twitter: {
+      card: 'summary_large_image',
+      creator: '@payloadcms',
+    },
+  }
 }

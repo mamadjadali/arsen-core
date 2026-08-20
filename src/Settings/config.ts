@@ -30,6 +30,17 @@ export const Settings: GlobalConfig = {
               label: L('Site', 'سایت'),
               fields: [
                 {
+                  name: 'siteName',
+                  type: 'text',
+                  label: L('Site name', 'نام سایت'),
+                  admin: {
+                    description: L(
+                      'Default document title, Open Graph site name, and suffix after "|" on page/post titles.',
+                      'عنوان پیش‌فرض سند، نام سایت Open Graph و پسوند بعد از «|» در عنوان صفحات/پست‌ها.',
+                    ),
+                  },
+                },
+                {
                   name: 'logoLight',
                   type: 'upload',
                   relationTo: 'media',

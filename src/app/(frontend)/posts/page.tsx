@@ -7,6 +7,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import { formatDocumentTitle, getSiteName } from '@/utilities/siteName'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -56,8 +57,9 @@ export default async function Page() {
   )
 }
 
-export function generateMetadata(): Metadata {
-  return {
-    title: `Payload Website Template Posts`,
-  }
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName()
+  const title = formatDocumentTitle('Posts', siteName)
+
+  return { title }
 }

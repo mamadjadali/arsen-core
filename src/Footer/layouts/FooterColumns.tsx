@@ -26,6 +26,8 @@ export function FooterColumns({ data, logoLight }: FooterColumnsProps) {
               logoLight={logoLight}
               brandName={data.brandName}
               tagline={data.tagline}
+              logoHeightMobile={data.logoHeightMobile}
+              logoHeightDesktop={data.logoHeightDesktop}
               titleClassName="text-lg"
             />
             <FooterSocial socialLinks={socialLinks} />
