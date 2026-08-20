@@ -3,5 +3,8 @@ allowBuilds:
   sharp: true
   esbuild: true
   unrs-resolver: true
+# pnpm 11 enforces minimumReleaseAge (24h) on frozen lockfile installs in CI/Docker.
+# Disable so recently published transitive deps (e.g. immer via recharts) do not fail deploys.
+minimumReleaseAge: 0
 legacyPeerDeps: true
 enablePrePostScripts: true

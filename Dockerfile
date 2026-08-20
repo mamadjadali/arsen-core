@@ -13,7 +13,7 @@ ENV NODE_OPTIONS="--no-deprecation --max-old-space-size=2048"
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+RUN corepack enable pnpm && corepack prepare pnpm@10.34.5 --activate && pnpm i --frozen-lockfile
 
 COPY . .
 RUN pnpm generate:importmap && pnpm run build
