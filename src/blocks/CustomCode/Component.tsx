@@ -3,7 +3,11 @@ import React from 'react'
 import type { CustomCodeBlock as CustomCodeBlockProps } from '@/payload-types'
 import { hasHtmlContent, sanitizeCustomCss, sanitizeCustomHtml } from '@/utilities/customCode'
 
-export const CustomCodeBlock: React.FC<CustomCodeBlockProps> = ({ css, html }) => {
+export const CustomCodeBlock: React.FC<CustomCodeBlockProps> = ({
+  breakoutLayout,
+  css,
+  html,
+}) => {
   const cssTrimmed = typeof css === 'string' ? css.trim() : ''
   const showHtml = hasHtmlContent(html)
 
@@ -16,7 +20,9 @@ export const CustomCodeBlock: React.FC<CustomCodeBlockProps> = ({ css, html }) =
       ) : null}
       {showHtml ? (
         <div
-          className="custom-code-block"
+          className={
+            breakoutLayout ? 'custom-code-block custom-code-breakout' : 'custom-code-block'
+          }
           dangerouslySetInnerHTML={{ __html: sanitizeCustomHtml(html || '') }}
         />
       ) : null}

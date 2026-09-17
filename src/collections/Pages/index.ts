@@ -13,6 +13,7 @@ import { FormBlock } from '../../blocks/Form/config'
 import { Logos } from '../../blocks/Logos/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Pricing } from '../../blocks/Pricing/config'
+import { ProductCarousel } from '../../blocks/ProductCarousel/config'
 import { SolaceCta } from '../../blocks/SolaceCta/config'
 import { hero } from '@/heros/config'
 import { L } from '@/i18n/label'
@@ -99,6 +100,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Features,
                 FeaturedServices,
                 Pricing,
+                ProductCarousel,
                 SolaceCta,
               ],
               required: true,

@@ -22,6 +22,18 @@ export const CustomCode: Block = {
       },
     },
     {
+      name: 'breakoutLayout',
+      type: 'checkbox',
+      label: L('Break out of site layout', 'خروج از چارچوب سایت'),
+      defaultValue: false,
+      admin: {
+        description: L(
+          'When on, HTML spans the full viewport and paints over the site frame (1400px max-width and side borders). Leave off for normal framed content.',
+          'در صورت فعال بودن، HTML تمام عرض ویوپورت را می‌گیرد و روی چارچوب سایت (حداکثر عرض ۱۴۰۰ پیکسل و حاشیهٔ کناری) قرار می‌گیرد. برای محتوای معمولی داخل قاب خاموش بگذارید.',
+        ),
+      },
+    },
+    {
       name: 'html',
       type: 'textarea',
       label: L('HTML', 'HTML'),

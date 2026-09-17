@@ -84,6 +84,14 @@
       max-width: var(--breakpoint-2xl);
     }
   }
+
+  /* Escape the site shell (max-w-[1400px] + border-x) to full viewport */
+  .custom-code-breakout {
+    position: relative;
+    z-index: 20;
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
 }
 
 :root {

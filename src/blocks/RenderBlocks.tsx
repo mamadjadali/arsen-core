@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 
-import type { Page } from '@/payload-types'
+import type { Page, Product } from '@/payload-types'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
@@ -13,6 +13,7 @@ import { FormBlock } from '@/blocks/Form/Component'
 import { LogosBlock } from '@/blocks/Logos/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { PricingBlock } from '@/blocks/Pricing/Component'
+import { ProductCarouselBlock } from '@/blocks/ProductCarousel/Component'
 import { SolaceCtaBlock } from '@/blocks/SolaceCta/Component'
 
 const blockComponents = {
@@ -27,6 +28,7 @@ const blockComponents = {
   logos: LogosBlock,
   mediaBlock: MediaBlock,
   pricing: PricingBlock,
+  productCarousel: ProductCarouselBlock,
   solaceCta: SolaceCtaBlock,
 }
 
@@ -39,10 +41,13 @@ const noAutoMarginBlocks = new Set([
   'pricing',
   'solaceCta',
   'customCode',
+  'productCarousel',
 ])
 
+type LayoutBlock = NonNullable<Page['layout']>[number] | NonNullable<Product['layout']>[number]
+
 export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][]
+  blocks: LayoutBlock[] | null | undefined
 }> = (props) => {
   const { blocks } = props
 
@@ -55,13 +60,13 @@ export const RenderBlocks: React.FC<{
           const { blockType } = block
 
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+            const Block = blockComponents[blockType as keyof typeof blockComponents]
 
             if (Block) {
               const skipMargin = noAutoMarginBlocks.has(blockType)
               return (
                 <div className={skipMargin ? undefined : 'my-16'} key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
+                  {/* @ts-expect-error block props vary by blockType */}
                   <Block {...block} disableInnerContainer />
                 </div>
               )

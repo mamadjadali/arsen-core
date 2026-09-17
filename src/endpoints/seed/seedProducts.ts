@@ -1,0 +1,653 @@
+/**
+ * Seed sample catalog data for PLP/PDP testing.
+ * Does not wipe pages/posts — only upserts brands, product-categories, products, variants.
+ *
+ * Run: npx tsx src/endpoints/seed/run-seed-products.ts
+ */
+import type { Payload, PayloadRequest } from 'payload'
+
+function richText(text: string) {
+  return {
+    root: {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              detail: 0,
+              format: 0,
+              mode: 'normal',
+              style: '',
+              text,
+              version: 1,
+            },
+          ],
+          direction: 'rtl' as const,
+          format: '' as const,
+          indent: 0,
+          textFormat: 0,
+          version: 1,
+        },
+      ],
+      direction: 'rtl' as const,
+      format: '' as const,
+      indent: 0,
+      version: 1,
+    },
+  }
+}
+
+type CatalogCollection = 'brands' | 'product-categories' | 'products'
+
+async function upsertBySlug({
+  payload,
+  req,
+  collection,
+  slug,
+  data,
+}: {
+  payload: Payload
+  req: PayloadRequest
+  collection: CatalogCollection
+  slug: string
+  data: Record<string, unknown>
+}) {
+  const existing = await payload.find({
+    collection,
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  const shared = {
+    req,
+    overrideAccess: true as const,
+    context: { disableRevalidate: true },
+  }
+
+  if (existing.docs[0]) {
+    const id = existing.docs[0].id
+    // Narrow collection so Payload create/update typing does not require `draft` on the union
+    if (collection === 'products') {
+      return payload.update({
+        collection: 'products',
+        id,
+        data: data as never,
+        ...shared,
+      })
+    }
+    if (collection === 'brands') {
+      return payload.update({
+        collection: 'brands',
+        id,
+        data: data as never,
+        ...shared,
+      })
+    }
+    return payload.update({
+      collection: 'product-categories',
+      id,
+      data: data as never,
+      ...shared,
+    })
+  }
+
+  if (collection === 'products') {
+    return payload.create({
+      collection: 'products',
+      data: { ...data, slug, _status: 'published' } as never,
+      ...shared,
+    })
+  }
+  if (collection === 'brands') {
+    return payload.create({
+      collection: 'brands',
+      data: { ...data, slug } as never,
+      ...shared,
+    })
+  }
+  return payload.create({
+    collection: 'product-categories',
+    data: { ...data, slug } as never,
+    ...shared,
+  })
+}
+
+export async function seedProducts({
+  payload,
+  req,
+}: {
+  payload: Payload
+  req: PayloadRequest
+}): Promise<void> {
+  payload.logger.info('Seeding catalog products…')
+
+  // Prefer existing media; otherwise download a few demo images
+  let media = await payload.find({
+    collection: 'media',
+    limit: 6,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  if (!media.docs.length) {
+    payload.logger.info('No media found — downloading demo images…')
+    const urls = [
+      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post1.webp',
+      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post2.webp',
+      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post3.webp',
+      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-hero1.webp',
+    ]
+
+    for (const [index, url] of urls.entries()) {
+      const res = await fetch(url)
+      if (!res.ok) continue
+      const buffer = Buffer.from(await res.arrayBuffer())
+      await payload.create({
+        collection: 'media',
+        data: { alt: `Catalog seed image ${index + 1}` },
+        file: {
+          name: url.split('/').pop() || `seed-${index}.webp`,
+          data: buffer,
+          mimetype: 'image/webp',
+          size: buffer.byteLength,
+        },
+        req,
+        overrideAccess: true,
+        context: { disableRevalidate: true },
+      })
+    }
+
+    media = await payload.find({
+      collection: 'media',
+      limit: 6,
+      depth: 0,
+      overrideAccess: true,
+    })
+  }
+
+  const images = media.docs
+  const img = (i: number) => images[i % Math.max(images.length, 1)]?.id
+
+  if (!images.length) {
+    payload.logger.warn('Still no media — products will seed without images.')
+  }
+
+  const brandLrp = await upsertBySlug({
+    payload,
+    req,
+    collection: 'brands',
+    slug: 'la-roche-posay',
+    data: {
+      title: 'La Roche-Posay',
+      description: 'برند تخصصی مراقبت از پوست حساس',
+      logo: img(0) || null,
+      generateSlug: false,
+    },
+  })
+
+  const brandCerave = await upsertBySlug({
+    payload,
+    req,
+    collection: 'brands',
+    slug: 'cerave',
+    data: {
+      title: 'CeraVe',
+      description: 'مراقبت روزانه با سرامیدها',
+      logo: img(1) || null,
+      generateSlug: false,
+    },
+  })
+
+  const brandSkin = await upsertBySlug({
+    payload,
+    req,
+    collection: 'brands',
+    slug: 'skinceuticals',
+    data: {
+      title: 'SkinCeuticals',
+      description: 'علم پیشرفته ضدپیری و ترمیم',
+      logo: img(2) || null,
+      generateSlug: false,
+    },
+  })
+
+  const catSkincare = await upsertBySlug({
+    payload,
+    req,
+    collection: 'product-categories',
+    slug: 'skincare',
+    data: {
+      title: 'مراقبت پوست',
+      generateSlug: false,
+    },
+  })
+
+  const catSunscreen = await upsertBySlug({
+    payload,
+    req,
+    collection: 'product-categories',
+    slug: 'sunscreen',
+    data: {
+      title: 'ضدآفتاب',
+      generateSlug: false,
+      parent: catSkincare.id,
+    },
+  })
+
+  const catSerum = await upsertBySlug({
+    payload,
+    req,
+    collection: 'product-categories',
+    slug: 'serum',
+    data: {
+      title: 'سرم',
+      generateSlug: false,
+      parent: catSkincare.id,
+    },
+  })
+
+  const catCleanser = await upsertBySlug({
+    payload,
+    req,
+    collection: 'product-categories',
+    slug: 'cleanser',
+    data: {
+      title: 'پاک‌کننده',
+      generateSlug: false,
+      parent: catSkincare.id,
+    },
+  })
+
+  // Clear previous seed variants for these product slugs
+  const seedSlugs = [
+    'effaclar-duo',
+    'anthelios-uvmura',
+    'cerave-hydrating-cleanser',
+    'ce-ferulic',
+    'toleriane-sensitive',
+  ]
+
+  const existingProducts = await payload.find({
+    collection: 'products',
+    where: { slug: { in: seedSlugs } },
+    limit: 20,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  for (const product of existingProducts.docs) {
+    const variants = await payload.find({
+      collection: 'variants',
+      where: { product: { equals: product.id } },
+      limit: 50,
+      depth: 0,
+      overrideAccess: true,
+    })
+    for (const variant of variants.docs) {
+      await payload.delete({
+        collection: 'variants',
+        id: variant.id,
+        req,
+        overrideAccess: true,
+        context: { disableRevalidate: true },
+      })
+    }
+  }
+
+  const productEffaclar = await upsertBySlug({
+    payload,
+    req,
+    collection: 'products',
+    slug: 'effaclar-duo',
+    data: {
+      title: 'افاکلار دوئو+',
+      generateSlug: false,
+      summary: 'مراقبت ضدجوش روزانه برای پوست مستعد آکنه',
+      description: richText(
+        'فرمول دوتایی برای کاهش جوش‌های التهابی و جلوگیری از بازگشت لک. مناسب استفاده صبح و شب تحت نظر پزشک.',
+      ),
+      featuredImage: img(0) || null,
+      gallery: [img(0), img(1), img(2)].filter(Boolean),
+      brand: brandLrp.id,
+      categories: [catSkincare.id, catSerum.id],
+      price: 1850000,
+      compareAtPrice: 2100000,
+      currencyLabel: 'تومان',
+      availability: 'available',
+      sku: 'LRP-ED-001',
+      meta: {
+        title: 'افاکلار دوئو+ | La Roche-Posay',
+        description: 'مراقبت ضدجوش برای پوست حساس مستعد آکنه',
+        image: img(0) || null,
+      },
+      _status: 'published',
+      publishedAt: new Date().toISOString(),
+    },
+  })
+
+  const productAnthelios = await upsertBySlug({
+    payload,
+    req,
+    collection: 'products',
+    slug: 'anthelios-uvmura',
+    data: {
+      title: 'آنتلیوس UVMune 400',
+      generateSlug: false,
+      summary: 'ضدآفتاب گسترده با محافظت در برابر UVA بسیار طولانی',
+      description: richText(
+        'محافظت روزانه پوست در برابر پرتوهای UV و نور آبی. بافت سبک و مناسب پوست چرب تا مختلط.',
+      ),
+      featuredImage: img(1) || null,
+      gallery: [img(1), img(2)].filter(Boolean),
+      brand: brandLrp.id,
+      categories: [catSkincare.id, catSunscreen.id],
+      price: 2450000,
+      currencyLabel: 'تومان',
+      availability: 'limited',
+      sku: 'LRP-AL-400',
+      meta: {
+        title: 'آنتلیوس UVMune 400',
+        description: 'ضدآفتاب تخصصی La Roche-Posay',
+        image: img(1) || null,
+      },
+      _status: 'published',
+      publishedAt: new Date().toISOString(),
+    },
+  })
+
+  const productCerave = await upsertBySlug({
+    payload,
+    req,
+    collection: 'products',
+    slug: 'cerave-hydrating-cleanser',
+    data: {
+      title: 'پاک‌کننده آبرسان سراوی',
+      generateSlug: false,
+      summary: 'شستشوی ملایم بدون به‌هم‌زدن سد پوستی',
+      description: richText(
+        'حاوی سه سرامید ضروری و هیالورونیک اسید. مناسب پوست خشک و نرمال. بدون عطر.',
+      ),
+      featuredImage: img(2) || null,
+      gallery: [img(2), img(0)].filter(Boolean),
+      brand: brandCerave.id,
+      categories: [catSkincare.id, catCleanser.id],
+      price: 980000,
+      compareAtPrice: 1150000,
+      currencyLabel: 'تومان',
+      availability: 'available',
+      sku: 'CV-HC-473',
+      meta: {
+        title: 'پاک‌کننده آبرسان سراوی',
+        description: 'شستشوی ملایم روزانه CeraVe',
+        image: img(2) || null,
+      },
+      _status: 'published',
+      publishedAt: new Date().toISOString(),
+    },
+  })
+
+  const productCeFerulic = await upsertBySlug({
+    payload,
+    req,
+    collection: 'products',
+    slug: 'ce-ferulic',
+    data: {
+      title: 'C E Ferulic',
+      generateSlug: false,
+      summary: 'آنتی‌اکسیدان قوی ویتامین C برای درخشندگی و استحکام',
+      description: richText(
+        'ترکیب ۱۵٪ ویتامین C خالص، ویتامین E و فرولیک اسید. استفاده صبحگاهی زیر ضدآفتاب توصیه می‌شود.',
+      ),
+      featuredImage: img(3) || null,
+      gallery: [img(3), img(4)].filter(Boolean),
+      brand: brandSkin.id,
+      categories: [catSkincare.id, catSerum.id],
+      price: 8900000,
+      currencyLabel: 'تومان',
+      availability: 'available',
+      sku: 'SC-CEF-30',
+      meta: {
+        title: 'C E Ferulic | SkinCeuticals',
+        description: 'سرم آنتی‌اکسیدان حرفه‌ای',
+        image: img(3) || null,
+      },
+      _status: 'published',
+      publishedAt: new Date().toISOString(),
+    },
+  })
+
+  const productToleriane = await upsertBySlug({
+    payload,
+    req,
+    collection: 'products',
+    slug: 'toleriane-sensitive',
+    data: {
+      title: 'تولریان سنستیو',
+      generateSlug: false,
+      summary: 'مرطوب‌کننده تسکین‌دهنده برای پوست خیلی حساس',
+      description: richText(
+        'فرمول مینیمال با پرهبیوتیک. بدون عطر، الکل و مواد تحریک‌کننده. مناسب مراقبت پایه روزانه.',
+      ),
+      featuredImage: img(4) || null,
+      gallery: [img(4), img(5)].filter(Boolean),
+      brand: brandLrp.id,
+      categories: [catSkincare.id],
+      // no price — tests empty-price UI
+      currencyLabel: 'تومان',
+      availability: 'coming_soon',
+      sku: 'LRP-TS-40',
+      meta: {
+        title: 'تولریان سنستیو',
+        description: 'مراقبت تسکینی برای پوست حساس',
+        image: img(4) || null,
+      },
+      _status: 'published',
+      publishedAt: new Date().toISOString(),
+    },
+  })
+
+  // Variants
+  const variantSpecs: Array<{
+    productId: string
+    title: string
+    sku: string
+    options: { name: string; value: string }[]
+    price?: number
+    availability?: 'available' | 'unavailable' | 'limited'
+    sortOrder: number
+    imageIndex?: number
+  }> = [
+    {
+      productId: productEffaclar.id,
+      title: '۴۰ میلی‌لیتر',
+      sku: 'LRP-ED-40',
+      options: [{ name: 'حجم', value: '۴۰ml' }],
+      price: 1850000,
+      availability: 'available',
+      sortOrder: 0,
+      imageIndex: 0,
+    },
+    {
+      productId: productEffaclar.id,
+      title: '۷۵ میلی‌لیتر',
+      sku: 'LRP-ED-75',
+      options: [{ name: 'حجم', value: '۷۵ml' }],
+      price: 2450000,
+      availability: 'available',
+      sortOrder: 1,
+      imageIndex: 1,
+    },
+    {
+      productId: productAnthelios.id,
+      title: '۵۰ میلی‌لیتر — بی‌رنگ',
+      sku: 'LRP-AL-50-C',
+      options: [
+        { name: 'حجم', value: '۵۰ml' },
+        { name: 'رنگ', value: 'بی‌رنگ' },
+      ],
+      price: 2450000,
+      availability: 'available',
+      sortOrder: 0,
+      imageIndex: 1,
+    },
+    {
+      productId: productAnthelios.id,
+      title: '۵۰ میلی‌لیتر — رنگی',
+      sku: 'LRP-AL-50-T',
+      options: [
+        { name: 'حجم', value: '۵۰ml' },
+        { name: 'رنگ', value: 'رنگی' },
+      ],
+      price: 2650000,
+      availability: 'limited',
+      sortOrder: 1,
+      imageIndex: 2,
+    },
+    {
+      productId: productAnthelios.id,
+      title: '۵۰ میلی‌لیتر — ناموجود',
+      sku: 'LRP-AL-50-X',
+      options: [
+        { name: 'حجم', value: '۵۰ml' },
+        { name: 'رنگ', value: 'نمونه‌کار' },
+      ],
+      price: 2500000,
+      availability: 'unavailable',
+      sortOrder: 2,
+    },
+    {
+      productId: productCerave.id,
+      title: '۲۳۶ میلی‌لیتر',
+      sku: 'CV-HC-236',
+      options: [{ name: 'حجم', value: '۲۳۶ml' }],
+      price: 980000,
+      availability: 'available',
+      sortOrder: 0,
+    },
+    {
+      productId: productCerave.id,
+      title: '۴۷۳ میلی‌لیتر',
+      sku: 'CV-HC-473',
+      options: [{ name: 'حجم', value: '۴۷۳ml' }],
+      price: 1450000,
+      availability: 'available',
+      sortOrder: 1,
+    },
+    {
+      productId: productCeFerulic.id,
+      title: '۳۰ میلی‌لیتر',
+      sku: 'SC-CEF-30',
+      options: [{ name: 'حجم', value: '۳۰ml' }],
+      price: 8900000,
+      availability: 'available',
+      sortOrder: 0,
+      imageIndex: 3,
+    },
+  ]
+
+  for (const spec of variantSpecs) {
+    await payload.create({
+      collection: 'variants',
+      data: {
+        product: spec.productId,
+        title: spec.title,
+        sku: spec.sku,
+        options: spec.options,
+        price: spec.price ?? null,
+        availability: spec.availability || 'available',
+        sortOrder: spec.sortOrder,
+        image: typeof spec.imageIndex === 'number' ? img(spec.imageIndex) || null : null,
+      },
+      req,
+      overrideAccess: true,
+      context: { disableRevalidate: true },
+    })
+  }
+
+  // Wire related products
+  await payload.update({
+    collection: 'products',
+    id: productEffaclar.id,
+    data: {
+      relatedProducts: [productAnthelios.id, productToleriane.id, productCerave.id],
+    },
+    req,
+    overrideAccess: true,
+    context: { disableRevalidate: true },
+  })
+
+  await payload.update({
+    collection: 'products',
+    id: productCeFerulic.id,
+    data: {
+      relatedProducts: [productEffaclar.id, productAnthelios.id],
+      layout: [
+        {
+          blockType: 'productCarousel',
+          populateBy: 'collection',
+          categories: [catSerum.id],
+          limit: 6,
+        },
+      ],
+    },
+    req,
+    overrideAccess: true,
+    context: { disableRevalidate: true },
+  })
+
+  // Ensure header has a products nav link (preserve required CTA fields)
+  try {
+    const header = await payload.findGlobal({ slug: 'header', depth: 0 })
+    const navItems = header.navItems || []
+    const hasProductsNav = navItems.some(
+      (item) =>
+        item?.link?.url === '/products' ||
+        item?.link?.label === 'محصولات' ||
+        item?.link?.label === 'Products',
+    )
+
+    if (!hasProductsNav) {
+      await payload.updateGlobal({
+        slug: 'header',
+        data: {
+          navItems: [
+            ...navItems,
+            {
+              link: {
+                type: 'custom',
+                label: 'محصولات',
+                url: '/products',
+              },
+            },
+          ],
+          secondaryCta: header.secondaryCta || {
+            type: 'custom',
+            label: 'مشاوره',
+            url: '/contact',
+          },
+          primaryCta: header.primaryCta || {
+            type: 'custom',
+            label: 'رزرو نوبت',
+            url: '/contact',
+          },
+        },
+        req,
+        overrideAccess: true,
+        context: { disableRevalidate: true },
+      })
+    }
+  } catch (error) {
+    payload.logger.warn(
+      `Skipped header nav update: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
+  payload.logger.info(
+    `Catalog seed done: 3 brands, 4 categories, ${seedSlugs.length} products, ${variantSpecs.length} variants.`,
+  )
+  payload.logger.info('Try /products and /products/effaclar-duo')
+}

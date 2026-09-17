@@ -12,27 +12,33 @@ import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { L } from '@/i18n/label'
 
-import { Page, Post } from '@/payload-types'
+import { Page, Post, Product } from '@/payload-types'
 import { formatDocumentTitle } from '@/utilities/siteName'
 import { getServerSideURL } from '@/utilities/getURL'
 
-const generateTitle: GenerateTitle<Post | Page> = async ({ doc, req }) => {
+type SeoDoc = Post | Page | Product
+
+const generateTitle: GenerateTitle<SeoDoc> = async ({ doc, req }) => {
   const settings = await req.payload.findGlobal({ slug: 'settings' })
   const siteName = settings?.siteName?.trim() || undefined
   return formatDocumentTitle(doc?.title, siteName) || doc?.title || ''
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
+const generateURL: GenerateURL<SeoDoc> = ({ collectionSlug, doc }) => {
   const url = getServerSideURL()
+  if (!doc?.slug) return url
 
-  return doc?.slug ? `${url}/${doc.slug}` : url
+  if (collectionSlug === 'posts') return `${url}/posts/${doc.slug}`
+  if (collectionSlug === 'products') return `${url}/products/${doc.slug}`
+
+  return `${url}/${doc.slug}`
 }
 
 const s3PublicUrl = (process.env.S3_PUBLIC_URL || '').replace(/\/$/, '')
 
 export const plugins: Plugin[] = [
   redirectsPlugin({
-    collections: ['pages', 'posts'],
+    collections: ['pages', 'posts', 'products'],
     overrides: {
       labels: {
         singular: L('Redirect', 'تغییر مسیر'),
@@ -61,7 +67,7 @@ export const plugins: Plugin[] = [
     },
   }),
   nestedDocsPlugin({
-    collections: ['categories'],
+    collections: ['categories', 'product-categories'],
     generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
   }),
   seoPlugin({

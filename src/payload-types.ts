@@ -71,6 +71,10 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    brands: Brand;
+    'product-categories': ProductCategory;
+    products: Product;
+    variants: Variant;
     users: User;
     'analytics-events': AnalyticsEvent;
     redirects: Redirect;
@@ -85,6 +89,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    products: {
+      variants: 'variants';
+    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media';
     };
@@ -94,6 +101,10 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    variants: VariantsSelect<false> | VariantsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'analytics-events': AnalyticsEventsSelect<false> | AnalyticsEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -241,6 +252,7 @@ export interface Page {
     | FeaturesBlock
     | FeaturedServicesBlock
     | PricingBlock
+    | ProductCarouselBlock
     | SolaceCtaBlock
   )[];
   meta?: {
@@ -824,6 +836,10 @@ export interface CustomCodeBlock {
    */
   label?: string | null;
   /**
+   * When on, HTML spans the full viewport and paints over the site frame (1400px max-width and side borders). Leave off for normal framed content.
+   */
+  breakoutLayout?: boolean | null;
+  /**
    * Optional markup. Leave empty for CSS-only (zero layout space). Do not include <script> — use Globals → Scripts.
    */
   html?: string | null;
@@ -1067,6 +1083,143 @@ export interface PricingBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductCarouselBlock".
+ */
+export interface ProductCarouselBlock {
+  populateBy?: ('collection' | 'selection') | null;
+  categories?: (string | ProductCategory)[] | null;
+  brands?: (string | Brand)[] | null;
+  limit?: number | null;
+  selectedDocs?: (string | Product)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productCarousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: string;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  parent?: (string | null) | ProductCategory;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | ProductCategory;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: string;
+  title: string;
+  logo?: (string | null) | Media;
+  description?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  title: string;
+  /**
+   * Short blurb for listing cards.
+   */
+  summary?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage?: (string | null) | Media;
+  gallery?: (string | Media)[] | null;
+  brand?: (string | null) | Brand;
+  categories?: (string | ProductCategory)[] | null;
+  relatedProducts?: (string | Product)[] | null;
+  /**
+   * Optional blocks below the product hero (gallery and details).
+   */
+  layout?:
+    | (
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FeaturesBlock
+        | FormBlock
+        | SolaceCtaBlock
+        | ProductCarouselBlock
+      )[]
+    | null;
+  /**
+   * Optional display price. Leave empty to hide price on the site.
+   */
+  price?: number | null;
+  compareAtPrice?: number | null;
+  /**
+   * Shown next to price when a price is set.
+   */
+  currencyLabel?: string | null;
+  availability?: ('available' | 'unavailable' | 'limited' | 'coming_soon') | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  variants?: {
+    docs?: (string | Variant)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  /**
+   * Optional product-level code.
+   */
+  sku?: string | null;
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "SolaceCtaBlock".
  */
 export interface SolaceCtaBlock {
@@ -1076,6 +1229,45 @@ export interface SolaceCtaBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'solaceCta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variants".
+ */
+export interface Variant {
+  id: string;
+  product: string | Product;
+  /**
+   * Display name, e.g. “50ml / Blue”.
+   */
+  title: string;
+  sku?: string | null;
+  options?:
+    | {
+        /**
+         * e.g. Size, Color
+         */
+        name: string;
+        /**
+         * e.g. 50ml, Blue
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  image?: (string | null) | Media;
+  /**
+   * Optional. Falls back to product price when empty.
+   */
+  price?: number | null;
+  compareAtPrice?: number | null;
+  availability?: ('available' | 'unavailable' | 'limited' | 'coming_soon') | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * First-party pageviews and events. Ingested automatically — do not create manually.
@@ -1137,6 +1329,10 @@ export interface Redirect {
       | ({
           relationTo: 'posts';
           value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'products';
+          value: string | Product;
         } | null);
     url?: string | null;
   };
@@ -1324,6 +1520,22 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
+        relationTo: 'brands';
+        value: string | Brand;
+      } | null)
+    | ({
+        relationTo: 'product-categories';
+        value: string | ProductCategory;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
+      } | null)
+    | ({
+        relationTo: 'variants';
+        value: string | Variant;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
@@ -1446,6 +1658,7 @@ export interface PagesSelect<T extends boolean = true> {
         features?: T | FeaturesBlockSelect<T>;
         featuredServices?: T | FeaturedServicesBlockSelect<T>;
         pricing?: T | PricingBlockSelect<T>;
+        productCarousel?: T | ProductCarouselBlockSelect<T>;
         solaceCta?: T | SolaceCtaBlockSelect<T>;
       };
   meta?:
@@ -1548,6 +1761,7 @@ export interface ContactSectionBlockSelect<T extends boolean = true> {
  */
 export interface CustomCodeBlockSelect<T extends boolean = true> {
   label?: T;
+  breakoutLayout?: T;
   html?: T;
   css?: T;
   id?: T;
@@ -1688,6 +1902,19 @@ export interface PricingBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductCarouselBlock_select".
+ */
+export interface ProductCarouselBlockSelect<T extends boolean = true> {
+  populateBy?: T;
+  categories?: T;
+  brands?: T;
+  limit?: T;
+  selectedDocs?: T;
   id?: T;
   blockName?: T;
 }
@@ -1844,6 +2071,106 @@ export interface CategoriesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  title?: T;
+  logo?: T;
+  description?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories_select".
+ */
+export interface ProductCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  description?: T;
+  featuredImage?: T;
+  gallery?: T;
+  brand?: T;
+  categories?: T;
+  relatedProducts?: T;
+  layout?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        features?: T | FeaturesBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        solaceCta?: T | SolaceCtaBlockSelect<T>;
+        productCarousel?: T | ProductCarouselBlockSelect<T>;
+      };
+  price?: T;
+  compareAtPrice?: T;
+  currencyLabel?: T;
+  availability?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  variants?: T;
+  sku?: T;
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variants_select".
+ */
+export interface VariantsSelect<T extends boolean = true> {
+  product?: T;
+  title?: T;
+  sku?: T;
+  options?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        id?: T;
+      };
+  image?: T;
+  price?: T;
+  compareAtPrice?: T;
+  availability?: T;
+  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2846,6 +3173,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'posts';
           value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'products';
+          value: string | Product;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

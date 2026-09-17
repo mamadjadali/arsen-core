@@ -7,11 +7,15 @@ import { en } from '@payloadcms/translations/languages/en'
 import { fa } from '@payloadcms/translations/languages/fa'
 
 import { AnalyticsEvents } from './collections/AnalyticsEvents'
+import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { ProductCategories } from './collections/ProductCategories'
+import { Products } from './collections/Products'
 import { Users } from './collections/Users'
+import { Variants } from './collections/Variants'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { Scripts } from './Scripts/config'
@@ -70,7 +74,18 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users, AnalyticsEvents],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Brands,
+    ProductCategories,
+    Products,
+    Variants,
+    Users,
+    AnalyticsEvents,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [aiStatusEndpoint, aiPresetsEndpoint, aiTransformEndpoint, analyticsCollectEndpoint],
   globals: [Header, Footer, Theme, Scripts, Settings],
