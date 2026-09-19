@@ -87,7 +87,7 @@ export const SolaceCtaBlock: React.FC<SolaceCtaBlockProps> = ({
           <motion.div variants={buttonVariants} whileHover={{ y: -3 }}>
             <Link
               href={appleUrl || '/contact'}
-              className="inline-block rounded-md bg-black px-8 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-black/90"
+              className="inline-block rounded-md bg-black px-8 py-3 text-base font-medium text-[var(--color-canvas)] transition-colors hover:bg-black/90"
             >
               رزرو نوبت
             </Link>

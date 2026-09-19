@@ -101,6 +101,35 @@ export const Settings: GlobalConfig = {
             },
             {
               type: 'group',
+              label: L('Product inquiry', 'استعلام محصول'),
+              fields: [
+                {
+                  name: 'inquiryPhone',
+                  type: 'text',
+                  label: L('Inquiry phone', 'تلفن استعلام'),
+                  admin: {
+                    description: L(
+                      'Used for the product “call for price” button (tel: link). Example: +989123456789',
+                      'برای دکمه «استعلام قیمت» محصول (لینک tel:) استفاده می‌شود. مثال: +989123456789',
+                    ),
+                  },
+                },
+                {
+                  name: 'inquiryButtonLabel',
+                  type: 'text',
+                  label: L('Inquiry button label', 'برچسب دکمه استعلام'),
+                  defaultValue: 'استعلام قیمت و موجودی',
+                  admin: {
+                    description: L(
+                      'Default label for the product inquiry CTA.',
+                      'برچسب پیش‌فرض دکمه استعلام محصول.',
+                    ),
+                  },
+                },
+              ],
+            },
+            {
+              type: 'group',
               label: L('Admin panel', 'پنل ادمین'),
               fields: [
                 {

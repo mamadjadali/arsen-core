@@ -1,8 +1,11 @@
 export { solacePreset } from './presets/solace'
 export { zapierPreset } from './presets/zapier'
 export {
+  bodyFromInk,
   defaultThemePreset,
+  hexLuminance,
   isColorScheme,
+  isDarkHex,
   isThemePresetKey,
   resolveThemeTokens,
   themePresets,

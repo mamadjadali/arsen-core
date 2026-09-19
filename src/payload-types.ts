@@ -832,7 +832,7 @@ export interface Form {
  */
 export interface CustomCodeBlock {
   /**
-   * Optional note for editors (not shown on the site). Trusted editors only — CSS is page-wide; use Globals → Scripts for JavaScript.
+   * Optional note for editors (not shown on the site). Trusted editors only — CSS is page-wide; JS below is scoped to this page/product. Use Globals → Scripts for site-wide scripts.
    */
   label?: string | null;
   /**
@@ -840,13 +840,43 @@ export interface CustomCodeBlock {
    */
   breakoutLayout?: boolean | null;
   /**
-   * Optional markup. Leave empty for CSS-only (zero layout space). Do not include <script> — use Globals → Scripts.
+   * Optional markup. Leave empty for CSS/JS-only (zero layout space if no HTML). Do not put <script> here — use JS or Scripts below.
    */
   html?: string | null;
   /**
    * Page-wide CSS. May target other block IDs/classes (e.g. #cta .btn). Prefer specific selectors. CSS-only takes no vertical space.
    */
   css?: string | null;
+  /**
+   * Optional inline snippet for this block. Paste raw JS or a full <script> tag — wrappers are stripped. For multiple or external files, use Scripts below.
+   */
+  js?: string | null;
+  /**
+   * Optional page/product-scoped scripts (inline or external). Injected where this block renders via next/script. Globals → Scripts remains for site-wide tags.
+   */
+  scripts?:
+    | {
+        /**
+         * Admin label only (e.g. Product widget)
+         */
+        name: string;
+        enabled?: boolean | null;
+        kind: 'inline' | 'external';
+        /**
+         * Only the .js file URL (e.g. https://cdn.example.com/widget.js).
+         */
+        src?: string | null;
+        /**
+         * Paste JS or HTML with <script> tags. Tags are stripped; src= scripts become external loads.
+         */
+        code?: string | null;
+        /**
+         * Next.js Script strategy (external scripts only).
+         */
+        strategy?: ('afterInteractive' | 'lazyOnload' | 'beforeInteractive') | null;
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'customCode';
@@ -1162,6 +1192,16 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Optional attribute rows shown as a specs table on the product page (e.g. material, width).
+   */
+  specs?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   featuredImage?: (string | null) | Media;
   gallery?: (string | Media)[] | null;
   brand?: (string | null) | Brand;
@@ -1175,6 +1215,7 @@ export interface Product {
         | ContentBlock
         | MediaBlock
         | CallToActionBlock
+        | CustomCodeBlock
         | FeaturesBlock
         | FormBlock
         | SolaceCtaBlock
@@ -1191,6 +1232,32 @@ export interface Product {
    */
   currencyLabel?: string | null;
   availability?: ('available' | 'unavailable' | 'limited' | 'coming_soon') | null;
+  /**
+   * Optional tag on the main gallery image (e.g. پرفروش). Leave empty to hide.
+   */
+  badge?: string | null;
+  /**
+   * Shown under the product card on the listing page. Use hex colors like #C4A574.
+   */
+  colorSwatches?:
+    | {
+        label?: string | null;
+        hex: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * When enabled, numeric price is hidden and the call-for-price hint is shown instead.
+   */
+  hidePrice?: boolean | null;
+  /**
+   * Shown next to availability when price is empty or hidden. Default: برای قیمت روز تماس بگیرید
+   */
+  priceHint?: string | null;
+  /**
+   * Optional. Overrides Settings → Product inquiry phone for this product only.
+   */
+  inquiryPhoneOverride?: string | null;
   meta?: {
     title?: string | null;
     /**
@@ -1252,6 +1319,10 @@ export interface Variant {
          * e.g. 50ml, Blue
          */
         value: string;
+        /**
+         * Optional. For Color options, used as a PLP swatch (e.g. #C4A574).
+         */
+        hex?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1764,6 +1835,18 @@ export interface CustomCodeBlockSelect<T extends boolean = true> {
   breakoutLayout?: T;
   html?: T;
   css?: T;
+  js?: T;
+  scripts?:
+    | T
+    | {
+        name?: T;
+        enabled?: T;
+        kind?: T;
+        src?: T;
+        code?: T;
+        strategy?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2115,6 +2198,13 @@ export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   summary?: T;
   description?: T;
+  specs?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
   featuredImage?: T;
   gallery?: T;
   brand?: T;
@@ -2126,6 +2216,7 @@ export interface ProductsSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
+        customCode?: T | CustomCodeBlockSelect<T>;
         features?: T | FeaturesBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         solaceCta?: T | SolaceCtaBlockSelect<T>;
@@ -2135,6 +2226,17 @@ export interface ProductsSelect<T extends boolean = true> {
   compareAtPrice?: T;
   currencyLabel?: T;
   availability?: T;
+  badge?: T;
+  colorSwatches?:
+    | T
+    | {
+        label?: T;
+        hex?: T;
+        id?: T;
+      };
+  hidePrice?: T;
+  priceHint?: T;
+  inquiryPhoneOverride?: T;
   meta?:
     | T
     | {
@@ -2164,6 +2266,7 @@ export interface VariantsSelect<T extends boolean = true> {
     | {
         name?: T;
         value?: T;
+        hex?: T;
         id?: T;
       };
   image?: T;
@@ -2528,7 +2631,10 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
-  secondaryCta: {
+  /**
+   * Optional. Leave the label empty to hide this button.
+   */
+  secondaryCta?: {
     type?: ('reference' | 'custom') | null;
     newTab?: boolean | null;
     reference?:
@@ -2541,9 +2647,12 @@ export interface Header {
           value: string | Post;
         } | null);
     url?: string | null;
-    label: string;
+    label?: string | null;
   };
-  primaryCta: {
+  /**
+   * Optional. Leave the label empty to hide this button.
+   */
+  primaryCta?: {
     type?: ('reference' | 'custom') | null;
     newTab?: boolean | null;
     reference?:
@@ -2556,7 +2665,7 @@ export interface Header {
           value: string | Post;
         } | null);
     url?: string | null;
-    label: string;
+    label?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2699,11 +2808,11 @@ export interface Theme {
    */
   orange?: string | null;
   /**
-   * Optional ink / dark-text override (hex). Leave empty to use the preset ink.
+   * Optional text color (hex). Drives headings and muted/body text site-wide. Leave empty to use the preset (or auto light text on a dark site background).
    */
   black?: string | null;
   /**
-   * Optional page background override (hex). Leave empty to use the preset canvas.
+   * Optional page background (hex). Dark values auto-switch text to light when Ink is empty. Leave empty to use the preset.
    */
   canvas?: string | null;
   /**
@@ -2790,6 +2899,14 @@ export interface Setting {
    * PNG ~180×180 for iOS home screen.
    */
   appleTouchIcon?: (string | null) | Media;
+  /**
+   * Used for the product “call for price” button (tel: link). Example: +989123456789
+   */
+  inquiryPhone?: string | null;
+  /**
+   * Default label for the product inquiry CTA.
+   */
+  inquiryButtonLabel?: string | null;
   /**
    * Login / expanded nav logo for light admin UI.
    */
@@ -3102,6 +3219,8 @@ export interface SettingsSelect<T extends boolean = true> {
   faviconSvg?: T;
   favicon32?: T;
   appleTouchIcon?: T;
+  inquiryPhone?: T;
+  inquiryButtonLabel?: T;
   adminLogoLight?: T;
   adminLogoDark?: T;
   adminIcon?: T;

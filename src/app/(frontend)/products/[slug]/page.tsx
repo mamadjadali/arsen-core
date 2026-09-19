@@ -1,19 +1,20 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ChevronLeft } from 'lucide-react'
 import { draftMode } from 'next/headers'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React, { cache } from 'react'
 
-import type { Media, Product, Variant } from '@/payload-types'
+import type { Media, Product, ProductCategory, Variant } from '@/payload-types'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { GridTileImage } from '@/components/Grid/tile'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { ProductDetail } from '@/components/ProductDetail'
+import { ProductDescriptionSection } from '@/components/ProductDescriptionSection'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 import { formatPrice, resolveDisplayPrice } from '@/utilities/productDisplay'
 import PageClient from '../(shop)/page.client'
 
@@ -44,7 +45,10 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const decodedSlug = decodeURIComponent(slug)
   const url = '/products/' + decodedSlug
-  const product = await queryProductBySlug({ slug: decodedSlug })
+  const [product, settings] = await Promise.all([
+    queryProductBySlug({ slug: decodedSlug }),
+    getCachedGlobal('settings', 0)(),
+  ])
 
   if (!product) return <PayloadRedirects url={url} />
 
@@ -67,6 +71,11 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
     (typeof product.featuredImage === 'object' && product.featuredImage) ||
     null
 
+  const firstCategory =
+    product.categories
+      ?.map((c) => (typeof c === 'object' && c ? (c as ProductCategory) : null))
+      .find(Boolean) || null
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -77,8 +86,9 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
       typeof product.brand === 'object' && product.brand
         ? { '@type': 'Brand', name: product.brand.title }
         : undefined,
+    sku: product.sku || undefined,
     offers:
-      typeof pricing.price === 'number'
+      typeof pricing.price === 'number' && !product.hidePrice
         ? {
             '@type': 'Offer',
             availability,
@@ -103,16 +113,41 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
       />
 
       <div className="container py-8 md:py-12">
-        <Link
-          href="/products"
-          className="mb-8 inline-flex items-center gap-1 text-sm text-black/60 transition-colors hover:text-black"
+        <nav
+          aria-label="breadcrumb"
+          className="mb-8 flex flex-wrap items-center gap-2 text-sm text-black/55"
         >
-          <ChevronLeft className="size-4 rtl:rotate-180" />
-          همه محصولات
-        </Link>
+          <Link href="/" className="transition-colors hover:text-black">
+            خانه
+          </Link>
+          <span aria-hidden>/</span>
+          <Link href="/products" className="transition-colors hover:text-black">
+            محصولات
+          </Link>
+          {firstCategory?.slug ? (
+            <>
+              <span aria-hidden>/</span>
+              <Link
+                href={`/products?category=${encodeURIComponent(firstCategory.slug)}`}
+                className="transition-colors hover:text-black"
+              >
+                {firstCategory.title}
+              </Link>
+            </>
+          ) : null}
+          <span aria-hidden>/</span>
+          <span className="text-black">{product.title}</span>
+        </nav>
 
-        <ProductDetail product={product} variants={variants} />
+        <ProductDetail
+          product={product}
+          variants={variants}
+          inquiryPhone={settings.inquiryPhone}
+          inquiryButtonLabel={settings.inquiryButtonLabel}
+        />
       </div>
+
+      <ProductDescriptionSection description={product.description} specs={product.specs} />
 
       {product.layout?.length ? (
         <div className="mt-8">
@@ -122,7 +157,17 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
 
       {relatedProducts.length ? (
         <div className="container mt-16">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-black">محصولات مرتبط</h2>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <h2 className="text-2xl font-semibold tracking-tight text-black">محصولات مرتبط</h2>
+            {firstCategory?.slug ? (
+              <Link
+                href={`/products?category=${encodeURIComponent(firstCategory.slug)}`}
+                className="text-sm text-black/60 transition-colors hover:text-black"
+              >
+                مشاهده همه {firstCategory.title}
+              </Link>
+            ) : null}
+          </div>
           <RelatedProducts products={relatedProducts} />
         </div>
       ) : null}
@@ -140,7 +185,7 @@ function RelatedProducts({ products }: { products: Product[] }) {
           null
         const pricing = resolveDisplayPrice(product)
         const amount =
-          typeof pricing.price === 'number'
+          typeof pricing.price === 'number' && !product.hidePrice
             ? formatPrice(pricing.price, pricing.currencyLabel)
             : null
 
@@ -183,23 +228,22 @@ const queryProductBySlug = cache(async ({ slug }: { slug: string }) => {
     overrideAccess: draft,
     pagination: false,
     where: {
-      and: [
-        { slug: { equals: slug } },
-        ...(draft ? [] : [{ _status: { equals: 'published' as const } }]),
-      ],
+      slug: {
+        equals: slug,
+      },
     },
   })
 
   return result.docs?.[0] || null
 })
 
-const queryVariantsForProduct = cache(async (productId: string): Promise<Variant[]> => {
+const queryVariantsForProduct = cache(async (productId: string | number) => {
   const payload = await getPayload({ config: configPromise })
-
   const result = await payload.find({
     collection: 'variants',
     depth: 1,
     limit: 100,
+    overrideAccess: false,
     pagination: false,
     sort: 'sortOrder',
     where: {
@@ -209,5 +253,5 @@ const queryVariantsForProduct = cache(async (productId: string): Promise<Variant
     },
   })
 
-  return result.docs
+  return result.docs as Variant[]
 })

@@ -20,6 +20,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, logoLight }) =
   const logo = resolveFirstMedia(data?.logo, logoLight)
   const logoUrl = resolveMediaUrl(logo) || '/suno-logo.svg'
   const brandName = data?.brandName || 'SunoAI'
+  const secondaryCta = data?.secondaryCta?.label?.trim() ? data.secondaryCta : null
+  const primaryCta = data?.primaryCta?.label?.trim() ? data.primaryCta : null
 
   return (
     <header className="relative z-30 flex w-full items-center justify-between border-b border-black/10 bg-[var(--color-canvas)] px-4 py-6 md:px-8">
@@ -47,20 +49,20 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, logoLight }) =
       </nav>
 
       <div className="flex items-center gap-3">
-        {data?.secondaryCta?.label && (
+        {secondaryCta ? (
           <CMSLink
-            {...data.secondaryCta}
+            {...secondaryCta}
             appearance="inline"
             className="hidden rounded-md border border-black px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-black/5 md:block"
           />
-        )}
-        {data?.primaryCta?.label && (
+        ) : null}
+        {primaryCta ? (
           <CMSLink
-            {...data.primaryCta}
+            {...primaryCta}
             appearance="inline"
-            className="rounded-md bg-black px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-black/90"
+            className="rounded-md bg-black px-4 py-2 text-sm font-medium text-[var(--color-canvas)] transition-colors hover:bg-black/90"
           />
-        )}
+        ) : null}
       </div>
     </header>
   )

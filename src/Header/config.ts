@@ -81,16 +81,30 @@ export const Header: GlobalConfig = {
     },
     link({
       appearances: false,
+      optional: true,
       overrides: {
         name: 'secondaryCta',
         label: L('Secondary CTA', 'فراخوان ثانویه'),
+        admin: {
+          description: L(
+            'Optional. Leave the label empty to hide this button.',
+            'اختیاری. برای مخفی‌کردن دکمه، برچسب را خالی بگذارید.',
+          ),
+        },
       },
     }),
     link({
       appearances: false,
+      optional: true,
       overrides: {
         name: 'primaryCta',
         label: L('Primary CTA', 'فراخوان اصلی'),
+        admin: {
+          description: L(
+            'Optional. Leave the label empty to hide this button.',
+            'اختیاری. برای مخفی‌کردن دکمه، برچسب را خالی بگذارید.',
+          ),
+        },
       },
     }),
   ],

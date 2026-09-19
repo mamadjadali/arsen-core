@@ -2,10 +2,12 @@ import type { Metadata } from 'next/types'
 import type { Where } from 'payload'
 
 import { ProductArchive } from '@/components/ProductArchive'
+import type { ProductCardData } from '@/components/ProductCard'
 import { ProductPagination } from '@/components/products/ProductPagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React, { Suspense } from 'react'
+import { resolveColorSwatches } from '@/utilities/productDisplay'
 import { formatDocumentTitle, getSiteName } from '@/utilities/siteName'
 import PageClient from './page.client'
 
@@ -86,8 +88,52 @@ export default async function ProductsPage({ searchParams: searchParamsPromise }
       currencyLabel: true,
       availability: true,
       meta: true,
+      badge: true,
+      hidePrice: true,
+      colorSwatches: true,
     },
   })
+
+  const productIds = products.docs.map((doc) => doc.id)
+  const variantsByProduct = new Map<string, { options?: { name?: string | null; value?: string | null; hex?: string | null }[] | null }[]>()
+
+  if (productIds.length) {
+    const variants = await payload.find({
+      collection: 'variants',
+      depth: 0,
+      limit: 500,
+      overrideAccess: false,
+      pagination: false,
+      where: {
+        product: {
+          in: productIds,
+        },
+      },
+      select: {
+        product: true,
+        options: true,
+      },
+    })
+
+    for (const variant of variants.docs) {
+      const productRef = variant.product
+      const id =
+        typeof productRef === 'object' && productRef
+          ? String(productRef.id)
+          : String(productRef)
+      const list = variantsByProduct.get(id) || []
+      list.push({ options: variant.options })
+      variantsByProduct.set(id, list)
+    }
+  }
+
+  const cards: ProductCardData[] = products.docs.map((doc) => ({
+    ...doc,
+    colorSwatchesResolved: resolveColorSwatches(
+      doc,
+      variantsByProduct.get(String(doc.id)),
+    ),
+  }))
 
   const resultsLabel =
     products.totalDocs === 0
@@ -106,9 +152,9 @@ export default async function ProductsPage({ searchParams: searchParamsPromise }
         <p className="mt-2 text-sm text-black/60">{resultsLabel}</p>
       </div>
 
-      {products.docs.length ? (
+      {cards.length ? (
         <>
-          <ProductArchive products={products.docs} />
+          <ProductArchive products={cards} />
           <Suspense fallback={null}>
             <ProductPagination page={products.page || 1} totalPages={products.totalPages || 1} />
           </Suspense>

@@ -68,8 +68,8 @@ export const Theme: GlobalConfig = {
       label: L('Ink', 'جوهر'),
       admin: {
         description: L(
-          'Optional ink / dark-text override (hex). Leave empty to use the preset ink.',
-          'جایگزینی اختیاری جوهر / متن تیره (هگز). برای استفاده از پیش‌تنظیم خالی بگذارید.',
+          'Optional text color (hex). Drives headings and muted/body text site-wide. Leave empty to use the preset (or auto light text on a dark site background).',
+          'رنگ متن اختیاری (هگز). روی عنوان‌ها و متن کم‌رنگ/بدنه در کل سایت اعمال می‌شود. برای پیش‌تنظیم خالی بگذارید (یا متن روشن خودکار روی پس‌زمینه تیره).',
         ),
       },
       validate: hexColorValidate,
@@ -77,11 +77,11 @@ export const Theme: GlobalConfig = {
     {
       name: 'canvas',
       type: 'text',
-      label: L('Canvas', 'بوم'),
+      label: L('Site background', 'پس‌زمینه سایت'),
       admin: {
         description: L(
-          'Optional page background override (hex). Leave empty to use the preset canvas.',
-          'جایگزینی اختیاری پس‌زمینه صفحه (هگز). برای استفاده از پیش‌تنظیم خالی بگذارید.',
+          'Optional page background (hex). Dark values auto-switch text to light when Ink is empty. Leave empty to use the preset.',
+          'پس‌زمینه اختیاری صفحه (هگز). مقادیر تیره در صورت خالی بودن جوهر، متن را خودکار روشن می‌کنند. برای پیش‌تنظیم خالی بگذارید.',
         ),
       },
       validate: hexColorValidate,

@@ -31,7 +31,7 @@ export const PricingBlock: React.FC<PricingBlockProps> = ({
             onClick={() => setIsYearly(false)}
             className={cn(
               'rounded-md px-6 py-2 text-sm font-medium transition-colors',
-              !isYearly ? 'bg-black text-primary-foreground' : 'bg-transparent text-black hover:bg-black/5',
+              !isYearly ? 'bg-black text-[var(--color-canvas)]' : 'bg-transparent text-black hover:bg-black/5',
             )}
           >
             حضوری
@@ -41,7 +41,7 @@ export const PricingBlock: React.FC<PricingBlockProps> = ({
             onClick={() => setIsYearly(true)}
             className={cn(
               'rounded-md px-6 py-2 text-sm font-medium transition-colors',
-              isYearly ? 'bg-black text-primary-foreground' : 'bg-transparent text-black hover:bg-black/5',
+              isYearly ? 'bg-black text-[var(--color-canvas)]' : 'bg-transparent text-black hover:bg-black/5',
             )}
           >
             {yearlyDiscountLabel || 'پیگیری'}
@@ -127,7 +127,8 @@ export const PricingBlock: React.FC<PricingBlockProps> = ({
                         'border border-black/20 text-black hover:bg-black/5',
                       plan.buttonVariant === 'primary' &&
                         'bg-primary text-primary-foreground hover:bg-primary/90',
-                      plan.buttonVariant === 'dark' && 'bg-black text-primary-foreground hover:bg-black/90',
+                      plan.buttonVariant === 'dark' &&
+                        'bg-black text-[var(--color-canvas)] hover:bg-black/90',
                     )}
                   />
                 ) : (
@@ -139,7 +140,8 @@ export const PricingBlock: React.FC<PricingBlockProps> = ({
                         'border border-black/20 text-black hover:bg-black/5',
                       plan.buttonVariant === 'primary' &&
                         'bg-primary text-primary-foreground hover:bg-primary/90',
-                      plan.buttonVariant === 'dark' && 'bg-black text-primary-foreground hover:bg-black/90',
+                      plan.buttonVariant === 'dark' &&
+                        'bg-black text-[var(--color-canvas)] hover:bg-black/90',
                     )}
                   >
                     {plan.buttonText}

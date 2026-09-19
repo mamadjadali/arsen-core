@@ -94,7 +94,7 @@ export const SolaceHero: React.FC<SolaceHeroProps> = ({
         {(announcementBadge || announcementText) && (
           <div className="flex w-fit cursor-pointer items-center gap-2 rounded-md border border-black/10 p-1 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-[var(--color-canvas)]/20 md:text-sm">
             {announcementBadge && (
-              <span className="rounded-md bg-black px-3 py-1 text-[10px] text-primary-foreground md:text-xs">
+              <span className="rounded-md bg-black px-3 py-1 text-[10px] text-[var(--color-canvas)] md:text-xs">
                 {announcementBadge}
               </span>
             )}
@@ -132,7 +132,7 @@ export const SolaceHero: React.FC<SolaceHeroProps> = ({
                   appearance="inline"
                   className={
                     isPrimary
-                      ? 'w-full rounded-md bg-black px-6 py-2.5 text-base font-medium text-primary-foreground transition-colors hover:bg-black/90 sm:w-auto'
+                      ? 'w-full rounded-md bg-black px-6 py-2.5 text-base font-medium text-[var(--color-canvas)] transition-colors hover:bg-black/90 sm:w-auto'
                       : 'w-full rounded-md border border-primary-foreground px-6 py-2.5 text-base font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10 sm:w-auto'
                   }
                 />

@@ -262,6 +262,35 @@ export async function seedProducts({
     },
   })
 
+  const catLeather = await upsertBySlug({
+    payload,
+    req,
+    collection: 'product-categories',
+    slug: 'synthetic-leather',
+    data: {
+      title: 'چرم مصنوعی',
+      generateSlug: false,
+    },
+  })
+
+  // Site-wide inquiry phone for PDP CTA
+  try {
+    await payload.updateGlobal({
+      slug: 'settings',
+      data: {
+        inquiryPhone: '+989123456789',
+        inquiryButtonLabel: 'استعلام قیمت و موجودی',
+      },
+      req,
+      overrideAccess: true,
+      context: { disableRevalidate: true },
+    })
+  } catch (error) {
+    payload.logger.warn(
+      `Skipped settings inquiry phone: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
   // Clear previous seed variants for these product slugs
   const seedSlugs = [
     'effaclar-duo',
@@ -269,6 +298,7 @@ export async function seedProducts({
     'cerave-hydrating-cleanser',
     'ce-ferulic',
     'toleriane-sensitive',
+    'dakota-honey-leather',
   ]
 
   const existingProducts = await payload.find({
@@ -450,12 +480,58 @@ export async function seedProducts({
     },
   })
 
+  const productDakota = await upsertBySlug({
+    payload,
+    req,
+    collection: 'products',
+    slug: 'dakota-honey-leather',
+    data: {
+      title: 'چرم طرح داکوتا — عسلی',
+      generateSlug: false,
+      summary:
+        'چرم مصنوعی با بافت دانه‌دار، انعطاف مناسب و سطح مقاوم؛ انتخابی کاربردی برای روکش صندلی و بخش‌های داخلی خودرو.',
+      description: richText(
+        'چرم مصنوعی داکوتا با بافت دانه‌دار و رنگ عسلی گرم، انتخابی کاربردی برای بازسازی و تودوزی فضای داخلی خودرو است. انعطاف مناسب این محصول باعث می‌شود هنگام برش و فرم‌دهی به‌خوبی روی سطوح مختلف بنشیند. سطح مقاوم و نظافت آسان آن نیز کمک می‌کند ظاهر صندلی و تریم خودرو در استفاده روزمره مرتب و یکدست باقی بماند.',
+      ),
+      featuredImage: img(0) || null,
+      gallery: [img(0), img(1), img(2)].filter(Boolean),
+      categories: [catLeather.id],
+      sku: 'DK-214',
+      badge: 'پرفروش',
+      hidePrice: true,
+      priceHint: 'برای قیمت روز تماس بگیرید',
+      availability: 'available',
+      specs: [
+        { label: 'جنس', value: 'چرم مصنوعی PVC' },
+        { label: 'رنگ', value: 'عسلی' },
+        { label: 'عرض رول', value: '۱۴۰ سانتی‌متر' },
+        { label: 'ضخامت', value: '۱٫۱ میلی‌متر' },
+        { label: 'نوع بافت', value: 'دانه‌دار داکوتا' },
+        { label: 'کاربرد', value: 'صندلی و تریم داخلی خودرو' },
+        { label: 'نحوه فروش', value: 'متری / طاقه کامل' },
+      ],
+      colorSwatches: [
+        { label: 'عسلی', hex: '#C4A574' },
+        { label: 'زغالی', hex: '#2C241E' },
+        { label: 'کرم', hex: '#E8DCC8' },
+      ],
+      meta: {
+        title: 'چرم طرح داکوتا — عسلی',
+        description:
+          'چرم مصنوعی با بافت دانه‌دار برای روکش صندلی و تریم داخلی خودرو',
+        image: img(0) || null,
+      },
+      _status: 'published',
+      publishedAt: new Date().toISOString(),
+    },
+  })
+
   // Variants
   const variantSpecs: Array<{
     productId: string
     title: string
     sku: string
-    options: { name: string; value: string }[]
+    options: { name: string; value: string; hex?: string }[]
     price?: number
     availability?: 'available' | 'unavailable' | 'limited'
     sortOrder: number
@@ -487,7 +563,7 @@ export async function seedProducts({
       sku: 'LRP-AL-50-C',
       options: [
         { name: 'حجم', value: '۵۰ml' },
-        { name: 'رنگ', value: 'بی‌رنگ' },
+        { name: 'رنگ', value: 'بی‌رنگ', hex: '#F5F0E6' },
       ],
       price: 2450000,
       availability: 'available',
@@ -500,7 +576,7 @@ export async function seedProducts({
       sku: 'LRP-AL-50-T',
       options: [
         { name: 'حجم', value: '۵۰ml' },
-        { name: 'رنگ', value: 'رنگی' },
+        { name: 'رنگ', value: 'رنگی', hex: '#C4A574' },
       ],
       price: 2650000,
       availability: 'limited',
@@ -513,11 +589,38 @@ export async function seedProducts({
       sku: 'LRP-AL-50-X',
       options: [
         { name: 'حجم', value: '۵۰ml' },
-        { name: 'رنگ', value: 'نمونه‌کار' },
+        { name: 'رنگ', value: 'نمونه‌کار', hex: '#2C241E' },
       ],
       price: 2500000,
       availability: 'unavailable',
       sortOrder: 2,
+    },
+    {
+      productId: productDakota.id,
+      title: 'عسلی',
+      sku: 'DK-214-HN',
+      options: [{ name: 'رنگ', value: 'عسلی', hex: '#C4A574' }],
+      availability: 'available',
+      sortOrder: 0,
+      imageIndex: 0,
+    },
+    {
+      productId: productDakota.id,
+      title: 'زغالی',
+      sku: 'DK-214-CH',
+      options: [{ name: 'رنگ', value: 'زغالی', hex: '#2C241E' }],
+      availability: 'available',
+      sortOrder: 1,
+      imageIndex: 1,
+    },
+    {
+      productId: productDakota.id,
+      title: 'کرم',
+      sku: 'DK-214-CR',
+      options: [{ name: 'رنگ', value: 'کرم', hex: '#E8DCC8' }],
+      availability: 'available',
+      sortOrder: 2,
+      imageIndex: 2,
     },
     {
       productId: productCerave.id,
@@ -599,6 +702,37 @@ export async function seedProducts({
     context: { disableRevalidate: true },
   })
 
+  await payload.update({
+    collection: 'products',
+    id: productDakota.id,
+    data: {
+      relatedProducts: [productEffaclar.id, productAnthelios.id, productCerave.id],
+      summary:
+        'چرم مصنوعی با بافت دانه‌دار، انعطاف مناسب و سطح مقاوم؛ انتخابی کاربردی برای روکش صندلی و بخش‌های داخلی خودرو.',
+      description: richText(
+        'چرم مصنوعی داکوتا با بافت دانه‌دار و رنگ عسلی گرم، انتخابی کاربردی برای بازسازی و تودوزی فضای داخلی خودرو است. انعطاف مناسب این محصول باعث می‌شود هنگام برش و فرم‌دهی به‌خوبی روی سطوح مختلف بنشیند. سطح مقاوم و نظافت آسان آن نیز کمک می‌کند ظاهر صندلی و تریم خودرو در استفاده روزمره مرتب و یکدست باقی بماند.',
+      ),
+      specs: [
+        { label: 'جنس', value: 'چرم مصنوعی PVC' },
+        { label: 'رنگ', value: 'عسلی' },
+        { label: 'عرض رول', value: '۱۴۰ سانتی‌متر' },
+        { label: 'ضخامت', value: '۱٫۱ میلی‌متر' },
+        { label: 'نوع بافت', value: 'دانه‌دار داکوتا' },
+        { label: 'کاربرد', value: 'صندلی و تریم داخلی خودرو' },
+        { label: 'نحوه فروش', value: 'متری / طاقه کامل' },
+      ],
+      hidePrice: true,
+      priceHint: 'برای قیمت روز تماس بگیرید',
+      availability: 'available',
+      badge: 'پرفروش',
+      sku: 'DK-214',
+      _status: 'published',
+    },
+    req,
+    overrideAccess: true,
+    context: { disableRevalidate: true },
+  })
+
   // Ensure header has a products nav link (preserve required CTA fields)
   try {
     const header = await payload.findGlobal({ slug: 'header', depth: 0 })
@@ -647,7 +781,7 @@ export async function seedProducts({
   }
 
   payload.logger.info(
-    `Catalog seed done: 3 brands, 4 categories, ${seedSlugs.length} products, ${variantSpecs.length} variants.`,
+    `Catalog seed done: brands/categories + ${seedSlugs.length} products, ${variantSpecs.length} variants.`,
   )
-  payload.logger.info('Try /products and /products/effaclar-duo')
+  payload.logger.info('Try /products/dakota-honey-leather')
 }

@@ -22,10 +22,17 @@ export const appearanceOptions: Record<
 type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
+  /** When true, label/url/reference are not required (empty link is omitted in UI). */
+  optional?: boolean
   overrides?: Partial<GroupField>
 }) => Field
 
-export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
+export const link: LinkType = ({
+  appearances,
+  disableLabel = false,
+  optional = false,
+  overrides = {},
+} = {}) => {
   const linkResult: GroupField = {
     name: 'link',
     type: 'group',
@@ -82,7 +89,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: L('Document to link to', 'سند مقصد'),
       relationTo: ['pages', 'posts'],
-      required: true,
+      required: !optional,
     },
     {
       name: 'url',
@@ -91,7 +98,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         condition: (_, siblingData) => siblingData?.type === 'custom',
       },
       label: L('Custom URL', 'آدرس سفارشی'),
-      required: true,
+      required: !optional,
     },
   ]
 
@@ -115,7 +122,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
             width: '50%',
           },
           label: L('Label', 'برچسب'),
-          required: true,
+          required: !optional,
         },
       ],
     })

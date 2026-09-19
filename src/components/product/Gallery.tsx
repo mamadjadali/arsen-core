@@ -17,9 +17,11 @@ type Props = {
   images: Media[]
   /** When set, jump main image to this media id if present in the gallery */
   preferredImageId?: string | null
+  /** Optional promo tag on the main image */
+  badge?: string | null
 }
 
-export function Gallery({ images, preferredImageId }: Props) {
+export function Gallery({ images, preferredImageId, badge }: Props) {
   const [current, setCurrent] = useState(0)
   const [api, setApi] = useState<CarouselApi>()
 
@@ -40,10 +42,16 @@ export function Gallery({ images, preferredImageId }: Props) {
   }
 
   const active = images[current] || images[0]
+  const badgeText = typeof badge === 'string' ? badge.trim() : ''
 
   return (
     <div>
       <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-lg border border-black/10 bg-[var(--color-canvas-soft)]">
+        {badgeText ? (
+          <span className="absolute top-3 right-3 z-10 rounded-sm bg-black px-2.5 py-1 text-xs font-medium text-[var(--color-canvas)]">
+            {badgeText}
+          </span>
+        ) : null}
         <MediaComponent
           resource={active}
           fill

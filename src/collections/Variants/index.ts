@@ -83,6 +83,28 @@ export const Variants: CollectionConfig = {
             description: L('e.g. 50ml, Blue', 'مثلاً ۵۰ میلی‌لیتر، آبی'),
           },
         },
+        {
+          name: 'hex',
+          type: 'text',
+          label: L('Swatch hex', 'هگز نمونه'),
+          admin: {
+            description: L(
+              'Optional. For Color options, used as a PLP swatch (e.g. #C4A574).',
+              'اختیاری. برای گزینهٔ رنگ، به‌عنوان نمونه‌رنگ در فهرست (مثلاً #C4A574).',
+            ),
+            condition: (_, siblingData) => {
+              const name = typeof siblingData?.name === 'string' ? siblingData.name : ''
+              return /رنگ|color|colour/i.test(name)
+            },
+          },
+          validate: (value: unknown) => {
+            if (value === null || value === undefined || value === '') return true
+            if (typeof value !== 'string' || !/^#([0-9A-Fa-f]{6})$/.test(value.trim())) {
+              return 'Enter a 6-digit hex color like #C4A574'
+            }
+            return true
+          },
+        },
       ],
     },
     {

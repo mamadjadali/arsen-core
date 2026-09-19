@@ -92,6 +92,91 @@
     width: 100vw;
     margin-inline: calc(50% - 50vw);
   }
+
+  /* PDP inquiry CTA — warm copper gradient from brand primary */
+  .inquiry-cta {
+    border-color: color-mix(in srgb, var(--brand-orange, #c77a38) 70%, #f0d4a8);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand-orange, #b25c28) 88%, #fff),
+      color-mix(in srgb, var(--brand-orange, #8f411c) 75%, #2a1208)
+    );
+    box-shadow: 0 14px 40px color-mix(in srgb, var(--brand-orange, #803714) 28%, transparent);
+    color: #fff;
+  }
+}
+
+/* Theme-aware product description + specs (plain CSS so vars always apply) */
+.product-desc-section {
+  margin-top: 2.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink, currentColor) 16%, transparent);
+  background: var(--color-canvas-soft, var(--color-canvas, transparent));
+  color: var(--color-ink, #111111);
+}
+
+.product-desc-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--theme-accent, var(--brand-orange, #f97c00));
+}
+
+.product-desc-eyebrow-rule {
+  display: inline-block;
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.product-desc-title {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--color-ink, #111111);
+}
+
+.product-desc-body {
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--color-body, var(--color-ink, #111111));
+}
+
+.product-desc-body p {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.product-desc-table {
+  margin: 0;
+  align-self: start;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink, currentColor) 20%, transparent);
+}
+
+.product-desc-row {
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.625rem;
+  padding-block: 0.875rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink, currentColor) 20%, transparent);
+}
+
+.product-desc-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-body, var(--color-ink, #111111));
+  opacity: 0.7;
+}
+
+.product-desc-value {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-ink, #111111);
 }
 
 :root {
@@ -101,7 +186,7 @@
   --card-foreground: var(--color-ink, #000000);
   --popover: var(--color-canvas, #ffffff);
   --popover-foreground: var(--color-ink, #000000);
-  --primary: var(--brand-orange, var(--color-primary, #f97c00));
+  --primary: var(--brand-orange, #f97c00);
   --primary-foreground: var(--color-on-primary, #ffffff);
   --secondary: oklch(97% 0 0deg);
   --secondary-foreground: var(--color-ink, #000000);
@@ -122,7 +207,7 @@
   --radius: 0px;
   --sidebar: var(--color-canvas-soft, #ffffff);
   --sidebar-foreground: var(--color-ink, #000000);
-  --sidebar-primary: var(--brand-orange, var(--color-primary, #f97c00));
+  --sidebar-primary: var(--brand-orange, #f97c00);
   --sidebar-primary-foreground: var(--color-on-primary, #ffffff);
   --sidebar-accent: var(--color-canvas-soft, #ffffff);
   --sidebar-accent-foreground: var(--color-ink, #000000);
