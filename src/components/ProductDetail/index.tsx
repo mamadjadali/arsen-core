@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
 
 import type { Media, Product, Variant } from '@/payload-types'
 
 import { Gallery } from '@/components/product/Gallery'
+import { InquiryContactDialog } from '@/components/InquiryContactDialog'
 import { cn } from '@/utilities/ui'
+import type { ContactMethodLike } from '@/utilities/contactMethod'
 import {
   formatPrice,
   getAvailabilityLabel,
@@ -17,19 +18,12 @@ import {
 type ProductDetailProps = {
   product: Product
   variants: Variant[]
-  inquiryPhone?: string | null
+  contactMethods?: ContactMethodLike[] | null
   inquiryButtonLabel?: string | null
 }
 
 const DEFAULT_PRICE_HINT = 'برای قیمت روز تماس بگیرید'
 const DEFAULT_INQUIRY_LABEL = 'استعلام قیمت و موجودی'
-
-function toTelHref(phone: string): string {
-  const trimmed = phone.trim()
-  if (!trimmed) return ''
-  if (trimmed.toLowerCase().startsWith('tel:')) return trimmed
-  return `tel:${trimmed.replace(/[^\d+]/g, '')}`
-}
 
 function optionGroups(variants: Variant[]): { name: string; values: string[] }[] {
   const map = new Map<string, Set<string>>()
@@ -83,7 +77,7 @@ function wouldBeUnavailable(
 export function ProductDetail({
   product,
   variants,
-  inquiryPhone,
+  contactMethods,
   inquiryButtonLabel,
 }: ProductDetailProps) {
   const groups = useMemo(() => optionGroups(variants), [variants])
@@ -151,13 +145,11 @@ export function ProductDetail({
     displaySku ? `کد ${displaySku}` : null,
   ].filter(Boolean)
 
-  const phone =
-    product.inquiryPhoneOverride?.trim() || inquiryPhone?.trim() || ''
-  const telHref = phone ? toTelHref(phone) : ''
   const ctaLabel = inquiryButtonLabel?.trim() || DEFAULT_INQUIRY_LABEL
   const priceHint =
     product.priceHint?.trim() || DEFAULT_PRICE_HINT
   const showPriceHint = !showPrice
+  const methods = contactMethods || []
 
   return (
     <>
@@ -224,21 +216,12 @@ export function ProductDetail({
           </div>
         </div>
 
-        {showPriceHint ? (
-          <a
-            href={telHref || '/contact'}
-            className="inquiry-cta inline-flex w-full min-h-[60px] items-center justify-center gap-8 rounded-lg border px-6 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
-          >
-            {ctaLabel}
-            <ArrowLeft className="size-4 shrink-0" aria-hidden />
-          </a>
-        ) : telHref ? (
-          <a
-            href={telHref}
-            className="inline-flex w-full min-h-12 items-center justify-center gap-2 rounded-md border border-black bg-black px-6 text-sm font-medium text-[var(--color-canvas)] transition-colors hover:bg-black/90"
-          >
-            {ctaLabel}
-          </a>
+        {showPriceHint || methods.length > 0 ? (
+          <InquiryContactDialog
+            label={ctaLabel}
+            methods={methods}
+            variant={showPriceHint ? 'inquiry' : 'solid'}
+          />
         ) : null}
 
         {groups.length > 0 ? (

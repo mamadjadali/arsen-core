@@ -86,6 +86,7 @@
   }
 
   /* Escape the site shell (max-w-[1400px] + border-x) to full viewport */
+  .site-shell-breakout,
   .custom-code-breakout {
     position: relative;
     z-index: 20;

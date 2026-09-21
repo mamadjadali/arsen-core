@@ -75,6 +75,7 @@ export interface Config {
     'product-categories': ProductCategory;
     products: Product;
     variants: Variant;
+    'contact-methods': ContactMethod;
     users: User;
     'analytics-events': AnalyticsEvent;
     redirects: Redirect;
@@ -105,6 +106,7 @@ export interface Config {
     'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
+    'contact-methods': ContactMethodsSelect<false> | ContactMethodsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'analytics-events': AnalyticsEventsSelect<false> | AnalyticsEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -1341,6 +1343,31 @@ export interface Variant {
   createdAt: string;
 }
 /**
+ * Channels shown in the product inquiry dialog (phone, WhatsApp, etc.).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-methods".
+ */
+export interface ContactMethod {
+  id: string;
+  /**
+   * e.g. Phone, WhatsApp
+   */
+  label: string;
+  type: 'phone' | 'whatsapp' | 'telegram' | 'instagram' | 'email' | 'url';
+  /**
+   * Phone number, @username, email, or full https:// URL.
+   */
+  value: string;
+  enabled?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sort?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * First-party pageviews and events. Ingested automatically — do not create manually.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1605,6 +1632,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'variants';
         value: string | Variant;
+      } | null)
+    | ({
+        relationTo: 'contact-methods';
+        value: string | ContactMethod;
       } | null)
     | ({
         relationTo: 'users';
@@ -2279,6 +2310,19 @@ export interface VariantsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-methods_select".
+ */
+export interface ContactMethodsSelect<T extends boolean = true> {
+  label?: T;
+  type?: T;
+  value?: T;
+  enabled?: T;
+  sort?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -2611,6 +2655,10 @@ export interface Header {
    */
   logoHeightDesktop?: number | null;
   brandName?: string | null;
+  /**
+   * When on, the header sits outside the framed content column so side borders do not run through it. Content stays aligned to the 1400px column.
+   */
+  breakoutLayout?: boolean | null;
   navItems?:
     | {
         link: {
@@ -2680,6 +2728,10 @@ export interface Footer {
    * Newsletter: Solace-style signup + large links. Columns: logo, tagline, multi-column links, legal row.
    */
   layout: 'newsletter' | 'columns';
+  /**
+   * When on, the footer sits outside the framed content column so side borders do not run through it.
+   */
+  breakoutLayout?: boolean | null;
   /**
    * Footer logo (independent from Header)
    */
@@ -3061,6 +3113,7 @@ export interface HeaderSelect<T extends boolean = true> {
   logoHeightMobile?: T;
   logoHeightDesktop?: T;
   brandName?: T;
+  breakoutLayout?: T;
   navItems?:
     | T
     | {
@@ -3103,6 +3156,7 @@ export interface HeaderSelect<T extends boolean = true> {
  */
 export interface FooterSelect<T extends boolean = true> {
   layout?: T;
+  breakoutLayout?: T;
   logo?: T;
   logoHeightMobile?: T;
   logoHeightDesktop?: T;

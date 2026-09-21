@@ -32,7 +32,7 @@ export const CustomCodeBlock: React.FC<
       {showHtml ? (
         <div
           className={
-            breakoutLayout ? 'custom-code-block custom-code-breakout' : 'custom-code-block'
+            breakoutLayout ? 'custom-code-block site-shell-breakout' : 'custom-code-block'
           }
           dangerouslySetInnerHTML={{ __html: sanitizeCustomHtml(html || '') }}
         />

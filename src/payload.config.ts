@@ -9,6 +9,7 @@ import { fa } from '@payloadcms/translations/languages/fa'
 import { AnalyticsEvents } from './collections/AnalyticsEvents'
 import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
+import { ContactMethods } from './collections/ContactMethods'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
@@ -83,6 +84,7 @@ export default buildConfig({
     ProductCategories,
     Products,
     Variants,
+    ContactMethods,
     Users,
     AnalyticsEvents,
   ],

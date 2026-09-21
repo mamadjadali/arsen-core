@@ -273,7 +273,7 @@ export async function seedProducts({
     },
   })
 
-  // Site-wide inquiry phone for PDP CTA
+  // Site-wide inquiry label + contact methods for PDP dialog
   try {
     await payload.updateGlobal({
       slug: 'settings',
@@ -288,6 +288,46 @@ export async function seedProducts({
   } catch (error) {
     payload.logger.warn(
       `Skipped settings inquiry phone: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
+  const contactMethodSeeds = [
+    { label: 'تماس تلفنی', type: 'phone' as const, value: '+989123456789', sort: 0 },
+    { label: 'واتساپ', type: 'whatsapp' as const, value: '+989123456789', sort: 1 },
+    { label: 'تلگرام', type: 'telegram' as const, value: 'ranjbar_clinic', sort: 2 },
+  ]
+
+  try {
+    const existingMethods = await payload.find({
+      collection: 'contact-methods',
+      limit: 100,
+      depth: 0,
+      overrideAccess: true,
+    })
+    for (const doc of existingMethods.docs) {
+      await payload.delete({
+        collection: 'contact-methods',
+        id: doc.id,
+        req,
+        overrideAccess: true,
+        context: { disableRevalidate: true },
+      })
+    }
+    for (const method of contactMethodSeeds) {
+      await payload.create({
+        collection: 'contact-methods',
+        data: {
+          ...method,
+          enabled: true,
+        },
+        req,
+        overrideAccess: true,
+        context: { disableRevalidate: true },
+      })
+    }
+  } catch (error) {
+    payload.logger.warn(
+      `Skipped contact methods seed: ${error instanceof Error ? error.message : String(error)}`,
     )
   }
 

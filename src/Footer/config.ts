@@ -35,6 +35,18 @@ export const Footer: GlobalConfig = {
       },
     },
     {
+      name: 'breakoutLayout',
+      type: 'checkbox',
+      label: L('Break out of site layout', 'خروج از چارچوب سایت'),
+      defaultValue: false,
+      admin: {
+        description: L(
+          'When on, the footer sits outside the framed content column so side borders do not run through it.',
+          'در صورت فعال بودن، فوتر خارج از ستون محتوایی قاب‌دار قرار می‌گیرد تا حاشیهٔ کناری از آن عبور نکند.',
+        ),
+      },
+    },
+    {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',

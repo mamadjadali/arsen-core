@@ -45,14 +45,26 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const decodedSlug = decodeURIComponent(slug)
   const url = '/products/' + decodedSlug
-  const [product, settings] = await Promise.all([
+  const [product, settings, contactMethodsResult] = await Promise.all([
     queryProductBySlug({ slug: decodedSlug }),
     getCachedGlobal('settings', 0)(),
+    (async () => {
+      const payload = await getPayload({ config: configPromise })
+      return payload.find({
+        collection: 'contact-methods',
+        where: { enabled: { equals: true } },
+        sort: 'sort',
+        limit: 50,
+        depth: 0,
+        overrideAccess: false,
+      })
+    })(),
   ])
 
   if (!product) return <PayloadRedirects url={url} />
 
   const variants = await queryVariantsForProduct(product.id)
+  const contactMethods = contactMethodsResult.docs
   const relatedProducts =
     product.relatedProducts?.filter(
       (related): related is Product => typeof related === 'object' && related !== null,
@@ -142,7 +154,7 @@ export default async function ProductPage({ params: paramsPromise }: Args) {
         <ProductDetail
           product={product}
           variants={variants}
-          inquiryPhone={settings.inquiryPhone}
+          contactMethods={contactMethods}
           inquiryButtonLabel={settings.inquiryButtonLabel}
         />
       </div>

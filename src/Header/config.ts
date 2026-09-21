@@ -59,6 +59,18 @@ export const Header: GlobalConfig = {
       defaultValue: 'SunoAI',
     },
     {
+      name: 'breakoutLayout',
+      type: 'checkbox',
+      label: L('Break out of site layout', 'خروج از چارچوب سایت'),
+      defaultValue: false,
+      admin: {
+        description: L(
+          'When on, the header sits outside the framed content column so side borders do not run through it. Content stays aligned to the 1400px column.',
+          'در صورت فعال بودن، هدر خارج از ستون محتوایی قاب‌دار قرار می‌گیرد تا حاشیهٔ کناری از آن عبور نکند. محتوا هم‌تراز ستون ۱۴۰۰ پیکسلی می‌ماند.',
+        ),
+      },
+    },
+    {
       name: 'navItems',
       type: 'array',
       label: L('Navigation items', 'آیتم‌های ناوبری'),

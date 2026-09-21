@@ -25,13 +25,17 @@ import './globals.css'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
-  const [theme, scripts, settings] = await Promise.all([
+  const [theme, scripts, settings, header, footer] = await Promise.all([
     getCachedGlobal('theme', 1)(),
     getCachedGlobal('scripts', 1)(),
     getCachedGlobal('settings', 1)(),
+    getCachedGlobal('header', 1)(),
+    getCachedGlobal('footer', 1)(),
   ])
   const tokens = resolveThemeTokens(theme)
   const appFont = fontOptions[isAppFont(tokens.fontBody) ? tokens.fontBody : defaultAppFont]
+  const headerBreakout = Boolean(header?.breakoutLayout)
+  const footerBreakout = Boolean(footer?.breakoutLayout)
 
   const faviconIco = resolveMediaUrl(settings?.faviconIco)
   const faviconSvg = resolveMediaUrl(settings?.faviconSvg)
@@ -79,11 +83,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <div className="flex min-h-screen w-full flex-col bg-[var(--color-canvas)]">
+            {headerBreakout ? <Header /> : null}
             <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col border-x border-black/10">
-              <Header />
+              {headerBreakout ? null : <Header />}
               <main className="flex flex-1 flex-col">{children}</main>
-              <Footer />
+              {footerBreakout ? null : <Footer />}
             </div>
+            {footerBreakout ? <Footer /> : null}
           </div>
         </Providers>
         <CustomScripts data={scripts} placement="body" />
