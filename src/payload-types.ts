@@ -247,6 +247,7 @@ export interface Page {
     | ContentBlock
     | ContactSectionBlock
     | CustomCodeBlock
+    | CategoriesCatalogBlock
     | MediaBlock
     | ArchiveBlock
     | FormBlock
@@ -885,6 +886,58 @@ export interface CustomCodeBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CategoriesCatalogBlock".
+ */
+export interface CategoriesCatalogBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Shown as the highlighted second line under the heading.
+   */
+  headingAccent?: string | null;
+  description?: string | null;
+  showIndex?: boolean | null;
+  indexLabel?: string | null;
+  toolbarLabel?: string | null;
+  /**
+   * Optional. Leave empty to show all product categories. Order is display order. Card image and title come from each category.
+   */
+  categories?: (string | ProductCategory)[] | null;
+  cardCtaLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'categoriesCatalog';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: string;
+  title: string;
+  /**
+   * Cover image for catalog cards (Categories Catalog block).
+   */
+  image?: (string | null) | Media;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  parent?: (string | null) | ProductCategory;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | ProductCategory;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
@@ -1129,30 +1182,6 @@ export interface ProductCarouselBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-categories".
- */
-export interface ProductCategory {
-  id: string;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  parent?: (string | null) | ProductCategory;
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | ProductCategory;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "brands".
  */
 export interface Brand {
@@ -1218,6 +1247,7 @@ export interface Product {
         | MediaBlock
         | CallToActionBlock
         | CustomCodeBlock
+        | CategoriesCatalogBlock
         | FeaturesBlock
         | FormBlock
         | SolaceCtaBlock
@@ -1753,6 +1783,7 @@ export interface PagesSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         contactSection?: T | ContactSectionBlockSelect<T>;
         customCode?: T | CustomCodeBlockSelect<T>;
+        categoriesCatalog?: T | CategoriesCatalogBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
@@ -1878,6 +1909,23 @@ export interface CustomCodeBlockSelect<T extends boolean = true> {
         strategy?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CategoriesCatalogBlock_select".
+ */
+export interface CategoriesCatalogBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  headingAccent?: T;
+  description?: T;
+  showIndex?: T;
+  indexLabel?: T;
+  toolbarLabel?: T;
+  categories?: T;
+  cardCtaLabel?: T;
   id?: T;
   blockName?: T;
 }
@@ -2207,6 +2255,7 @@ export interface BrandsSelect<T extends boolean = true> {
  */
 export interface ProductCategoriesSelect<T extends boolean = true> {
   title?: T;
+  image?: T;
   generateSlug?: T;
   slug?: T;
   parent?: T;
@@ -2248,6 +2297,7 @@ export interface ProductsSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         customCode?: T | CustomCodeBlockSelect<T>;
+        categoriesCatalog?: T | CategoriesCatalogBlockSelect<T>;
         features?: T | FeaturesBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         solaceCta?: T | SolaceCtaBlockSelect<T>;
@@ -2725,9 +2775,9 @@ export interface Header {
 export interface Footer {
   id: string;
   /**
-   * Newsletter: Solace-style signup + large links. Columns: logo, tagline, multi-column links, legal row.
+   * Newsletter: Solace signup. Columns: logo + link grid. Contact bar: logo, phones, addresses, flat nav.
    */
-  layout: 'newsletter' | 'columns';
+  layout: 'newsletter' | 'columns' | 'contact';
   /**
    * When on, the footer sits outside the framed content column so side borders do not run through it.
    */
@@ -2752,6 +2802,36 @@ export interface Footer {
    * Short slogan under the brand (Columns layout)
    */
   tagline?: string | null;
+  /**
+   * Shown in the Contact bar layout. Number becomes a tel: link.
+   */
+  phones?:
+    | {
+        /**
+         * e.g. Phone 1
+         */
+        label?: string | null;
+        number: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown in the Contact bar layout. Optional map URL opens in a new tab.
+   */
+  addresses?:
+    | {
+        /**
+         * e.g. Store 1
+         */
+        label?: string | null;
+        text: string;
+        /**
+         * Optional. If set, the address becomes a link.
+         */
+        mapUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   newsletterHeading?: string | null;
   newsletterPlaceholder?: string | null;
   /**
@@ -2816,7 +2896,7 @@ export interface Footer {
       }[]
     | null;
   /**
-   * Legacy simple nav links (optional)
+   * Flat nav links for the Contact bar layout (and legacy simple nav).
    */
   navItems?:
     | {
@@ -3162,6 +3242,21 @@ export interface FooterSelect<T extends boolean = true> {
   logoHeightDesktop?: T;
   brandName?: T;
   tagline?: T;
+  phones?:
+    | T
+    | {
+        label?: T;
+        number?: T;
+        id?: T;
+      };
+  addresses?:
+    | T
+    | {
+        label?: T;
+        text?: T;
+        mapUrl?: T;
+        id?: T;
+      };
   newsletterHeading?: T;
   newsletterPlaceholder?: T;
   newsletterForm?: T;

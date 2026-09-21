@@ -4,6 +4,7 @@ import type { Page, Product } from '@/payload-types'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { CategoriesCatalogBlock } from '@/blocks/CategoriesCatalog/Component'
 import { ContactSectionBlock } from '@/blocks/ContactSection/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { CustomCodeBlock } from '@/blocks/CustomCode/Component'
@@ -18,6 +19,7 @@ import { SolaceCtaBlock } from '@/blocks/SolaceCta/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
+  categoriesCatalog: CategoriesCatalogBlock,
   contactSection: ContactSectionBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
@@ -42,6 +44,7 @@ const noAutoMarginBlocks = new Set([
   'solaceCta',
   'customCode',
   'productCarousel',
+  'categoriesCatalog',
 ])
 
 type LayoutBlock = NonNullable<Page['layout']>[number] | NonNullable<Product['layout']>[number]

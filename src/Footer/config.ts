@@ -26,11 +26,15 @@ export const Footer: GlobalConfig = {
           label: L('Columns (brand + link grid)', 'ستون‌ها (برند + شبکه لینک)'),
           value: 'columns',
         },
+        {
+          label: L('Contact bar (logo + phones + addresses)', 'نوار تماس (لوگو + تلفن + آدرس)'),
+          value: 'contact',
+        },
       ],
       admin: {
         description: L(
-          'Newsletter: Solace-style signup + large links. Columns: logo, tagline, multi-column links, legal row.',
-          'خبرنامه: ثبت‌نام به سبک سولس + لینک‌های بزرگ. ستون‌ها: لوگو، شعار، لینک‌های چندستونه، ردیف حقوقی.',
+          'Newsletter: Solace signup. Columns: logo + link grid. Contact bar: logo, phones, addresses, flat nav.',
+          'خبرنامه: ثبت‌نام سولس. ستون‌ها: لوگو + شبکه لینک. نوار تماس: لوگو، تلفن، آدرس، ناوبری ساده.',
         ),
       },
     },
@@ -108,6 +112,83 @@ export const Footer: GlobalConfig = {
           'شعار کوتاه زیر برند (چیدمان ستون‌ها)',
         ),
       },
+    },
+    {
+      name: 'phones',
+      type: 'array',
+      label: L('Phones', 'تلفن‌ها'),
+      labels: {
+        singular: L('Phone', 'تلفن'),
+        plural: L('Phones', 'تلفن‌ها'),
+      },
+      admin: {
+        condition: (_, siblingData) => siblingData?.layout === 'contact',
+        initCollapsed: true,
+        description: L(
+          'Shown in the Contact bar layout. Number becomes a tel: link.',
+          'در چیدمان نوار تماس نمایش داده می‌شود. شماره به لینک tel: تبدیل می‌شود.',
+        ),
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          label: L('Label', 'برچسب'),
+          admin: {
+            description: L('e.g. Phone 1', 'مثلاً شماره تماس ۱'),
+          },
+        },
+        {
+          name: 'number',
+          type: 'text',
+          label: L('Number', 'شماره'),
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'addresses',
+      type: 'array',
+      label: L('Addresses', 'آدرس‌ها'),
+      labels: {
+        singular: L('Address', 'آدرس'),
+        plural: L('Addresses', 'آدرس‌ها'),
+      },
+      admin: {
+        condition: (_, siblingData) => siblingData?.layout === 'contact',
+        initCollapsed: true,
+        description: L(
+          'Shown in the Contact bar layout. Optional map URL opens in a new tab.',
+          'در چیدمان نوار تماس نمایش داده می‌شود. آدرس نقشه اختیاری در تب جدید باز می‌شود.',
+        ),
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          label: L('Label', 'برچسب'),
+          admin: {
+            description: L('e.g. Store 1', 'مثلاً آدرس فروشگاه ۱'),
+          },
+        },
+        {
+          name: 'text',
+          type: 'textarea',
+          label: L('Address text', 'متن آدرس'),
+          required: true,
+        },
+        {
+          name: 'mapUrl',
+          type: 'text',
+          label: L('Map URL', 'آدرس نقشه'),
+          admin: {
+            description: L(
+              'Optional. If set, the address becomes a link.',
+              'اختیاری. در صورت پر بودن، آدرس به لینک تبدیل می‌شود.',
+            ),
+          },
+        },
+      ],
     },
     {
       name: 'newsletterHeading',
@@ -253,8 +334,8 @@ export const Footer: GlobalConfig = {
       maxRows: 6,
       admin: {
         description: L(
-          'Legacy simple nav links (optional)',
-          'لینک‌های ناوبری ساده قدیمی (اختیاری)',
+          'Flat nav links for the Contact bar layout (and legacy simple nav).',
+          'لینک‌های ناوبری ساده برای چیدمان نوار تماس (و ناوبری قدیمی).',
         ),
         initCollapsed: true,
         components: {

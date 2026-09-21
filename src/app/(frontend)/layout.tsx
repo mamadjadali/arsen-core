@@ -82,11 +82,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
 
-          <div className="flex min-h-screen w-full flex-col overflow-x-clip bg-[var(--color-canvas)]">
+          <div className="flex min-h-screen w-full flex-col bg-[var(--color-canvas)]">
             {headerBreakout ? <Header /> : null}
             <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col border-x border-black/10">
               {headerBreakout ? null : <Header />}
-              <main className="flex min-w-0 flex-1 flex-col overflow-x-clip">{children}</main>
+              <main className="flex min-w-0 flex-1 flex-col">{children}</main>
               {footerBreakout ? null : <Footer />}
             </div>
             {footerBreakout ? <Footer /> : null}

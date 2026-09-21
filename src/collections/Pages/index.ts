@@ -4,6 +4,7 @@ import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
+import { CategoriesCatalog } from '../../blocks/CategoriesCatalog/config'
 import { ContactSection } from '../../blocks/ContactSection/config'
 import { Content } from '../../blocks/Content/config'
 import { CustomCode } from '../../blocks/CustomCode/config'
@@ -93,6 +94,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Content,
                 ContactSection,
                 CustomCode,
+                CategoriesCatalog,
                 MediaBlock,
                 Archive,
                 FormBlock,

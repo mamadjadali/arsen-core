@@ -18,6 +18,7 @@ import {
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { CallToAction } from '../../blocks/CallToAction/config'
+import { CategoriesCatalog } from '../../blocks/CategoriesCatalog/config'
 import { Content } from '../../blocks/Content/config'
 import { CustomCode } from '../../blocks/CustomCode/config'
 import { Features } from '../../blocks/Features/config'
@@ -202,6 +203,7 @@ export const Products: CollectionConfig<'products'> = {
                 MediaBlock,
                 CallToAction,
                 CustomCode,
+                CategoriesCatalog,
                 Features,
                 FormBlock,
                 SolaceCta,

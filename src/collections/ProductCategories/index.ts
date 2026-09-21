@@ -29,6 +29,18 @@ export const ProductCategories: CollectionConfig = {
       label: L('Title', 'عنوان'),
       required: true,
     },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      label: L('Image', 'تصویر'),
+      admin: {
+        description: L(
+          'Cover image for catalog cards (Categories Catalog block).',
+          'تصویر کاور کارت‌های کاتالوگ (بلوک کاتالوگ دسته‌بندی‌ها).',
+        ),
+      },
+    },
     slugField({
       position: undefined,
       overrides: (field) => {
