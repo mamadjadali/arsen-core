@@ -85,13 +85,18 @@
     }
   }
 
-  /* Escape the site shell (max-w-[1400px] + border-x) to full viewport */
+  /* Escape the site shell (max-w-[1400px] + border-x) to full viewport.
+     Avoid bare 100vw + negative margins alone — that overflows past the
+     scrollbar gutter and causes a horizontal scrollbar. */
   .site-shell-breakout,
   .custom-code-breakout {
     position: relative;
     z-index: 20;
+    left: 50%;
     width: 100vw;
-    margin-inline: calc(50% - 50vw);
+    max-width: 100vw;
+    translate: -50% 0;
+    margin-inline: 0;
   }
 
   /* PDP inquiry CTA — warm copper gradient from brand primary */
