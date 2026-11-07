@@ -1,6 +1,5 @@
 {
-  "lastPublishedVersion": null,
-  "lastPublishedAt": null,
-  "nextVersion": "4.6.2",
-  "note": "Baseline corrected to 4.6.1; current package.json bumped to 4.6.2"
+  "lastPublishedVersion": "4.6.3",
+  "lastPublishedAt": "2026-11-07T13:12:52.904Z",
+  "nextVersion": "4.6.3"
 }
