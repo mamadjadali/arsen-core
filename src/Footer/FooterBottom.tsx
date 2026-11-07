@@ -30,15 +30,18 @@ export function FooterBottom({
 
   return (
     <div className={cn(className)}>
-      {showDivider && <div className="mb-8 border-t border-border" />}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {showDivider && <div className="mb-4 border-t border-border" />}
+      <div
+        className={cn(
+          'flex flex-col items-center gap-3 text-center',
+          hasLegal && 'sm:flex-row sm:justify-between sm:text-start',
+        )}
+      >
         {hasCopyright ? (
           <p className={cn('text-sm text-muted-foreground', copyrightClassName)}>{copyright}</p>
-        ) : (
-          <span />
-        )}
+        ) : null}
         {hasLegal ? (
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:justify-end">
             {links.map(({ link }, i) => (
               <li key={i}>
                 <CMSLink

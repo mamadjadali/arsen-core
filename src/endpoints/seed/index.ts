@@ -361,48 +361,32 @@ export const seed = async ({
         disableRevalidate: true,
       },
       data: {
-        brandName: 'دکتر مریم رنجبر',
+        brandName: '',
+        breakoutLayout: true,
         navItems: [
           {
             link: {
               type: 'custom',
-              label: 'خدمات',
-              url: '#services',
+              label: 'سبد ها',
+              url: '/bundles',
             },
           },
           {
             link: {
               type: 'custom',
-              label: 'مسیر مراقبت',
-              url: '#journey',
-            },
-          },
-          {
-            link: {
-              type: 'custom',
-              label: 'مقالات',
-              url: '/posts',
-            },
-          },
-          {
-            link: {
-              type: 'reference',
-              label: 'تماس',
-              reference: {
-                relationTo: 'pages',
-                value: contactPage.id,
-              },
+              label: 'محصولات',
+              url: '/products',
             },
           },
         ],
         secondaryCta: {
           type: 'custom',
-          label: 'مشاوره',
+          label: '',
           url: '/contact',
         },
         primaryCta: {
           type: 'custom',
-          label: 'رزرو نوبت',
+          label: 'تماس با فروش',
           url: '/contact',
         },
       },
@@ -414,65 +398,57 @@ export const seed = async ({
       },
       data: {
         layout: 'columns',
-        brandName: 'کلینیک دکتر رنجبر',
-        tagline: 'مراقبت پوستی تخصصی با رویکرد علمی و شخصی‌سازی‌شده',
+        brandName: '',
+        tagline: '',
         copyright: '© ۱۴۰۵ کلینیک پوست دکتر مریم رنجبر — همهٔ حقوق محفوظ است',
-        newsletterHeading: 'خبرنامهٔ پوست‌آگاهی',
-        newsletterPlaceholder: 'ایمیل شما',
+        phones: [],
+        addresses: [],
         linkGroups: [
           {
-            title: 'برند',
+            title: 'دسترسی سریع',
             links: [
-              { link: { type: 'custom', label: 'دربارهٔ دکتر', url: '#' } },
-              { link: { type: 'custom', label: 'خدمات', url: '#services' } },
-              { link: { type: 'custom', label: 'مقالات', url: '/posts' } },
-              {
-                link: {
-                  type: 'reference',
-                  label: 'تماس',
-                  reference: {
-                    relationTo: 'pages',
-                    value: contactPage.id,
-                  },
-                },
-              },
+              { link: { type: 'custom', label: 'فروشگاه موبایل ۱۴۰', url: '/' } },
+              { link: { type: 'custom', label: 'بلاگ', url: '/posts' } },
+              { link: { type: 'custom', label: 'فرصت‌های شغلی', url: '#' } },
+              { link: { type: 'custom', label: 'خرید گوشی', url: '/products' } },
+              { link: { type: 'custom', label: 'گوشی سامسونگ', url: '/products?brand=samsung' } },
+              { link: { type: 'custom', label: 'گوشی آیفون', url: '/products' } },
+              { link: { type: 'custom', label: 'گوشی شیائومی', url: '/products?brand=xiaomi' } },
             ],
           },
           {
-            title: 'خدمات',
+            title: 'پرفروش‌ترین محصولات',
             links: [
-              { link: { type: 'custom', label: 'مشاوره پوست', url: '#services' } },
-              { link: { type: 'custom', label: 'لیزر', url: '#' } },
-              { link: { type: 'custom', label: 'تزریقات زیبایی', url: '#' } },
-              { link: { type: 'custom', label: 'مراقبت بعد از درمان', url: '#' } },
+              { link: { type: 'custom', label: 'گوشی سامسونگ A54 5G', url: '/products' } },
+              { link: { type: 'custom', label: 'گوشی سامسونگ A14', url: '/products' } },
+              { link: { type: 'custom', label: 'آیفون ۱۳', url: '/products' } },
+              { link: { type: 'custom', label: 'گوشی شیائومی Poco C40', url: '/products' } },
+              { link: { type: 'custom', label: 'گوشی شیائومی Poco C31', url: '/products' } },
+              { link: { type: 'custom', label: 'کنسول پلی استیشن ۵', url: '#' } },
+              { link: { type: 'custom', label: 'هندزفری انکر', url: '#' } },
             ],
           },
           {
-            title: 'پشتیبانی',
+            title: 'خدمات مشتریان',
             links: [
+              { link: { type: 'custom', label: 'پنل همکار', url: '/bundles' } },
+              { link: { type: 'custom', label: 'بیمه موبایل دیگارد', url: '#' } },
               { link: { type: 'custom', label: 'سوالات متداول', url: '#' } },
-              { link: { type: 'custom', label: 'آمادگی قبل از درمان', url: '#' } },
-              { link: { type: 'custom', label: 'نوبت‌دهی', url: '/contact' } },
-              { link: { type: 'custom', label: 'قوانین نوبت', url: '#' } },
+              { link: { type: 'custom', label: 'درباره ما', url: '#' } },
+              { link: { type: 'custom', label: 'تماس با ما', url: '/contact' } },
+              { link: { type: 'custom', label: 'قوانین و مقررات', url: '#' } },
+              { link: { type: 'custom', label: 'آموزش ریجستری', url: '#' } },
             ],
           },
           {
-            title: 'منابع',
+            title: 'راهنمای قبل از خرید',
             links: [
-              { link: { type: 'custom', label: 'مقالات آموزشی', url: '/posts' } },
-              { link: { type: 'custom', label: 'راهنمای مراقبت', url: '#' } },
-              { link: { type: 'custom', label: 'نمونه کارها', url: '#' } },
+              { link: { type: 'custom', label: 'خرید اقساطی', url: '#' } },
+              { link: { type: 'custom', label: 'رویه‌های ارسال سفارش', url: '#' } },
+              { link: { type: 'custom', label: 'روش‌های پرداخت سفارش', url: '#' } },
+              { link: { type: 'custom', label: 'قوانین همکاران', url: '#' } },
             ],
           },
-        ],
-        legalLinks: [
-          { link: { type: 'custom', label: 'قوانین و شرایط', url: '#' } },
-          { link: { type: 'custom', label: 'حریم خصوصی', url: '#' } },
-        ],
-        socialLinks: [
-          { platform: 'instagram', url: '#' },
-          { platform: 'x', url: '#' },
-          { platform: 'youtube', url: '#' },
         ],
         navItems: [
           {
@@ -491,13 +467,12 @@ export const seed = async ({
         disableRevalidate: true,
       },
       data: {
-        preset: 'solace',
-        colorScheme: null,
-        orange: null,
-        black: null,
-        canvas: null,
-        radiusMd: null,
-        font: 'yekanBakh',
+        preset: 'zapier',
+        colorScheme: 'light',
+        orange: '#203a84',
+        black: '#203a84',
+        canvas: '',
+        font: 'dana',
       },
     }),
     payload.updateGlobal({
@@ -538,10 +513,16 @@ export const seed = async ({
         aiApiKey: null,
         aiModel: 'gpt-4o-mini',
         analyticsEnabled: true,
+        inquiryPhone: '09122779372',
+        inquiryButtonLabel: 'استعلام قیمت و موجودی',
         ...emptyAiPromptSeedData(),
       },
     }),
   ])
+
+  payload.logger.info('— Seeding catalog (products + live bundles)…')
+  const { seedProducts } = await import('./seedProducts')
+  await seedProducts({ payload, req })
 
   payload.logger.info('Seeded database successfully!')
 }

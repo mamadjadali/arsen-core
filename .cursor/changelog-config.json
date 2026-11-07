@@ -1,0 +1,61 @@
+{
+  "endpoint": "https://doc.m140.ir/api/changelogs/publish",
+  "projectId": "6a832f3a3736674af446868d",
+  "productPurpose": "B2B live-bundle sell (کاتالوگ و سبد زنده B2B)",
+  "labels": {
+    "securitygate": {
+      "id": "6ae1b6312dde05b6ac3bc490",
+      "fa": "Security - Gate",
+      "en": "Security - Gate",
+      "slug": "securitygate"
+    },
+    "infrastructure": {
+      "id": "6a968a0c2dde05b6ac3b514d",
+      "fa": "زیرساخت",
+      "en": "Infrastructure",
+      "slug": "infrastructure"
+    },
+    "security": {
+      "id": "6a859c7ad7a28365396e9f2b",
+      "fa": "Security - Auth",
+      "en": "Security - Auth",
+      "slug": "security"
+    },
+    "api": {
+      "id": "6a859c4ad7a28365396e9f04",
+      "fa": "API",
+      "en": "API",
+      "slug": "api"
+    },
+    "refactore": {
+      "id": "6a859c38d7a28365396e9ee6",
+      "fa": "ریفکتور",
+      "en": "Refactor",
+      "slug": "refactore"
+    },
+    "staging": {
+      "id": "6a859c19d7a28365396e9ec1",
+      "fa": "استیجینگ",
+      "en": "Staging",
+      "slug": "staging"
+    },
+    "improve": {
+      "id": "6a8454712460a4315d109796",
+      "fa": "بهبود",
+      "en": "Improve",
+      "slug": "improve"
+    },
+    "bug": {
+      "id": "6a843a522460a4315d109536",
+      "fa": "حل باگ",
+      "en": "Bugfix",
+      "slug": "bug"
+    },
+    "prod": {
+      "id": "6a843a392460a4315d10951d",
+      "fa": "پروداکشن",
+      "en": "Production",
+      "slug": "prod"
+    }
+  }
+}

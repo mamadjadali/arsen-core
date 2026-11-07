@@ -273,12 +273,12 @@ export async function seedProducts({
     },
   })
 
-  // Site-wide inquiry label + contact methods for PDP dialog
+  // Site-wide inquiry label + contact methods (from local defaults)
   try {
     await payload.updateGlobal({
       slug: 'settings',
       data: {
-        inquiryPhone: '+989123456789',
+        inquiryPhone: '09122779372',
         inquiryButtonLabel: 'استعلام قیمت و موجودی',
       },
       req,
@@ -292,9 +292,16 @@ export async function seedProducts({
   }
 
   const contactMethodSeeds = [
-    { label: 'تماس تلفنی', type: 'phone' as const, value: '+989123456789', sort: 0 },
-    { label: 'واتساپ', type: 'whatsapp' as const, value: '+989123456789', sort: 1 },
-    { label: 'تلگرام', type: 'telegram' as const, value: 'ranjbar_clinic', sort: 2 },
+    { label: 'خط۱', type: 'phone' as const, value: '۰۹۱۲۲۷۷۹۳۷۲', sort: 0 },
+    { label: 'خط2', type: 'phone' as const, value: '۰۹۱۲۵۲۷۱۴۳۲', sort: 1 },
+    { label: 'واتساپ', type: 'whatsapp' as const, value: '@Kasra_gh0', sort: 2 },
+    { label: 'تلگرام', type: 'telegram' as const, value: '@Kasra_gh0', sort: 3 },
+    {
+      label: 'اینستاگرام',
+      type: 'instagram' as const,
+      value: 'https://www.instagram.com/mohammad_ghanaatjoo',
+      sort: 4,
+    },
   ]
 
   try {
@@ -376,6 +383,15 @@ export async function seedProducts({
     data: {
       title: 'افاکلار دوئو+',
       generateSlug: false,
+      productId: 'M140-EFFACLAR-DUO',
+      printName: 'افاکلار دوئو پلاس',
+      brandKey: 'la-roche-posay',
+      categoryKey: 'serum',
+      active: true,
+      colors: [
+        { name: 'بی‌رنگ', sku: 'LRP-ED-CLR', b2bPrice: 1650000, remains: 24 },
+        { name: 'شفاف', sku: 'LRP-ED-CLR2', b2bPrice: 1650000, remains: 12 },
+      ],
       summary: 'مراقبت ضدجوش روزانه برای پوست مستعد آکنه',
       description: richText(
         'فرمول دوتایی برای کاهش جوش‌های التهابی و جلوگیری از بازگشت لک. مناسب استفاده صبح و شب تحت نظر پزشک.',
@@ -528,6 +544,16 @@ export async function seedProducts({
     data: {
       title: 'چرم طرح داکوتا — عسلی',
       generateSlug: false,
+      productId: 'M140-DAKOTA-214',
+      printName: 'داکوتا عسلی',
+      brandKey: 'dakota',
+      categoryKey: 'synthetic-leather',
+      active: true,
+      colors: [
+        { name: 'عسلی', sku: 'DK-214-HN', variantId: 'v-honey', b2bPrice: 420000, remains: 80 },
+        { name: 'زغالی', sku: 'DK-214-CH', variantId: 'v-charcoal', b2bPrice: 420000, remains: 45 },
+        { name: 'کرم', sku: 'DK-214-CR', variantId: 'v-cream', b2bPrice: 410000, remains: 30 },
+      ],
       summary:
         'چرم مصنوعی با بافت دانه‌دار، انعطاف مناسب و سطح مقاوم؛ انتخابی کاربردی برای روکش صندلی و بخش‌های داخلی خودرو.',
       description: richText(
@@ -773,55 +799,158 @@ export async function seedProducts({
     context: { disableRevalidate: true },
   })
 
-  // Ensure header has a products nav link (preserve required CTA fields)
+  // Header / footer / theme — match local defaults
   try {
-    const header = await payload.findGlobal({ slug: 'header', depth: 0 })
-    const navItems = header.navItems || []
-    const hasProductsNav = navItems.some(
-      (item) =>
-        item?.link?.url === '/products' ||
-        item?.link?.label === 'محصولات' ||
-        item?.link?.label === 'Products',
-    )
-
-    if (!hasProductsNav) {
-      await payload.updateGlobal({
-        slug: 'header',
-        data: {
-          navItems: [
-            ...navItems,
-            {
-              link: {
-                type: 'custom',
-                label: 'محصولات',
-                url: '/products',
-              },
+    await payload.updateGlobal({
+      slug: 'header',
+      data: {
+        brandName: '',
+        breakoutLayout: true,
+        navItems: [
+          {
+            link: {
+              type: 'custom',
+              label: 'سبد ها',
+              url: '/bundles',
             },
-          ],
-          secondaryCta: header.secondaryCta || {
-            type: 'custom',
-            label: 'مشاوره',
-            url: '/contact',
           },
-          primaryCta: header.primaryCta || {
-            type: 'custom',
-            label: 'رزرو نوبت',
-            url: '/contact',
+          {
+            link: {
+              type: 'custom',
+              label: 'محصولات',
+              url: '/products',
+            },
           },
+        ],
+        secondaryCta: {
+          type: 'custom',
+          label: '',
+          url: '/contact',
         },
-        req,
-        overrideAccess: true,
-        context: { disableRevalidate: true },
-      })
-    }
+        primaryCta: {
+          type: 'custom',
+          label: 'تماس با فروش',
+          url: '/contact',
+        },
+      },
+      req,
+      overrideAccess: true,
+      context: { disableRevalidate: true },
+    })
   } catch (error) {
     payload.logger.warn(
-      `Skipped header nav update: ${error instanceof Error ? error.message : String(error)}`,
+      `Skipped header update: ${error instanceof Error ? error.message : String(error)}`,
     )
   }
 
+  try {
+    const footerLink = (label: string, url = '#') => ({
+      link: { type: 'custom' as const, label, url },
+    })
+
+    await payload.updateGlobal({
+      slug: 'footer',
+      data: {
+        layout: 'columns',
+        brandName: '',
+        tagline: '',
+        copyright: '© ۱۴۰۵ کلینیک پوست دکتر مریم رنجبر — همهٔ حقوق محفوظ است',
+        phones: [],
+        addresses: [],
+        linkGroups: [
+          {
+            title: 'دسترسی سریع',
+            links: [
+              footerLink('فروشگاه موبایل ۱۴۰', '/'),
+              footerLink('بلاگ', '/posts'),
+              footerLink('فرصت‌های شغلی'),
+              footerLink('خرید گوشی', '/products'),
+              footerLink('گوشی سامسونگ', '/products?brand=samsung'),
+              footerLink('گوشی آیفون', '/products'),
+              footerLink('گوشی شیائومی', '/products?brand=xiaomi'),
+            ],
+          },
+          {
+            title: 'پرفروش‌ترین محصولات',
+            links: [
+              footerLink('گوشی سامسونگ A54 5G', '/products'),
+              footerLink('گوشی سامسونگ A14', '/products'),
+              footerLink('آیفون ۱۳', '/products'),
+              footerLink('گوشی شیائومی Poco C40', '/products'),
+              footerLink('گوشی شیائومی Poco C31', '/products'),
+              footerLink('کنسول پلی استیشن ۵'),
+              footerLink('هندزفری انکر'),
+            ],
+          },
+          {
+            title: 'خدمات مشتریان',
+            links: [
+              footerLink('پنل همکار', '/bundles'),
+              footerLink('بیمه موبایل دیگارد'),
+              footerLink('سوالات متداول'),
+              footerLink('درباره ما'),
+              footerLink('تماس با ما', '/contact'),
+              footerLink('قوانین و مقررات'),
+              footerLink('آموزش ریجستری'),
+            ],
+          },
+          {
+            title: 'راهنمای قبل از خرید',
+            links: [
+              footerLink('خرید اقساطی'),
+              footerLink('رویه‌های ارسال سفارش'),
+              footerLink('روش‌های پرداخت سفارش'),
+              footerLink('قوانین همکاران'),
+            ],
+          },
+        ],
+        navItems: [
+          {
+            link: {
+              type: 'custom',
+              label: 'ادمین',
+              url: '/admin',
+            },
+          },
+        ],
+      },
+      req,
+      overrideAccess: true,
+      context: { disableRevalidate: true },
+    })
+  } catch (error) {
+    payload.logger.warn(
+      `Skipped footer update: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
+  try {
+    await payload.updateGlobal({
+      slug: 'theme',
+      data: {
+        preset: 'zapier',
+        colorScheme: 'light',
+        orange: '#203a84',
+        black: '#203a84',
+        canvas: '',
+        font: 'dana',
+      },
+      req,
+      overrideAccess: true,
+      context: { disableRevalidate: true },
+    })
+  } catch (error) {
+    payload.logger.warn(
+      `Skipped theme update: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
+  // Phone match-surface products + partner-phone-mix live bundle (local default)
+  const { seedPhoneBundle } = await import('./seedPhoneBundle')
+  await seedPhoneBundle({ payload, req })
+
   payload.logger.info(
-    `Catalog seed done: brands/categories + ${seedSlugs.length} products, ${variantSpecs.length} variants.`,
+    `Catalog seed done: brands/categories + ${seedSlugs.length} products, ${variantSpecs.length} variants + phone bundle.`,
   )
-  payload.logger.info('Try /products/dakota-honey-leather')
+  payload.logger.info('Try /products, /bundles, /bundles/partner-phone-mix')
 }

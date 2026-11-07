@@ -29,6 +29,7 @@ import { SolaceCta } from '../../blocks/SolaceCta/config'
 import { availabilityFieldBase } from '@/fields/availability'
 import { L } from '@/i18n/label'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { deriveSwatchesFromColors, normalizeProductMatchFields } from './hooks/matchSurface'
 import { revalidateDelete, revalidateProduct } from './hooks/revalidateProduct'
 
 export const Products: CollectionConfig<'products'> = {
@@ -48,20 +49,26 @@ export const Products: CollectionConfig<'products'> = {
     slug: true,
     summary: true,
     featuredImage: true,
+    imageUrl: true,
     brand: true,
     categories: true,
     price: true,
     compareAtPrice: true,
     currencyLabel: true,
     availability: true,
+    productId: true,
+    printName: true,
+    active: true,
+    colors: true,
     meta: {
       image: true,
       description: true,
     },
   },
+  indexes: [{ fields: ['active', 'productId'] }],
   admin: {
     group: L('Catalog', 'کاتالوگ'),
-    defaultColumns: ['title', 'brand', 'availability', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'productId', 'brand', 'active', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
@@ -349,6 +356,141 @@ export const Products: CollectionConfig<'products'> = {
           ],
         },
         {
+          label: L('Match / sync', 'تطبیق / همگام‌سازی'),
+          fields: [
+            {
+              name: 'printName',
+              type: 'text',
+              label: L('Print name', 'نام چاپ'),
+              admin: {
+                description: L(
+                  'Optional buyer-facing override (live bundles / print). Title stays the canonical name.',
+                  'نام جایگزین برای خریدار (سبد زنده / چاپ). عنوان همان نام اصلی می‌ماند.',
+                ),
+              },
+            },
+            {
+              name: 'imageUrl',
+              type: 'text',
+              label: L('Image URL', 'آدرس تصویر'),
+              admin: {
+                description: L(
+                  'Preferred for API/storefront. When set, overrides the featured image upload.',
+                  'ترجیحی برای API و ویترین. در صورت پر بودن، تصویر آپلودشده را نادیده می‌گیرد.',
+                ),
+              },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'brandKey',
+                  type: 'text',
+                  label: L('Brand key', 'کلید برند'),
+                  admin: {
+                    width: '50%',
+                    description: L(
+                      'External brand id or label (e.g. Mobile140). Separate from storefront Brand relation.',
+                      'شناسه یا برچسب خارجی برند (مثلاً موبایل۱۴۰). جدا از رابطه برند ویترین.',
+                    ),
+                  },
+                },
+                {
+                  name: 'categoryKey',
+                  type: 'text',
+                  label: L('Category key', 'کلید دسته'),
+                  admin: {
+                    width: '50%',
+                    description: L(
+                      'External category id or label. Separate from storefront Categories.',
+                      'شناسه یا برچسب خارجی دسته. جدا از دسته‌بندی‌های ویترین.',
+                    ),
+                  },
+                },
+              ],
+            },
+            {
+              name: 'colors',
+              type: 'array',
+              label: L('Colors (match)', 'رنگ‌ها (تطبیق)'),
+              labels: {
+                singular: L('Color', 'رنگ'),
+                plural: L('Colors', 'رنگ‌ها'),
+              },
+              admin: {
+                description: L(
+                  'Match-surface variants for live bundles. colorName on a bundle line must match name here (or Mix).',
+                  'گونه‌های سطح تطبیق برای سبد زنده. colorName در خط سبد باید با name اینجا یکی باشد (یا Mix).',
+                ),
+                initCollapsed: true,
+              },
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  label: L('Name', 'نام'),
+                  required: true,
+                  admin: {
+                    description: L('e.g. مشکی — pairs with bundle colorName', 'مثلاً مشکی — متناظر با colorName سبد'),
+                  },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'sku',
+                      type: 'text',
+                      label: L('SKU', 'کد کالا'),
+                      index: true,
+                      admin: { width: '33%' },
+                    },
+                    {
+                      name: 'gtin',
+                      type: 'text',
+                      label: L('GTIN', 'GTIN'),
+                      admin: { width: '33%' },
+                    },
+                    {
+                      name: 'variantId',
+                      type: 'text',
+                      label: L('Variant ID', 'شناسه ورینت'),
+                      index: true,
+                      admin: { width: '33%' },
+                    },
+                  ],
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'b2bPrice',
+                      type: 'number',
+                      label: L('B2B price', 'قیمت B2B'),
+                      min: 0,
+                      admin: {
+                        width: '50%',
+                        description: L(
+                          'Optional default partner unit price seed.',
+                          'قیمت واحد همکار پیش‌فرض (اختیاری).',
+                        ),
+                      },
+                    },
+                    {
+                      name: 'remains',
+                      type: 'number',
+                      label: L('Remains', 'موجودی'),
+                      admin: {
+                        width: '50%',
+                        description: L('Stock hint for live site.', 'راهنمای موجودی برای سایت زنده.'),
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: L('SEO', 'سئو'),
           fields: [
             {
@@ -388,6 +530,33 @@ export const Products: CollectionConfig<'products'> = {
           ],
         },
       ],
+    },
+    {
+      name: 'productId',
+      type: 'text',
+      label: L('Product ID', 'شناسه محصول'),
+      unique: true,
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: L(
+          'Primary match key (Mobile140 / store id). Title is the canonical name for APIs.',
+          'کلید اصلی تطبیق (شناسه موبایل۱۴۰ / فروشگاه). عنوان همان نام اصلی برای API است.',
+        ),
+      },
+    },
+    {
+      name: 'active',
+      type: 'checkbox',
+      label: L('Active', 'فعال'),
+      defaultValue: true,
+      admin: {
+        position: 'sidebar',
+        description: L(
+          'When off, hide from live-bundle resolution even if published.',
+          'در صورت خاموش بودن، حتی اگر منتشر شده باشد از تطبیق سبد زنده حذف می‌شود.',
+        ),
+      },
     },
     {
       name: 'variants',
@@ -447,6 +616,8 @@ export const Products: CollectionConfig<'products'> = {
     }),
   ],
   hooks: {
+    beforeValidate: [normalizeProductMatchFields],
+    beforeChange: [deriveSwatchesFromColors],
     afterChange: [revalidateProduct],
     afterDelete: [revalidateDelete],
   },

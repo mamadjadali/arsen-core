@@ -56,7 +56,6 @@ export const Header: GlobalConfig = {
       name: 'brandName',
       type: 'text',
       label: L('Brand name', 'نام برند'),
-      defaultValue: 'SunoAI',
     },
     {
       name: 'breakoutLayout',

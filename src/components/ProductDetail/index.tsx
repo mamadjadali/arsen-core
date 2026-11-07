@@ -14,6 +14,7 @@ import {
   isEffectivelyAvailable,
   resolveDisplayPrice,
 } from '@/utilities/productDisplay'
+import { resolveProductImageUrl } from '@/utilities/resolveMedia'
 
 type ProductDetailProps = {
   product: Product
@@ -125,6 +126,13 @@ export function ProductDetail({
     gallery.unshift(activeVariant.image as Media)
   }
 
+  const externalImageUrl = resolveProductImageUrl({
+    imageUrl: product.imageUrl,
+    featuredImage: null,
+    meta: null,
+  })
+  const externalUrls = externalImageUrl ? [externalImageUrl] : []
+
   const preferredImageId =
     typeof activeVariant?.image === 'object' && activeVariant.image
       ? (activeVariant.image as Media).id
@@ -156,6 +164,7 @@ export function ProductDetail({
     <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
       <Gallery
         images={gallery}
+        externalUrls={externalUrls}
         preferredImageId={preferredImageId}
         badge={product.badge}
       />

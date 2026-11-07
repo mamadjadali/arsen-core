@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'api-keys': ApiKeyAuthOperations;
   };
   blocks: {};
   collections: {
@@ -75,8 +76,10 @@ export interface Config {
     'product-categories': ProductCategory;
     products: Product;
     variants: Variant;
+    'live-bundles': LiveBundle;
     'contact-methods': ContactMethod;
     users: User;
+    'api-keys': ApiKey;
     'analytics-events': AnalyticsEvent;
     redirects: Redirect;
     forms: Form;
@@ -106,8 +109,10 @@ export interface Config {
     'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
+    'live-bundles': LiveBundlesSelect<false> | LiveBundlesSelect<true>;
     'contact-methods': ContactMethodsSelect<false> | ContactMethodsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'api-keys': ApiKeysSelect<false> | ApiKeysSelect<true>;
     'analytics-events': AnalyticsEventsSelect<false> | AnalyticsEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -142,7 +147,7 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | ApiKey;
   jobs: {
     tasks: {
       schedulePublish: TaskSchedulePublish;
@@ -155,6 +160,24 @@ export interface Config {
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface ApiKeyAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -1290,6 +1313,45 @@ export interface Product {
    * Optional. Overrides Settings → Product inquiry phone for this product only.
    */
   inquiryPhoneOverride?: string | null;
+  /**
+   * Optional buyer-facing override (live bundles / print). Title stays the canonical name.
+   */
+  printName?: string | null;
+  /**
+   * Preferred for API/storefront. When set, overrides the featured image upload.
+   */
+  imageUrl?: string | null;
+  /**
+   * External brand id or label (e.g. Mobile140). Separate from storefront Brand relation.
+   */
+  brandKey?: string | null;
+  /**
+   * External category id or label. Separate from storefront Categories.
+   */
+  categoryKey?: string | null;
+  /**
+   * Match-surface variants for live bundles. colorName on a bundle line must match name here (or Mix).
+   */
+  colors?:
+    | {
+        /**
+         * e.g. مشکی — pairs with bundle colorName
+         */
+        name: string;
+        sku?: string | null;
+        gtin?: string | null;
+        variantId?: string | null;
+        /**
+         * Optional default partner unit price seed.
+         */
+        b2bPrice?: number | null;
+        /**
+         * Stock hint for live site.
+         */
+        remains?: number | null;
+        id?: string | null;
+      }[]
+    | null;
   meta?: {
     title?: string | null;
     /**
@@ -1298,6 +1360,14 @@ export interface Product {
     image?: (string | null) | Media;
     description?: string | null;
   };
+  /**
+   * Primary match key (Mobile140 / store id). Title is the canonical name for APIs.
+   */
+  productId?: string | null;
+  /**
+   * When off, hide from live-bundle resolution even if published.
+   */
+  active?: boolean | null;
   variants?: {
     docs?: (string | Variant)[];
     hasNextPage?: boolean;
@@ -1373,6 +1443,83 @@ export interface Variant {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "live-bundles".
+ */
+export interface LiveBundle {
+  id: string;
+  /**
+   * Internal title for editors.
+   */
+  name: string;
+  status: 'draft' | 'live' | 'archived';
+  /**
+   * Set automatically when status becomes Live if empty.
+   */
+  publishedAt?: string | null;
+  /**
+   * Optional buyer-facing note on the public page.
+   */
+  notes?: string | null;
+  /**
+   * Up to 4 logos shown on the public bundle page.
+   */
+  brandLogos?: (string | Media)[] | null;
+  /**
+   * Buyer-facing lines. Match products via productId (API-first) or product picker.
+   */
+  lines?:
+    | {
+        /**
+         * Stable row id for API patches. Auto-generated on save if empty.
+         */
+        lineId?: string | null;
+        /**
+         * Admin picker. Synced with productId on save.
+         */
+        product?: (string | null) | Product;
+        /**
+         * Match key into products.productId (API-first). Filled from product on save if empty.
+         */
+        productId?: string | null;
+        /**
+         * Must match a product colors[].name, or Mix.
+         */
+        colorName?: string | null;
+        quantity: number;
+        /**
+         * When color is Mix, list of selected variant color names.
+         */
+        mixColorNames?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        /**
+         * When enabled, show «انتخابی» instead of a quantity.
+         */
+        quantityAsOptional?: boolean | null;
+        unitPriceToman?: number | null;
+        /**
+         * When enabled, show Call instead of a unit price.
+         */
+        priceAsCall?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * When enabled, the slug will auto-generate from the name field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Channels shown in the product inquiry dialog (phone, WhatsApp, etc.).
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1396,6 +1543,33 @@ export interface ContactMethod {
   sort?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Machine keys for /api/v1 catalog endpoints. Copy the generated key once after create.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "api-keys".
+ */
+export interface ApiKey {
+  id: string;
+  /**
+   * Label shown in Admin (e.g. partner name).
+   */
+  name: string;
+  /**
+   * Which /api/v1 surfaces this key may call. Empty = none.
+   */
+  scopes?: ('products' | 'bundles')[] | null;
+  /**
+   * When off, all requests with this key are rejected.
+   */
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  collection: 'api-keys';
 }
 /**
  * First-party pageviews and events. Ingested automatically — do not create manually.
@@ -1664,12 +1838,20 @@ export interface PayloadLockedDocument {
         value: string | Variant;
       } | null)
     | ({
+        relationTo: 'live-bundles';
+        value: string | LiveBundle;
+      } | null)
+    | ({
         relationTo: 'contact-methods';
         value: string | ContactMethod;
       } | null)
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'api-keys';
+        value: string | ApiKey;
       } | null)
     | ({
         relationTo: 'analytics-events';
@@ -1696,10 +1878,15 @@ export interface PayloadLockedDocument {
         value: string | FolderInterface;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'api-keys';
+        value: string | ApiKey;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -1709,10 +1896,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'api-keys';
+        value: string | ApiKey;
+      };
   key?: string | null;
   value?:
     | {
@@ -2318,6 +2510,21 @@ export interface ProductsSelect<T extends boolean = true> {
   hidePrice?: T;
   priceHint?: T;
   inquiryPhoneOverride?: T;
+  printName?: T;
+  imageUrl?: T;
+  brandKey?: T;
+  categoryKey?: T;
+  colors?:
+    | T
+    | {
+        name?: T;
+        sku?: T;
+        gtin?: T;
+        variantId?: T;
+        b2bPrice?: T;
+        remains?: T;
+        id?: T;
+      };
   meta?:
     | T
     | {
@@ -2325,6 +2532,8 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  productId?: T;
+  active?: T;
   variants?: T;
   sku?: T;
   publishedAt?: T;
@@ -2355,6 +2564,35 @@ export interface VariantsSelect<T extends boolean = true> {
   compareAtPrice?: T;
   availability?: T;
   sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "live-bundles_select".
+ */
+export interface LiveBundlesSelect<T extends boolean = true> {
+  name?: T;
+  status?: T;
+  publishedAt?: T;
+  notes?: T;
+  brandLogos?: T;
+  lines?:
+    | T
+    | {
+        lineId?: T;
+        product?: T;
+        productId?: T;
+        colorName?: T;
+        quantity?: T;
+        mixColorNames?: T;
+        quantityAsOptional?: T;
+        unitPriceToman?: T;
+        priceAsCall?: T;
+        id?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2393,6 +2631,20 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "api-keys_select".
+ */
+export interface ApiKeysSelect<T extends boolean = true> {
+  name?: T;
+  scopes?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

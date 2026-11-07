@@ -18,7 +18,7 @@ export function FooterColumns({ data, logoLight }: FooterColumnsProps) {
 
   return (
     <footer className="w-full border-t border-border bg-background text-foreground">
-      <div className="mx-auto w-full max-w-6xl px-6 py-16 md:px-8 lg:px-12 lg:py-20">
+      <div className="mx-auto w-full max-w-6xl px-6 pb-6 pt-12 md:px-8 lg:px-12 lg:pb-8 lg:pt-16">
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
           <div className="flex shrink-0 flex-col gap-6 lg:w-56">
             <FooterBrand
@@ -43,7 +43,7 @@ export function FooterColumns({ data, logoLight }: FooterColumnsProps) {
         </div>
 
         <FooterBottom
-          className="mt-14"
+          className="mt-8"
           copyright={data.copyright}
           legalLinks={data.legalLinks}
         />

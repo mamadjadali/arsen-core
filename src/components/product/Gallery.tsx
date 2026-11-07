@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
 import type { Media } from '@/payload-types'
@@ -15,13 +16,15 @@ import {
 
 type Props = {
   images: Media[]
+  /** External image URLs (API imageUrl) used when no Media uploads exist */
+  externalUrls?: string[]
   /** When set, jump main image to this media id if present in the gallery */
   preferredImageId?: string | null
   /** Optional promo tag on the main image */
   badge?: string | null
 }
 
-export function Gallery({ images, preferredImageId, badge }: Props) {
+export function Gallery({ images, externalUrls = [], preferredImageId, badge }: Props) {
   const [current, setCurrent] = useState(0)
   const [api, setApi] = useState<CarouselApi>()
 
@@ -32,6 +35,22 @@ export function Gallery({ images, preferredImageId, badge }: Props) {
     setCurrent(index)
     api?.scrollTo(index, true)
   }, [preferredImageId, images, api])
+
+  // Prefer API imageUrl over Media uploads when provided
+  if (externalUrls.length) {
+    const src = externalUrls[0]!
+    const badgeText = typeof badge === 'string' ? badge.trim() : ''
+    return (
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-black/10 bg-[var(--color-canvas-soft)]">
+        {badgeText ? (
+          <span className="absolute top-3 right-3 z-10 rounded-sm bg-black px-2.5 py-1 text-xs font-medium text-[var(--color-canvas)]">
+            {badgeText}
+          </span>
+        ) : null}
+        <Image src={src} alt="" fill className="object-contain p-4 md:p-8" unoptimized sizes="50vw" />
+      </div>
+    )
+  }
 
   if (!images.length) {
     return (

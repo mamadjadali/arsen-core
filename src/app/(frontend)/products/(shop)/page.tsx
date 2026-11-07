@@ -81,6 +81,7 @@ export default async function ProductsPage({ searchParams: searchParamsPromise }
       slug: true,
       summary: true,
       featuredImage: true,
+      imageUrl: true,
       brand: true,
       categories: true,
       price: true,

@@ -19,8 +19,8 @@ interface HeaderClientProps {
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data, logoLight }) => {
   const navItems = data?.navItems || []
   const logo = resolveFirstMedia(data?.logo, logoLight)
-  const logoUrl = resolveMediaUrl(logo) || '/suno-logo.svg'
-  const brandName = data?.brandName || 'SunoAI'
+  const logoUrl = resolveMediaUrl(logo)
+  const brandName = data?.brandName?.trim() || ''
   const secondaryCta = data?.secondaryCta?.label?.trim() ? data.secondaryCta : null
   const primaryCta = data?.primaryCta?.label?.trim() ? data.primaryCta : null
   const breakout = Boolean(data?.breakoutLayout)
@@ -34,17 +34,23 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, logoLight }) =
         )}
       >
         <div className="flex min-w-0 flex-1 items-center justify-start">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src={logoUrl}
-              alt={logo?.alt || brandName}
-              {...logoIntrinsicSize(data?.logoHeightDesktop)}
-              className={logoSizeClassName}
-              style={logoSizeStyle(data?.logoHeightMobile, data?.logoHeightDesktop)}
-              unoptimized={logoUrl.startsWith('/suno-logo')}
-            />
-            <span className="text-xl font-bold tracking-tight text-black">{brandName}</span>
-          </Link>
+          {logoUrl || brandName ? (
+            <Link href="/" className="flex items-center gap-2" aria-label="صفحه اصلی">
+              {logoUrl ? (
+                <Image
+                  src={logoUrl}
+                  alt={logo?.alt || brandName || 'Logo'}
+                  {...logoIntrinsicSize(data?.logoHeightDesktop)}
+                  className={logoSizeClassName}
+                  style={logoSizeStyle(data?.logoHeightMobile, data?.logoHeightDesktop)}
+                  unoptimized={logoUrl.startsWith('/suno-logo')}
+                />
+              ) : null}
+              {brandName ? (
+                <span className="text-xl font-bold tracking-tight text-black">{brandName}</span>
+              ) : null}
+            </Link>
+          ) : null}
         </div>
 
         <nav className="hidden shrink-0 items-center gap-4 text-sm font-medium text-black md:flex lg:gap-8 lg:text-base">

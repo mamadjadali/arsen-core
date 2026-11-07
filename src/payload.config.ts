@@ -7,16 +7,19 @@ import { en } from '@payloadcms/translations/languages/en'
 import { fa } from '@payloadcms/translations/languages/fa'
 
 import { AnalyticsEvents } from './collections/AnalyticsEvents'
+import { ApiKeys } from './collections/ApiKeys'
 import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
 import { ContactMethods } from './collections/ContactMethods'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { LiveBundles } from './collections/LiveBundles'
 import { ProductCategories } from './collections/ProductCategories'
 import { Products } from './collections/Products'
 import { Users } from './collections/Users'
 import { Variants } from './collections/Variants'
+import { v1CatalogEndpoints } from './endpoints/v1'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { Scripts } from './Scripts/config'
@@ -84,12 +87,20 @@ export default buildConfig({
     ProductCategories,
     Products,
     Variants,
+    LiveBundles,
     ContactMethods,
     Users,
+    ApiKeys,
     AnalyticsEvents,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [aiStatusEndpoint, aiPresetsEndpoint, aiTransformEndpoint, analyticsCollectEndpoint],
+  endpoints: [
+    aiStatusEndpoint,
+    aiPresetsEndpoint,
+    aiTransformEndpoint,
+    analyticsCollectEndpoint,
+    ...v1CatalogEndpoints,
+  ],
   globals: [Header, Footer, Theme, Scripts, Settings],
   i18n: {
     fallbackLanguage: 'fa',

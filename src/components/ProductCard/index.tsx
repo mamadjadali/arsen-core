@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import React from 'react'
@@ -13,6 +14,7 @@ import {
   resolveDisplayPrice,
   type ColorSwatch,
 } from '@/utilities/productDisplay'
+import { resolveProductImageUrl } from '@/utilities/resolveMedia'
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 
@@ -22,6 +24,7 @@ export type ProductCardData = Pick<
   | 'title'
   | 'summary'
   | 'featuredImage'
+  | 'imageUrl'
   | 'brand'
   | 'categories'
   | 'price'
@@ -48,6 +51,7 @@ export function ProductCard({
     slug,
     title,
     featuredImage,
+    imageUrl,
     brand,
     categories,
     price,
@@ -60,11 +64,12 @@ export function ProductCard({
     colorSwatchesResolved,
   } = doc
 
-  const image =
-    (typeof featuredImage === 'object' && featuredImage) ||
-    (typeof meta?.image === 'object' && meta.image) ||
-    null
-
+  const externalImageUrl = resolveProductImageUrl({ imageUrl, featuredImage: null, meta: null })
+  const uploadImage =
+    !externalImageUrl &&
+    ((typeof featuredImage === 'object' && featuredImage) ||
+      (typeof meta?.image === 'object' && meta.image) ||
+      null)
   const brandDoc = typeof brand === 'object' && brand ? (brand as Brand) : null
   const firstCategory =
     categories
@@ -95,9 +100,18 @@ export function ProductCard({
             {badgeText}
           </span>
         ) : null}
-        {image && typeof image === 'object' ? (
+        {externalImageUrl ? (
+          <Image
+            src={externalImageUrl}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="(min-width: 768px) 33vw, 50vw"
+            unoptimized
+          />
+        ) : uploadImage && typeof uploadImage === 'object' ? (
           <MediaComponent
-            resource={image as Media}
+            resource={uploadImage as Media}
             fill
             imgClassName="object-cover"
             size="(min-width: 768px) 33vw, 50vw"
