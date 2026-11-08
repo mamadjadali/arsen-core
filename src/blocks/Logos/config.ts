@@ -10,8 +10,32 @@ export const Logos: Block = {
       name: 'heading',
       type: 'text',
       label: L('Heading', 'عنوان'),
-      defaultValue: "Trusted By The World's Best Companies",
+      defaultValue: 'برندهایی که همکاران هر روز با آن‌ها کار می‌کنند',
       required: true,
+    },
+    {
+      name: 'items',
+      type: 'array',
+      label: L('Logo texts', 'متن لوگوها'),
+      labels: {
+        singular: L('Logo text', 'متن لوگو'),
+        plural: L('Logo texts', 'متن لوگوها'),
+      },
+      admin: {
+        description: L(
+          'Brand names shown as text (same site font as the heading).',
+          'نام برندها به‌صورت متن (همان فونت سایت مثل عنوان).',
+        ),
+        initCollapsed: false,
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          label: L('Text', 'متن'),
+          required: true,
+        },
+      ],
     },
   ],
   labels: {

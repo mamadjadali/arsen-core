@@ -14,19 +14,19 @@ export const CategoriesCatalog: Block = {
       name: 'eyebrow',
       type: 'text',
       label: L('Eyebrow', 'سرتیتر کوچک'),
-      defaultValue: 'کاتالوگ محصولات',
+      defaultValue: 'کاتالوگ همکار',
     },
     {
       name: 'heading',
       type: 'text',
       label: L('Heading', 'عنوان'),
-      defaultValue: 'هر متریال،',
+      defaultValue: 'هر دسته،',
     },
     {
       name: 'headingAccent',
       type: 'text',
       label: L('Heading accent', 'عنوان تأکیدی'),
-      defaultValue: 'یک انتخاب دقیق',
+      defaultValue: 'یک مسیر تأمین',
       admin: {
         description: L(
           'Shown as the highlighted second line under the heading.',
@@ -39,7 +39,7 @@ export const CategoriesCatalog: Block = {
       type: 'textarea',
       label: L('Description', 'توضیحات'),
       defaultValue:
-        'تمام گروه‌های کالایی را یک‌جا ببینید. برای موجودی، رنگ‌بندی و قیمت روز هر محصول با ما تماس بگیرید.',
+        'گروه‌های کالایی را یک‌جا ببینید. برای موجودی لحظه‌ای، رنگ‌بندی و قیمت همکاری با فروش تماس بگیرید یا سبد زنده همان روز را باز کنید.',
     },
     {
       name: 'showIndex',

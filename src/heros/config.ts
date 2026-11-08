@@ -41,6 +41,10 @@ export const hero: Field = {
           label: L('Low Impact', 'تأثیر کم'),
           value: 'lowImpact',
         },
+        {
+          label: L('Carousel', 'کاروسل'),
+          value: 'carousel',
+        },
       ],
       required: true,
     },
@@ -99,8 +103,143 @@ export const hero: Field = {
     linkGroup({
       overrides: {
         maxRows: 2,
+        admin: {
+          condition: (_, { type } = {}) =>
+            type !== 'none' && Boolean(type),
+        },
       },
     }),
+    {
+      name: 'slides',
+      type: 'array',
+      label: L('Slides', 'اسلایدها'),
+      labels: {
+        singular: L('Slide', 'اسلاید'),
+        plural: L('Slides', 'اسلایدها'),
+      },
+      minRows: 1,
+      admin: {
+        condition: (_, { type } = {}) => type === 'carousel',
+        initCollapsed: false,
+        description: L(
+          'Desktop image required. Optional mobile image for art direction under md.',
+          'تصویر دسکتاپ الزامی است. تصویر موبایل اختیاری برای ترکیب متفاوت زیر md.',
+        ),
+      },
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          label: L('Image (desktop)', 'تصویر (دسکتاپ)'),
+        },
+        {
+          name: 'imageMobile',
+          type: 'upload',
+          relationTo: 'media',
+          label: L('Image (mobile)', 'تصویر (موبایل)'),
+          admin: {
+            description: L(
+              'Shown below the md breakpoint. Falls back to desktop image if empty.',
+              'زیر نقطهٔ شکست md نمایش داده می‌شود. در صورت خالی بودن از تصویر دسکتاپ استفاده می‌شود.',
+            ),
+          },
+        },
+        {
+          name: 'alt',
+          type: 'text',
+          label: L('Alt text', 'متن جایگزین'),
+          admin: {
+            description: L('Optional. Defaults to media alt.', 'اختیاری. در صورت خالی بودن از alt رسانه استفاده می‌شود.'),
+          },
+        },
+        {
+          name: 'href',
+          type: 'text',
+          label: L('Link URL', 'آدرس لینک'),
+          admin: {
+            description: L('Optional. Makes the whole slide clickable.', 'اختیاری. کل اسلاید را قابل کلیک می‌کند.'),
+          },
+        },
+      ],
+    },
+    {
+      type: 'row',
+      admin: {
+        condition: (_, { type } = {}) => type === 'carousel',
+      },
+      fields: [
+        {
+          name: 'loop',
+          type: 'checkbox',
+          label: L('Loop', 'حلقه'),
+          defaultValue: true,
+          admin: {
+            width: '25%',
+            description: L(
+              'Ignored when fade is on (fade requires loop off).',
+              'با گذار محو نادیده گرفته می‌شود (محو به حلقه خاموش نیاز دارد).',
+            ),
+            condition: (_, { type, fade } = {}) => type === 'carousel' && fade !== true,
+          },
+        },
+        {
+          name: 'autoplay',
+          type: 'checkbox',
+          label: L('Autoplay', 'پخش خودکار'),
+          defaultValue: true,
+          admin: { width: '25%' },
+        },
+        {
+          name: 'fade',
+          type: 'checkbox',
+          label: L('Fade transition', 'گذار محو'),
+          defaultValue: false,
+          admin: {
+            width: '25%',
+            description: L(
+              'Cross-fade instead of slide. Disables loop (Embla fade constraint).',
+              'به‌جای اسلاید، محو متقابل. حلقه را غیرفعال می‌کند (محدودیت Embla).',
+            ),
+          },
+        },
+        {
+          name: 'autoplayDelay',
+          type: 'number',
+          label: L('Autoplay delay (ms)', 'تأخیر پخش خودکار (ms)'),
+          defaultValue: 5000,
+          min: 1500,
+          max: 30000,
+          admin: {
+            width: '25%',
+            condition: (_, { type, autoplay } = {}) => type === 'carousel' && autoplay !== false,
+          },
+        },
+      ],
+    },
+    {
+      type: 'row',
+      admin: {
+        condition: (_, { type } = {}) => type === 'carousel',
+      },
+      fields: [
+        {
+          name: 'showArrows',
+          type: 'checkbox',
+          label: L('Show arrows', 'نمایش فلش‌ها'),
+          defaultValue: true,
+          admin: { width: '50%' },
+        },
+        {
+          name: 'showPagination',
+          type: 'checkbox',
+          label: L('Show pagination', 'نمایش صفحه‌بندی'),
+          defaultValue: true,
+          admin: { width: '50%' },
+        },
+      ],
+    },
     {
       name: 'media',
       type: 'upload',

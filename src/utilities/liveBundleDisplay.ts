@@ -3,10 +3,17 @@ import type { Media, Product } from '@/payload-types'
 import { formatPrice } from '@/utilities/productDisplay'
 import { resolveMediaUrl, resolveProductImageUrl } from '@/utilities/resolveMedia'
 
+export type BundleColorDot = {
+  label: string
+  hex: string
+}
+
 export type BundleTableRowDto = {
   key: string
   name: string
   colorLabel: string
+  /** Resolved swatches for selected color(s); empty when hex unknown. */
+  colorDots: BundleColorDot[]
   quantityLabel: string
   priceLabel: string
   imageUrl: string | null
@@ -14,6 +21,17 @@ export type BundleTableRowDto = {
   quantityValue: number | null
   /** Line total (qty × unit) for totals (null when Call / missing). */
   lineTotalValue: number | null
+}
+
+const HEX6_RE = /^#([0-9A-Fa-f]{6})$/
+
+/** Strip warranty / suffix after ` - ` (same idea as Ara display names). */
+export function colorLabelMatchKey(name: string): string {
+  const trimmed = name.trim()
+  if (!trimmed) return ''
+  const separator = trimmed.indexOf(' - ')
+  const base = separator > 0 ? trimmed.slice(0, separator).trim() : trimmed
+  return base.toLowerCase()
 }
 
 export type BundleTableTotalsDto = {
@@ -80,16 +98,54 @@ export function productDisplayName(
 
 export function formatBundleColorLabel(
   colorName?: string | null,
-  mixColorNames?: unknown,
+  _mixColorNames?: unknown,
 ): string {
   const name = colorName?.trim() || ''
-  if (name.toLowerCase() === 'mix' && Array.isArray(mixColorNames)) {
-    const parts = (mixColorNames as unknown[]).filter(
-      (v): v is string => typeof v === 'string' && Boolean(v.trim()),
-    )
-    return parts.length ? `Mix (${parts.join('، ')})` : 'Mix'
-  }
+  if (name.toLowerCase() === 'mix') return 'Mix'
   return name || '—'
+}
+
+/**
+ * Circles for Mix selections or a single colorName, matched against product.colorSwatches.
+ * Omits entries with no resolvable hex (does not invent colors).
+ */
+export function resolveBundleColorDots(
+  product: Product | null,
+  colorName?: string | null,
+  mixColorNames?: unknown,
+): BundleColorDot[] {
+  const byKey = new Map<string, string>()
+  for (const row of product?.colorSwatches || []) {
+    if (!row || typeof row !== 'object') continue
+    const hex = typeof row.hex === 'string' ? row.hex.trim() : ''
+    if (!HEX6_RE.test(hex)) continue
+    const label = typeof row.label === 'string' ? row.label.trim() : ''
+    if (label) {
+      byKey.set(colorLabelMatchKey(label), hex)
+    }
+    // Also index bare hex-only rows under hex itself (rare)
+    if (!label) byKey.set(hex.toLowerCase(), hex)
+  }
+
+  const wanted: string[] = []
+  const name = colorName?.trim() || ''
+  if (name.toLowerCase() === 'mix') {
+    if (Array.isArray(mixColorNames)) {
+      for (const entry of mixColorNames) {
+        if (typeof entry === 'string' && entry.trim()) wanted.push(entry.trim())
+      }
+    }
+  } else if (name) {
+    wanted.push(name)
+  }
+
+  const dots: BundleColorDot[] = []
+  for (const label of wanted) {
+    const hex = byKey.get(colorLabelMatchKey(label))
+    if (!hex) continue
+    dots.push({ label, hex })
+  }
+  return dots
 }
 
 export function formatBundleQuantityLabel(
@@ -149,6 +205,7 @@ export function toBundleTableRows(bundle: BundleListSource): BundleTableRowDto[]
       key: line.lineId || line.id || `${bundle.id}-${index}`,
       name: productDisplayName(product, line.productId),
       colorLabel: formatBundleColorLabel(line.colorName, line.mixColorNames),
+      colorDots: resolveBundleColorDots(product, line.colorName, line.mixColorNames),
       quantityLabel: formatBundleQuantityLabel(line.quantity, line.quantityAsOptional),
       priceLabel: formatBundlePriceLabel(line.unitPriceToman, line.priceAsCall),
       imageUrl: resolveProductImageUrl(product),

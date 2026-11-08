@@ -11,7 +11,7 @@ export const SolaceCta: Block = {
       type: 'text',
       required: true,
       label: L('Heading', 'عنوان'),
-      defaultValue: 'The #1 AI Music App',
+      defaultValue: 'سبد زنده؛ خرید عمده بدون پیچیدگی',
     },
     {
       name: 'appleUrl',

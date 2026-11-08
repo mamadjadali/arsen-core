@@ -5,8 +5,6 @@ import { motion, type Variants } from 'motion/react'
 
 import type { LogosBlock as LogosBlockProps } from '@/payload-types'
 
-import { logoItems } from '@/components/marketing/press-logos'
-
 const sectionVariants: Variants = {
   hidden: {},
   visible: {
@@ -50,7 +48,16 @@ const dividerVariants: Variants = {
   },
 }
 
-export const LogosBlock: React.FC<LogosBlockProps> = ({ heading }) => {
+/** Fallback only when CMS items are empty — keep aligned with B2B seed brands. */
+const DEFAULT_ITEMS = ['Samsung', 'Xiaomi', 'Apple', 'Realme', 'Honor', 'Huawei']
+
+export const LogosBlock: React.FC<LogosBlockProps> = ({ heading, items }) => {
+  const labels = (items || [])
+    .map((item) => (typeof item?.label === 'string' ? item.label.trim() : ''))
+    .filter(Boolean)
+
+  const displayLabels = labels.length > 0 ? labels : DEFAULT_ITEMS
+
   return (
     <motion.section
       className="relative z-20 flex w-full flex-col items-center bg-[var(--color-canvas)] pt-24 pb-16"
@@ -74,14 +81,16 @@ export const LogosBlock: React.FC<LogosBlockProps> = ({ heading }) => {
           <div className="absolute inset-0 bg-[repeating-linear-gradient(315deg,currentColor_0,currentColor_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] text-black opacity-10" />
         </motion.div>
 
-        <div className="grid w-full grid-cols-2 divide-x divide-y divide-black/20 border-y border-black/10 bg-[var(--color-canvas-soft)]/50 backdrop-blur-sm md:grid-cols-3 lg:grid-cols-5 lg:divide-y-0">
-          {logoItems.map((Logo, index) => (
+        <div className="grid w-full grid-cols-2 divide-x divide-y divide-black/20 border-y border-black/10 bg-[var(--color-canvas-soft)]/50 backdrop-blur-sm md:grid-cols-3 lg:grid-cols-6 lg:divide-y-0">
+          {displayLabels.map((label, index) => (
             <motion.div
-              key={index}
-              className="flex h-24 items-center justify-center p-4 opacity-60 grayscale transition-opacity hover:opacity-100"
+              key={`${label}-${index}`}
+              className="flex h-24 items-center justify-center p-4 opacity-60 transition-opacity hover:opacity-100"
               variants={fadeUpVariants}
             >
-              <Logo />
+              <span className="text-center text-sm font-semibold tracking-tight text-black/40 md:text-base">
+                {label}
+              </span>
             </motion.div>
           ))}
         </div>

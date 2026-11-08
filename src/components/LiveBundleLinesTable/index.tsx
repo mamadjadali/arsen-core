@@ -12,6 +12,28 @@ type LiveBundleLinesTableProps = {
   variant?: 'page' | 'panel'
 }
 
+function ColorCell({ row }: { row: BundleTableRowDto }) {
+  const dots = row.colorDots ?? []
+
+  return (
+    <div className="live-bundle-color-cell">
+      <span className="live-bundle-color-label">{row.colorLabel}</span>
+      {dots.length > 0 ? (
+        <span className="live-bundle-color-dots" aria-label="رنگ‌های انتخاب‌شده">
+          {dots.map((dot, index) => (
+            <span
+              key={`${dot.hex}-${dot.label}-${index}`}
+              title={dot.label}
+              className="live-bundle-color-dot"
+              style={{ backgroundColor: dot.hex }}
+            />
+          ))}
+        </span>
+      ) : null}
+    </div>
+  )
+}
+
 export function LiveBundleLinesTable({
   rows,
   totals: totalsProp,
@@ -54,7 +76,9 @@ export function LiveBundleLinesTable({
                   <span className="live-bundle-product-name">{row.name}</span>
                 </td>
                 <td>{row.quantityLabel}</td>
-                <td className="live-bundle-col-color">{row.colorLabel}</td>
+                <td className="live-bundle-col-color">
+                  <ColorCell row={row} />
+                </td>
                 <td>{row.priceLabel}</td>
               </tr>
             ))

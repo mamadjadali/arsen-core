@@ -19,6 +19,13 @@ type ColorInput = {
   remains?: number
 }
 
+type ColorSwatchInput = {
+  label?: string | null
+  hex: string
+}
+
+const HEX6_RE = /^#([0-9A-Fa-f]{6})$/
+
 function parseColors(value: unknown): ColorInput[] | undefined {
   if (value === undefined) return undefined
   if (!Array.isArray(value)) return undefined
@@ -42,6 +49,37 @@ function parseColors(value: unknown): ColorInput[] | undefined {
     colors.push(color)
   }
   return colors
+}
+
+function parseColorSwatches(
+  value: unknown,
+): ColorSwatchInput[] | { error: Response } | undefined {
+  if (value === undefined) return undefined
+  if (!Array.isArray(value)) {
+    return { error: jsonError(400, 'validation_error', 'colorSwatches must be an array') }
+  }
+
+  const swatches: ColorSwatchInput[] = []
+  for (const item of value) {
+    if (!item || typeof item !== 'object') continue
+    const row = item as Record<string, unknown>
+    const hexRaw = asTrimmedString(row.hex)
+    if (!hexRaw || !HEX6_RE.test(hexRaw)) {
+      return {
+        error: jsonError(
+          400,
+          'validation_error',
+          'each colorSwatches entry requires hex like #C4A574',
+        ),
+      }
+    }
+    const label = asTrimmedString(row.label)
+    const swatch: ColorSwatchInput = { hex: hexRaw }
+    if (label) swatch.label = label
+    else swatch.label = null
+    swatches.push(swatch)
+  }
+  return swatches
 }
 
 function productDataFromBody(body: Record<string, unknown>, { requireTitle }: { requireTitle: boolean }) {
@@ -77,6 +115,12 @@ function productDataFromBody(body: Record<string, unknown>, { requireTitle }: { 
       return { error: jsonError(400, 'validation_error', 'colors must be an array') }
     }
     data.colors = colors || []
+  }
+
+  if (body.colorSwatches !== undefined) {
+    const swatches = parseColorSwatches(body.colorSwatches)
+    if (swatches && 'error' in swatches) return { error: swatches.error }
+    data.colorSwatches = swatches || []
   }
 
   return { data }

@@ -11,6 +11,7 @@ import { CustomCode } from '../../blocks/CustomCode/config'
 import { FeaturedServices } from '../../blocks/FeaturedServices/config'
 import { Features } from '../../blocks/Features/config'
 import { FormBlock } from '../../blocks/Form/config'
+import { IconGrid } from '../../blocks/IconGrid/config'
 import { Logos } from '../../blocks/Logos/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { Pricing } from '../../blocks/Pricing/config'
@@ -99,6 +100,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Archive,
                 FormBlock,
                 Logos,
+                IconGrid,
                 Features,
                 FeaturedServices,
                 Pricing,

@@ -50,6 +50,11 @@ const richRoot = (...children: ReturnType<typeof heading | typeof paragraph>[]) 
   },
 })
 
+/**
+ * Homepage narrative: B2B partner sell, semi-offline.
+ * Inspired by mobile140.com + /partner-landing — wholesale margin, live baskets,
+ * early inventory, and hybrid online→pickup/dispatch fulfillment.
+ */
 export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> = ({
   phoneLeft,
   phoneCenter,
@@ -62,69 +67,104 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
     _status: 'published',
     title: 'خانه',
     hero: {
-      type: 'solace',
-      announcementBadge: 'نوبت‌دهی',
-      announcementText: 'همین امروز پوستتان را به متخصص بسپارید ←',
-      heading: 'زیبایی پوست شما\nاز دقت آغاز می‌شود',
-      subheading:
-        'در کلینیک دکتر مریم رنجبر، تشخیص علمی با نگاه زیبایی‌شناسانه همراه است. از درمان بیماری‌های پوست تا بازسازی لطافت و شادابی — همه چیز با دقت، صداقت و احترام به پوست شما.',
+      type: 'carousel',
+      loop: true,
+      autoplay: true,
+      autoplayDelay: 5000,
+      fade: false,
+      showArrows: true,
+      showPagination: true,
+      slides: [
+        {
+          image: heroImage.id,
+          imageMobile: phoneCenter.id,
+          alt: 'سبد زنده همکار — قیمت همکاری و موجودی روز',
+          href: '/bundles',
+        },
+        {
+          image: metaImage.id,
+          imageMobile: phoneLeft.id,
+          alt: 'کاتالوگ محصولات برای فروش نیمه‌آفلاین',
+          href: '/products',
+        },
+        {
+          image: phoneRight.id,
+          imageMobile: phoneRight.id,
+          alt: 'شروع همکاری B2B — تماس با فروش',
+          href: '/contact',
+        },
+      ],
       links: [
         {
           link: {
             type: 'custom',
             appearance: 'default',
-            label: 'رزرو نوبت',
-            url: '/contact',
+            label: 'مشاهده سبدهای زنده',
+            url: '/bundles',
           },
         },
         {
           link: {
             type: 'custom',
             appearance: 'outline',
-            label: 'مشاهده خدمات',
-            url: '#services',
+            label: 'کاتالوگ محصولات',
+            url: '/products',
           },
         },
       ],
-      mediaLayout: 'image',
-      heroImage: heroImage.id,
-      heroImageWidthDesktop: 70,
-      heroImageWidthMobile: 90,
-      phoneLeft: phoneLeft.id,
-      phoneCenter: phoneCenter.id,
-      phoneRight: phoneRight.id,
     },
     layout: [
       {
         blockName: 'Logos',
         blockType: 'logos',
-        heading: 'همگام با برندهای پیشروی جهانِ پوست',
+        heading: 'برندهایی که همکاران هر روز با آن‌ها کار می‌کنند',
+        items: [
+          { label: 'Samsung' },
+          { label: 'Xiaomi' },
+          { label: 'Apple' },
+          { label: 'Realme' },
+          { label: 'Honor' },
+          { label: 'Huawei' },
+        ],
+      },
+      {
+        blockName: 'Icon Grid',
+        blockType: 'iconGrid',
+        heading: '',
+        items: [
+          { image: phoneLeft.id, label: 'کنسول بازی', href: '/products' },
+          { image: phoneCenter.id, label: 'فلش و حافظه', href: '/products' },
+          { image: phoneRight.id, label: 'لوازم شخصی', href: '/products' },
+          { image: metaImage.id, label: 'هدفون و هندزفری', href: '/products' },
+          { image: heroImage.id, label: 'کیف و کوله', href: '/products' },
+          { image: phoneCenter.id, label: 'گوشی موبایل', href: '/products' },
+        ],
       },
       {
         blockName: 'Features',
         blockType: 'features',
-        heading: 'هر آنچه پوست شما\nبرای درخشیدن نیاز دارد',
+        heading: 'هر قابلیت، برای یک نتیجه واقعی\nدر کسب‌وکار شما',
         cards: [
           {
-            title: 'تشخیص و درمان بیماری‌های پوست',
+            title: 'سبد زنده همکار',
             description:
-              'آکنه، لک، اگزما، پسوریازیس، ریزش مو و حساسیت‌ها — با معاینهٔ دقیق و مسیر درمانی شفاف. اینجا حدس جای علم را نمی‌گیرد؛ پوست شما شنیده و دیده می‌شود.',
+              'میکس مدل، رنگ، تعداد و قیمت واحد را یک‌جا ببینید. مثل پیشنهادهای ویژه پنل همکار — شفاف، به‌روز و آماده تصمیم سریع.',
             variant: 'waveform',
             highlight: false,
           },
           {
-            title: 'زیبایی با دقت پزشکی',
+            title: 'فروش نیمه‌آفلاین',
             description:
-              'بوتاکس، فیلر، جوانسازی و پروتکل‌های زیبایی — نه برای تغییر چهره، برای بازگرداندن طراوت طبیعی. هر طرح درمان، مخصوص شماست.',
+              'آنلاین انتخاب و رزرو کنید؛ تحویل را حضوری از انبار/فروشگاه بگیرید یا با اولویت ارسال همکار نهایی کنید. سرعت بازار حضوری + نظم دیجیتال.',
             variant: 'generator',
             highlight: true,
-            promptText: 'طراحی مسیر جوانسازی متناسب با چهرهٔ من',
-            statusText: 'در حال تنظیم برنامهٔ مراقبت شخصی…',
+            promptText: 'سبد امروز را برای فروشگاه من آماده کن',
+            statusText: 'در حال هم‌ترازی موجودی و قیمت همکاری…',
           },
           {
-            title: 'لیزر و بازسازی پوست',
+            title: 'حاشیه سود و سرعت',
             description:
-              'از کنترل رنگدانه و جای زخم تا یکدست‌سازی بافت پوست — با دستگاه‌ها و پروتکل‌های روز، در محیطی امن و آرام. نتیجه را قدم‌به‌قدم و واقع‌بینانه می‌بینید.',
+              'قیمت همکاری، باندل‌های سودآور و دسترسی زودتر به موجودی‌های خاص — برای فروش رقابتی‌تر بدون فشار کامل روی نقدینگی.',
             variant: 'social',
             highlight: false,
           },
@@ -133,60 +173,60 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
       {
         blockName: 'Featured Services',
         blockType: 'featuredServices',
-        heading: richRoot(heading('خدمات ویژهٔ کلینیک', 'h2')),
+        heading: richRoot(heading('مسیر همکاری B2B', 'h2')),
         description: richRoot(
           paragraph(
-            'از تشخیص تخصصی تا زیبایی دقیق و بازسازی پوست — مسیرهایی که با نیاز پوست شما طراحی می‌شوند.',
+            'از مشاهده سبد زنده تا کاتالوگ و تماس فروش — همان منطق پنل همکار، برای فروش نیمه‌آفلاین.',
           ),
         ),
         cta: {
           type: 'custom',
-          label: 'مشاهده همه خدمات',
-          url: '#services',
+          label: 'شروع از سبدها',
+          url: '/bundles',
         },
         services: [
           {
-            title: 'تشخیص و درمان پوست',
+            title: 'سبدهای زنده',
             image: heroImage.id,
-            link: { type: 'custom', label: 'تشخیص و درمان پوست', url: '#services' },
+            link: { type: 'custom', label: 'سبدهای زنده', url: '/bundles' },
           },
           {
-            title: 'زیبایی با دقت پزشکی',
+            title: 'کاتالوگ محصولات',
             image: metaImage.id,
-            link: { type: 'custom', label: 'زیبایی با دقت پزشکی', url: '#services' },
+            link: { type: 'custom', label: 'کاتالوگ محصولات', url: '/products' },
           },
           {
-            title: 'لیزر و بازسازی',
+            title: 'قیمت همکاری',
             image: phoneCenter.id,
-            link: { type: 'custom', label: 'لیزر و بازسازی', url: '#services' },
+            link: { type: 'custom', label: 'قیمت همکاری', url: '/contact' },
           },
           {
-            title: 'مراقبت بعد از درمان',
+            title: 'تحویل نیمه‌آفلاین',
             image: phoneLeft.id,
-            link: { type: 'custom', label: 'مراقبت بعد از درمان', url: '#services' },
+            link: { type: 'custom', label: 'تحویل نیمه‌آفلاین', url: '/contact' },
           },
           {
-            title: 'مشاورهٔ تخصصی',
+            title: 'پشتیبانی فروش',
             image: phoneRight.id,
-            link: { type: 'custom', label: 'مشاورهٔ تخصصی', url: '/contact' },
+            link: { type: 'custom', label: 'پشتیبانی فروش', url: '/contact' },
           },
         ],
       },
       {
-        blockName: 'Journey Content',
+        blockName: 'Partner Journey',
         blockType: 'content',
         columns: [
           {
             size: 'full',
-            richText: richRoot(heading('مسیر مراقبت در کلینیک دکتر مریم رنجبر', 'h2')),
+            richText: richRoot(heading('شروع همکاری در سه مرحله', 'h2')),
           },
           {
             size: 'oneThird',
             enableLink: false,
             richText: richRoot(
-              heading('۱. شنیدن', 'h3'),
+              heading('۱. مشاهده سبد', 'h3'),
               paragraph(
-                'داستان پوست شما — نگرانی‌ها، سابقه، انتظارات — با حوصله شنیده می‌شود. اینجا عجله جای تشخیص را نمی‌گیرد.',
+                'سبدهای زنده روز را ببینید: مدل، رنگ، تعداد و قیمت واحد. بدون فرآیند پیچیده — تصمیم در چند دقیقه.',
               ),
             ),
           },
@@ -194,9 +234,9 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
             size: 'oneThird',
             enableLink: false,
             richText: richRoot(
-              heading('۲. دیدن', 'h3'),
+              heading('۲. هماهنگی همکار', 'h3'),
               paragraph(
-                'معاینهٔ دقیق و در صورت نیاز تصویربرداری یا آزمایش؛ واقعیت پوست، نه فقط آنچه در آینه دیده می‌شود.',
+                'با فروش تماس بگیرید یا از مسیر همکار ادامه دهید تا موجودی، اعتبار و شرایط تحویل تأیید شود.',
               ),
             ),
           },
@@ -204,13 +244,32 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
             size: 'oneThird',
             enableLink: false,
             richText: richRoot(
-              heading('۳. طراحی و همراهی', 'h3'),
+              heading('۳. تحویل نیمه‌آفلاین', 'h3'),
               paragraph(
-                'برنامهٔ درمان شفاف توضیح داده می‌شود و پیگیری بعد از درمان ادامه دارد. زیبایی و سلامت پوست یک رابطه است.',
+                'سفارش را حضوری از انبار/فروشگاه بردارید یا با اولویت ارسال همکار دریافت کنید — آنلاین انتخاب، آفلاین اجرا.',
               ),
             ),
           },
         ],
+      },
+      {
+        blockName: 'Categories',
+        blockType: 'categoriesCatalog',
+        eyebrow: 'کاتالوگ همکار',
+        heading: 'هر دسته،',
+        headingAccent: 'یک مسیر تأمین',
+        description:
+          'گروه‌های کالایی را یک‌جا ببینید. برای موجودی لحظه‌ای، رنگ‌بندی و قیمت همکاری هر مدل با فروش در تماس باشید یا سبد زنده همان روز را باز کنید.',
+        showIndex: true,
+        indexLabel: 'دسته',
+        toolbarLabel: 'همه دسته‌بندی‌ها',
+        cardCtaLabel: 'مشاهده محصولات',
+      },
+      {
+        blockName: 'Product Carousel',
+        blockType: 'productCarousel',
+        populateBy: 'collection',
+        limit: 10,
       },
       {
         blockName: 'Clinic Media',
@@ -220,72 +279,72 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
       {
         blockName: 'Pricing',
         blockType: 'pricing',
-        heading: 'مسیر مراقبت',
+        heading: 'سطح همکاری',
         yearlyDiscountLabel: 'پیگیری',
         plans: [
           {
-            name: 'مشاورهٔ اولیه',
-            description: 'بررسی پوست و نقشهٔ مسیر درمان یا زیبایی.',
+            name: 'مشاهده سبد',
+            description: 'دسترسی به سبدهای زنده و کاتالوگ برای تصمیم سریع.',
             priceMonthly: 0,
             priceYearly: 0,
-            buttonText: 'رزرو مشاوره',
+            buttonText: 'باز کردن سبدها',
             buttonVariant: 'outline',
             isPopular: false,
             hasShadow: false,
             buttonLink: {
               type: 'custom',
-              label: 'رزرو مشاوره',
-              url: '/contact',
+              label: 'باز کردن سبدها',
+              url: '/bundles',
             },
             features: [
-              { name: 'معاینهٔ تخصصی پوست', included: true },
-              { name: 'تشخیص و اولویت‌بندی نگرانی‌ها', included: true },
-              { name: 'پیشنهاد مسیر اولیه', included: true },
-              { name: 'برنامهٔ چندجلسه‌ای کامل', included: false },
+              { name: 'فهرست سبدهای زنده', included: true },
+              { name: 'جزئیات رنگ و تعداد', included: true },
+              { name: 'کاتالوگ محصولات', included: true },
+              { name: 'قیمت اختصاصی مستمر', included: false },
             ],
           },
           {
-            name: 'مسیر درمان',
-            description: 'برنامهٔ چندجلسه‌ای تخصصی بر اساس تشخیص دقیق.',
+            name: 'همکار فعال',
+            description: 'قیمت همکاری، اولویت پردازش و تحویل نیمه‌آفلاین.',
             priceMonthly: 0,
             priceYearly: 0,
-            buttonText: 'شروع درمان',
+            buttonText: 'تماس با فروش',
             buttonVariant: 'primary',
             isPopular: true,
             hasShadow: true,
             shadowStyle: 'primary',
             buttonLink: {
               type: 'custom',
-              label: 'شروع درمان',
+              label: 'تماس با فروش',
               url: '/contact',
             },
             features: [
-              { name: 'طراحی پروتکل درمان شخصی', included: true },
-              { name: 'جلسات پیگیری منظم', included: true },
-              { name: 'توضیح شفاف انتظارات واقع‌بینانه', included: true },
-              { name: 'راهنمای مراقبت خانگی', included: true },
+              { name: 'قیمت و باندل همکاری', included: true },
+              { name: 'اولویت در پردازش سفارش', included: true },
+              { name: 'تحویل حضوری یا ارسال سریع', included: true },
+              { name: 'پشتیبان فروش اختصاصی', included: true },
             ],
           },
           {
-            name: 'مراقبت ممتاز',
-            description: 'پیگیری زیبایی و نگهداری نتیجه در بلندمدت.',
+            name: 'همکار ممتاز',
+            description: 'موجودی زودتر، پیشنهاد ویژه و شرایط اعتباری منعطف‌تر.',
             priceMonthly: 0,
             priceYearly: 0,
-            buttonText: 'گفتگو با کلینیک',
+            buttonText: 'درخواست همکاری',
             buttonVariant: 'dark',
             isPopular: false,
             hasShadow: true,
             shadowStyle: 'dark',
             buttonLink: {
               type: 'custom',
-              label: 'گفتگو با کلینیک',
+              label: 'درخواست همکاری',
               url: '/contact',
             },
             features: [
-              { name: 'چکاپ دوره‌ای پوست', included: true },
-              { name: 'نگهداری نتایج زیبایی', included: true },
-              { name: 'اولویت در نوبت‌دهی', included: true },
-              { name: 'همراهی پس از درمان و لیزر', included: true },
+              { name: 'دسترسی زودتر به موجودی خاص', included: true },
+              { name: 'پیشنهادهای محدود و جشنواره همکار', included: true },
+              { name: 'فاکتور رسمی / مسیر حقوقی', included: true },
+              { name: 'شرایط اعتباری بر اساس سطح همکاری', included: true },
             ],
           },
         ],
@@ -295,9 +354,9 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
         blockType: 'archive',
         categories: [],
         introContent: richRoot(
-          heading('از کلینیک بخوانید', 'h3'),
+          heading('از بازار همکار بخوانید', 'h3'),
           paragraph(
-            'نکته‌های پوست‌آگاهی، مراقبت فصلی و راهنماهای پیش و پس از درمان — نوشته‌هایی برای اعتماد بیشتر به مسیر مراقبت شما.',
+            'راهنمای خرید عمده، نکات حاشیه سود و خبرهای تأمین — برای تصمیم بهتر در فروش نیمه‌آفلاین.',
           ),
         ),
         populateBy: 'collection',
@@ -311,37 +370,39 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
             link: {
               type: 'custom',
               appearance: 'default',
-              label: 'رزرو نوبت',
-              url: '/contact',
+              label: 'سبدهای زنده',
+              url: '/bundles',
             },
           },
           {
             link: {
               type: 'custom',
               appearance: 'outline',
-              label: 'مقالات',
-              url: '/posts',
+              label: 'تماس با فروش',
+              url: '/contact',
             },
           },
         ],
         richText: richRoot(
-          heading('ما زیبایی را با اغراق نمی‌فروشیم؛ با دقت می‌سازیم.', 'h3'),
-          paragraph('برای شروع، یک مشاورهٔ آرام کافی است.'),
+          heading('آماده شروع همکاری هستید؟', 'h3'),
+          paragraph(
+            'سبد امروز را ببینید یا با فروش هماهنگ کنید تا قیمت همکاری و مسیر تحویل نیمه‌آفلاین فعال شود.',
+          ),
         ),
       },
       {
         blockName: 'Solace CTA',
         blockType: 'solaceCta',
-        heading: 'پوست شما شایستهٔ بهترین مراقبت است',
-        appleUrl: '/contact',
+        heading: 'سبد زنده؛ خرید عمده بدون پیچیدگی',
+        appleUrl: '/bundles',
         googleUrl: '/contact',
       },
     ],
     meta: {
       description:
-        'کلینیک تخصصی پوست دکتر مریم رنجبر — تشخیص دقیق، درمان علمی و مراقبت زیبایی با استاندارد لوکس. رزرو نوبت آنلاین.',
+        'پنل همکار و سبد زنده برای فروش B2B نیمه‌آفلاین — قیمت همکاری، موجودی روز و تحویل حضوری یا ارسال سریع.',
       image: metaImage.id,
-      title: 'دکتر مریم رنجبر | متخصص پوست و زیبایی',
+      title: 'همکار | سبد زنده و خرید عمده',
     },
   }
 }

@@ -36,6 +36,15 @@ const nextConfig: NextConfig = {
           protocol: url.protocol.replace(':', '') as 'http' | 'https',
         }
       }),
+      // Partner CDN hosts (defense in depth; list thumbs also use unoptimized for http(s))
+      {
+        protocol: 'https',
+        hostname: 'mobile140.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.mobile140.com',
+      },
     ],
   },
   webpack: (webpackConfig) => {

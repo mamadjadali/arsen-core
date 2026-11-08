@@ -11,6 +11,7 @@ import { CustomCodeBlock } from '@/blocks/CustomCode/Component'
 import { FeaturedServicesBlock } from '@/blocks/FeaturedServices/Component'
 import { FeaturesBlock } from '@/blocks/Features/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { IconGridBlock } from '@/blocks/IconGrid/Component'
 import { LogosBlock } from '@/blocks/Logos/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { PricingBlock } from '@/blocks/Pricing/Component'
@@ -27,6 +28,7 @@ const blockComponents = {
   featuredServices: FeaturedServicesBlock,
   features: FeaturesBlock,
   formBlock: FormBlock,
+  iconGrid: IconGridBlock,
   logos: LogosBlock,
   mediaBlock: MediaBlock,
   pricing: PricingBlock,
@@ -37,6 +39,7 @@ const blockComponents = {
 /** Blocks that manage their own spacing (or must take zero space when empty). */
 const noAutoMarginBlocks = new Set([
   'logos',
+  'iconGrid',
   'features',
   'featuredServices',
   'contactSection',

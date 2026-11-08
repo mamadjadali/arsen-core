@@ -73,17 +73,22 @@ function Carousel({
     api?.scrollNext()
   }, [api])
 
+  const isRtl = opts?.direction === 'rtl'
+
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
-        scrollPrev()
+        // In RTL, Left advances to the next snap (visual continuity with Embla direction).
+        if (isRtl) scrollNext()
+        else scrollPrev()
       } else if (event.key === 'ArrowRight') {
         event.preventDefault()
-        scrollNext()
+        if (isRtl) scrollPrev()
+        else scrollNext()
       }
     },
-    [scrollPrev, scrollNext],
+    [isRtl, scrollPrev, scrollNext],
   )
 
   React.useEffect(() => {
@@ -99,6 +104,7 @@ function Carousel({
 
     return () => {
       api.off('select', onSelect)
+      api.off('reInit', onSelect)
     }
   }, [api, onSelect])
 

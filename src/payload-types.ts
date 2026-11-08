@@ -203,7 +203,7 @@ export interface Page {
   id: string;
   title: string;
   hero: {
-    type: 'none' | 'solace' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    type: 'none' | 'solace' | 'highImpact' | 'mediumImpact' | 'lowImpact' | 'carousel';
     announcementBadge?: string | null;
     announcementText?: string | null;
     /**
@@ -250,6 +250,36 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Desktop image required. Optional mobile image for art direction under md.
+     */
+    slides?:
+      | {
+          image: string | Media;
+          /**
+           * Shown below the md breakpoint. Falls back to desktop image if empty.
+           */
+          imageMobile?: (string | null) | Media;
+          /**
+           * Optional. Defaults to media alt.
+           */
+          alt?: string | null;
+          /**
+           * Optional. Makes the whole slide clickable.
+           */
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    loop?: boolean | null;
+    autoplay?: boolean | null;
+    /**
+     * Cross-fade instead of slide (best with one slide per view).
+     */
+    fade?: boolean | null;
+    autoplayDelay?: number | null;
+    showArrows?: boolean | null;
+    showPagination?: boolean | null;
     media?: (string | null) | Media;
     mediaLayout?: ('phones' | 'image') | null;
     heroImage?: (string | null) | Media;
@@ -275,6 +305,7 @@ export interface Page {
     | ArchiveBlock
     | FormBlock
     | LogosBlock
+    | IconGridBlock
     | FeaturesBlock
     | FeaturedServicesBlock
     | PricingBlock
@@ -1035,9 +1066,45 @@ export interface FormBlock {
  */
 export interface LogosBlock {
   heading: string;
+  /**
+   * Brand names shown as text (same site font as the heading).
+   */
+  items?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'logos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconGridBlock".
+ */
+export interface IconGridBlock {
+  /**
+   * Optional section title above the grid.
+   */
+  heading?: string | null;
+  /**
+   * Up to 6 image tiles with a caption. Desktop: 6 columns · Mobile: 3 columns.
+   */
+  items?:
+    | {
+        image: string | Media;
+        label: string;
+        /**
+         * Optional. Makes the tile clickable.
+         */
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'iconGrid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1959,6 +2026,21 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               id?: T;
             };
+        slides?:
+          | T
+          | {
+              image?: T;
+              imageMobile?: T;
+              alt?: T;
+              href?: T;
+              id?: T;
+            };
+        loop?: T;
+        autoplay?: T;
+        fade?: T;
+        autoplayDelay?: T;
+        showArrows?: T;
+        showPagination?: T;
         media?: T;
         mediaLayout?: T;
         heroImage?: T;
@@ -1980,6 +2062,7 @@ export interface PagesSelect<T extends boolean = true> {
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         logos?: T | LogosBlockSelect<T>;
+        iconGrid?: T | IconGridBlockSelect<T>;
         features?: T | FeaturesBlockSelect<T>;
         featuredServices?: T | FeaturedServicesBlockSelect<T>;
         pricing?: T | PricingBlockSelect<T>;
@@ -2161,6 +2244,29 @@ export interface FormBlockSelect<T extends boolean = true> {
  */
 export interface LogosBlockSelect<T extends boolean = true> {
   heading?: T;
+  items?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconGridBlock_select".
+ */
+export interface IconGridBlockSelect<T extends boolean = true> {
+  heading?: T;
+  items?:
+    | T
+    | {
+        image?: T;
+        label?: T;
+        href?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

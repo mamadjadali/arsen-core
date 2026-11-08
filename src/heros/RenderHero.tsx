@@ -2,12 +2,14 @@ import React from 'react'
 
 import type { Page } from '@/payload-types'
 
+import { CarouselHero } from '@/heros/Carousel'
 import { HighImpactHero } from '@/heros/HighImpact'
 import { LowImpactHero } from '@/heros/LowImpact'
 import { MediumImpactHero } from '@/heros/MediumImpact'
 import { SolaceHero } from '@/heros/Solace'
 
 const heroes = {
+  carousel: CarouselHero,
   highImpact: HighImpactHero,
   lowImpact: LowImpactHero,
   mediumImpact: MediumImpactHero,

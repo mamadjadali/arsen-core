@@ -36,11 +36,17 @@ curl -sS -X POST "$BASE/api/v1/products" \
     "price": 85000000,
     "colors": [
       { "name": "مشکی", "sku": "IP16-BK", "b2bPrice": 82000000, "remains": 12 }
+    ],
+    "colorSwatches": [
+      { "label": "مشکی", "hex": "#111111" },
+      { "label": "سفید", "hex": "#FFFFFF" }
     ]
   }'
 ```
 
 If `productId` already exists, the same endpoint updates that document.
+
+Optional `colorSwatches` (create/upsert/PATCH): `{ label?, hex }` with 6-digit `#RRGGBB`. Used for live-bundle Mix/single-color circles; when provided, replaces existing swatches.
 
 ### Patch / get / publish / disable
 

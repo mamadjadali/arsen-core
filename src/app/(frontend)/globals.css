@@ -962,6 +962,32 @@ html[data-theme='light'] {
   color: var(--lb-muted);
 }
 
+.live-bundle-color-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-bundle-color-dots {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-bundle-color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--lb-cream, #fff) 20%, transparent);
+  flex-shrink: 0;
+}
+
+.live-bundle-table--panel .live-bundle-color-dot {
+  border-color: color-mix(in srgb, var(--color-ink, #111) 20%, transparent);
+}
+
 .live-bundle-table-empty {
   color: var(--lb-muted);
   text-align: center;
