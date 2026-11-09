@@ -51,7 +51,8 @@ function parseColors(value: unknown): ColorInput[] | undefined {
   return colors
 }
 
-function parseColorSwatches(
+/** Exported for unit tests; used by create/upsert/PATCH body parsing. */
+export function parseColorSwatches(
   value: unknown,
 ): ColorSwatchInput[] | { error: Response } | undefined {
   if (value === undefined) return undefined
@@ -59,9 +60,18 @@ function parseColorSwatches(
     return { error: jsonError(400, 'validation_error', 'colorSwatches must be an array') }
   }
 
+  // Explicit [] clears swatches. Any non-empty array must contain only valid objects.
   const swatches: ColorSwatchInput[] = []
   for (const item of value) {
-    if (!item || typeof item !== 'object') continue
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      return {
+        error: jsonError(
+          400,
+          'validation_error',
+          'each colorSwatches entry must be an object with hex like #C4A574',
+        ),
+      }
+    }
     const row = item as Record<string, unknown>
     const hexRaw = asTrimmedString(row.hex)
     if (!hexRaw || !HEX6_RE.test(hexRaw)) {

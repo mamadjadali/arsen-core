@@ -46,7 +46,7 @@ curl -sS -X POST "$BASE/api/v1/products" \
 
 If `productId` already exists, the same endpoint updates that document.
 
-Optional `colorSwatches` (create/upsert/PATCH): `{ label?, hex }` with 6-digit `#RRGGBB`. Used for live-bundle Mix/single-color circles; when provided, replaces existing swatches.
+Optional `colorSwatches` (create/upsert/PATCH): `{ label?, hex }` with 6-digit `#RRGGBB`. Used for live-bundle Mix/single-color circles; when provided, replaces existing swatches. Explicit `[]` clears. Invalid entries (null, non-object, bad hex) return `400` — they are not skipped.
 
 ### Patch / get / publish / disable
 

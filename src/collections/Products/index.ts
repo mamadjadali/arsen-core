@@ -60,6 +60,7 @@ export const Products: CollectionConfig<'products'> = {
     printName: true,
     active: true,
     colors: true,
+    colorSwatches: true,
     meta: {
       image: true,
       description: true,
