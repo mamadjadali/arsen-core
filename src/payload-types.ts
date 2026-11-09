@@ -271,10 +271,13 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Ignored when fade is on (fade requires loop off).
+     */
     loop?: boolean | null;
     autoplay?: boolean | null;
     /**
-     * Cross-fade instead of slide (best with one slide per view).
+     * Cross-fade instead of slide. Disables loop (Embla fade constraint).
      */
     fade?: boolean | null;
     autoplayDelay?: number | null;
